@@ -1,0 +1,1766 @@
+<!DOCTYPE html>
+<html lang="tr" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Mesai Takip — Kişisel Çalışma Takibi</title>
+<meta name="description" content="Modern, çevrimdışı çalışabilen kişisel mesai takip uygulaması. 07:45-17:45, günlük net 9 saat.">
+<meta name="theme-color" content="#0b1220">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Mesai">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" type="image/png" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-192.png">
+<style>
+:root{
+  --pri:#6366f1; --pri2:#06b6d4; --green:#2ee59d; --orange:#ffb020; --red:#ff5d73; --blue:#4da3ff; --violet:#a78bfa;
+  --bg:#070d1a; --bg2:#0d1730; --card:#111c36; --card2:#16233f; --text:#eef3ff; --muted:#98a8c7; --line:rgba(255,255,255,.09);
+  --input:#0b1428; --shadow:0 14px 34px rgba(0,0,0,.34); --nav:rgba(10,17,33,.92);
+}
+html[data-theme="light"]{
+  --bg:#eef3fb; --bg2:#e3ecfb; --card:#ffffff; --card2:#f5f8ff; --text:#17213b; --muted:#687895; --line:rgba(20,35,75,.11);
+  --input:#f2f6ff; --shadow:0 12px 28px rgba(35,55,110,.10); --nav:rgba(255,255,255,.94);
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html{scroll-behavior:smooth}
+body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;background:radial-gradient(900px 500px at 90% -10%,rgba(99,102,241,.28),transparent 60%),radial-gradient(800px 450px at -10% 20%,rgba(6,182,212,.18),transparent 60%),linear-gradient(180deg,var(--bg),var(--bg2));color:var(--text);min-height:100vh}
+a{color:var(--pri2)}
+button{font:inherit;color:inherit}
+input,select,textarea{font:inherit;color:var(--text)}
+.app{max-width:900px;margin:0 auto;padding:16px 14px 118px}
+.topbar{display:flex;align-items:center;gap:12px;padding:10px 2px 14px}
+.logo{width:52px;height:52px;border-radius:16px;background:linear-gradient(135deg,var(--pri),var(--pri2));display:grid;place-items:center;font-size:27px;box-shadow:0 12px 26px rgba(99,102,241,.35);flex:0 0 auto}
+.topbar h1{font-size:22px;margin:0;letter-spacing:-.02em}
+.topbar .sub{color:var(--muted);font-size:13px;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:48vw}
+.top-actions{margin-left:auto;display:flex;gap:8px}
+.icon-btn{border:1px solid var(--line);background:var(--card);border-radius:999px;padding:9px 12px;cursor:pointer;box-shadow:var(--shadow);font-weight:700}
+.card{background:linear-gradient(180deg,var(--card),var(--card2));border:1px solid var(--line);border-radius:24px;padding:18px;box-shadow:var(--shadow);margin-bottom:14px}
+.card h2{margin:0 0 12px;font-size:17px}.card h3{margin:0 0 10px;font-size:15px}
+.muted{color:var(--muted)} .small{font-size:13px}.tiny{font-size:12px}
+.hero{position:relative;overflow:hidden}
+.hero:before{content:"";position:absolute;inset:-60px -60px auto auto;width:230px;height:230px;border-radius:50%;background:radial-gradient(circle,rgba(6,182,212,.30),transparent 65%)}
+.row{display:flex;gap:10px;align-items:center}.row.wrap{flex-wrap:wrap}.spacer{flex:1}
+.chip{display:inline-flex;align-items:center;gap:6px;padding:6px 10px;border-radius:999px;font-size:12px;font-weight:800;border:1px solid var(--line);background:var(--input)}
+.chip.green{color:var(--green)} .chip.orange{color:var(--orange)} .chip.red{color:var(--red)} .chip.blue{color:var(--blue)} .chip.violet{color:var(--violet)}
+.timer{font-size:56px;line-height:1;font-weight:900;letter-spacing:-.04em;margin:14px 0 6px;font-variant-numeric:tabular-nums}
+.progress{height:14px;border-radius:999px;background:var(--input);border:1px solid var(--line);overflow:hidden;margin-top:12px}
+.progress>div{height:100%;width:0%;background:linear-gradient(90deg,var(--pri),var(--pri2),var(--green));border-radius:999px;transition:width .5s}
+.kpi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.kpi{background:var(--input);border:1px solid var(--line);border-radius:18px;padding:13px;min-height:84px}
+.kpi .label{color:var(--muted);font-size:12px;font-weight:700}.kpi .value{font-size:20px;font-weight:900;margin-top:5px;letter-spacing:-.02em}.kpi .hint{color:var(--muted);font-size:11px;margin-top:3px}
+.btn{border:1px solid var(--line);background:var(--card2);border-radius:16px;padding:13px 16px;font-weight:850;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:50px}
+.btn:active{transform:scale(.98)} .btn.primary{background:linear-gradient(135deg,var(--pri),var(--pri2));color:white;border:none;box-shadow:0 12px 24px rgba(99,102,241,.30)}
+.btn.success{background:linear-gradient(135deg,#10b981,#22c55e);color:white;border:none}
+.btn.danger{background:linear-gradient(135deg,#f43f5e,#fb7185);color:white;border:none}
+.btn.soft{background:var(--input)} .btn.block{width:100%} .btn.smallbtn{min-height:40px;padding:9px 12px;border-radius:12px;font-size:13px}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.action-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}
+.timeline{display:flex;gap:6px;margin-top:12px;align-items:stretch}
+.tseg{flex:1;border:1px solid var(--line);background:var(--input);border-radius:14px;padding:10px 8px;text-align:center;min-width:0}
+.tseg b{font-size:13px;display:block;white-space:nowrap}.tseg span{font-size:11px;color:var(--muted);display:block;margin-top:3px;line-height:1.25}
+.weekbars{display:grid;grid-template-columns:repeat(7,1fr);gap:8px;align-items:end;height:132px;margin-top:8px}
+.wbar{display:flex;flex-direction:column;align-items:center;gap:6px;height:100%;justify-content:flex-end}
+.wbar .barwrap{height:82px;width:100%;max-width:42px;background:var(--input);border:1px solid var(--line);border-radius:12px;display:flex;align-items:flex-end;overflow:hidden}
+.wbar .bar{width:100%;background:linear-gradient(180deg,var(--pri2),var(--pri));border-radius:12px 12px 0 0;min-height:3px}
+.wbar.over .bar{background:linear-gradient(180deg,var(--orange),#f97316)} .wbar .d{font-size:11px;color:var(--muted);font-weight:800}.wbar .h{font-size:11px;font-weight:800}
+.list{display:flex;flex-direction:column;gap:9px}
+.item{display:flex;gap:12px;align-items:center;background:var(--input);border:1px solid var(--line);border-radius:18px;padding:12px;cursor:pointer}
+.item .datebox{width:52px;height:56px;border-radius:15px;background:linear-gradient(135deg,rgba(99,102,241,.30),rgba(6,182,212,.20));display:flex;flex-direction:column;align-items:center;justify-content:center;flex:0 0 auto;border:1px solid var(--line)}
+.item .datebox b{font-size:19px;line-height:1}.item .datebox span{font-size:10px;color:var(--muted);font-weight:800;margin-top:3px}
+.diff.pos{color:var(--orange);font-weight:900}.diff.ok{color:var(--green);font-weight:900}.diff.neg{color:var(--red);font-weight:900}.diff.zero{color:var(--muted);font-weight:800}
+.view{display:none}.view.active{display:block;animation:fade .22s ease}@keyframes fade{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:none}}
+.bottomnav{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(10px + env(safe-area-inset-bottom));width:min(92vw,760px);background:var(--nav);backdrop-filter:blur(16px);border:1px solid var(--line);border-radius:24px;box-shadow:0 18px 42px rgba(0,0,0,.38);display:grid;grid-template-columns:repeat(5,1fr);padding:7px;z-index:50}
+.bottomnav button{border:none;background:transparent;border-radius:17px;padding:9px 4px;cursor:pointer;color:var(--muted);font-weight:850;font-size:11px}
+.bottomnav button .ic{display:block;font-size:21px;margin-bottom:3px}
+.bottomnav button.active{background:linear-gradient(135deg,var(--pri),var(--pri2));color:#fff}
+.calendar-head{display:grid;grid-template-columns:42px 1fr 42px;gap:8px;align-items:center;margin-bottom:12px}
+.calendar-head input{width:100%}
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:7px}
+.cal-dow{text-align:center;color:var(--muted);font-size:11px;font-weight:900;padding:5px 0}
+.cal-day{min-height:74px;border:1px solid var(--line);background:var(--input);border-radius:15px;padding:7px;cursor:pointer;position:relative;overflow:hidden}
+.cal-day.out{opacity:.32}.cal-day.today{outline:2px solid var(--pri2);outline-offset:-2px}.cal-day.future{border-style:dashed}
+.cal-day .num{font-weight:900;font-size:14px}.cal-day .hrs{font-size:11px;font-weight:850;margin-top:6px;line-height:1.2}.cal-day .tag{font-size:9.5px;color:var(--muted);margin-top:2px;line-height:1.15}
+.cal-day.st-ok{background:rgba(46,229,157,.12)} .cal-day.st-over{background:rgba(255,176,32,.13)} .cal-day.st-under{background:rgba(255,93,115,.12)} .cal-day.st-leave{background:rgba(77,163,255,.13)} .cal-day.st-bank{background:rgba(167,139,250,.17)} .cal-day.st-off{opacity:.78;background:rgba(148,163,184,.08)} .cal-day.st-live{background:rgba(46,229,157,.16);animation:pulse 1.6s infinite}@keyframes pulse{50%{box-shadow:inset 0 0 0 2px rgba(46,229,157,.5)}}
+.bank-big{font-size:42px;font-weight:900;letter-spacing:-.03em;line-height:1}
+.option-list{display:flex;flex-direction:column;gap:9px;margin-top:14px}.option-list .btn{justify-content:flex-start;text-align:left}
+.arife-card{border-color:rgba(255,176,32,.55)!important;background:linear-gradient(135deg,rgba(255,176,32,.16),rgba(99,102,241,.12))}
+.legend{display:flex;flex-wrap:wrap;gap:7px;margin-top:12px}
+.field{margin-bottom:12px}.field label{display:block;font-size:12px;color:var(--muted);font-weight:850;margin-bottom:6px}
+.field input,.field select,.field textarea{width:100%;background:var(--input);border:1px solid var(--line);border-radius:14px;padding:12px 13px;outline:none}
+.field textarea{min-height:74px;resize:vertical}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}.form-grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
+.modal-backdrop{position:fixed;inset:0;background:rgba(0,0,0,.58);backdrop-filter:blur(5px);z-index:80;display:none;align-items:flex-end;justify-content:center;padding:0}
+.modal-backdrop.open{display:flex}
+.modal{background:var(--card);border:1px solid var(--line);border-radius:26px 26px 0 0;width:min(100vw,760px);max-height:92vh;overflow:auto;padding:20px 18px calc(20px + env(safe-area-inset-bottom));box-shadow:var(--shadow)}
+@media(min-width:700px){.modal-backdrop{align-items:center;padding:18px}.modal{border-radius:26px}}
+.previewbox{background:linear-gradient(135deg,rgba(99,102,241,.16),rgba(6,182,212,.10));border:1px solid var(--line);border-radius:16px;padding:12px;margin:10px 0;font-weight:750}
+.fab{position:fixed;right:max(16px,calc((100vw - 900px)/2 + 16px));bottom:calc(96px + env(safe-area-inset-bottom));width:60px;height:60px;border-radius:50%;border:none;background:linear-gradient(135deg,var(--pri),var(--pri2));color:white;font-size:29px;box-shadow:0 16px 34px rgba(99,102,241,.38);cursor:pointer;z-index:40}
+canvas.chart{width:100%;height:240px;display:block;background:var(--input);border:1px solid var(--line);border-radius:18px}
+.table{width:100%;border-collapse:collapse;font-size:13px}.table th,.table td{padding:9px 8px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}.table th{color:var(--muted);font-size:11px;text-transform:uppercase}
+.toast{position:fixed;left:50%;transform:translate(-50%,20px);bottom:calc(92px + env(safe-area-inset-bottom));background:#111827;color:white;border:1px solid rgba(255,255,255,.15);padding:12px 16px;border-radius:999px;box-shadow:0 18px 42px rgba(0,0,0,.4);opacity:0;pointer-events:none;transition:.25s;z-index:120;max-width:92vw;text-align:center;font-weight:750}
+.toast.show{opacity:1;transform:translate(-50%,0)}
+.breakrow{display:grid;grid-template-columns:1.25fr 1fr 1fr 42px;gap:8px;margin-bottom:8px}.breakrow input{background:var(--input);border:1px solid var(--line);border-radius:12px;padding:11px;width:100%}
+.hr{height:1px;background:var(--line);margin:16px 0}
+.empty{padding:22px;text-align:center;border:1.5px dashed var(--line);border-radius:18px;color:var(--muted);background:var(--input)}
+.notice{background:rgba(255,176,32,.10);border:1px solid rgba(255,176,32,.28);border-radius:16px;padding:12px;font-size:13px;line-height:1.5}
+.hide{display:none!important}
+.lockscreen{position:fixed;inset:0;z-index:200;background:radial-gradient(700px 420px at 80% -10%,rgba(99,102,241,.35),transparent 60%),linear-gradient(180deg,var(--bg),var(--bg2));display:grid;place-items:center;padding:20px}
+.lockbox{width:min(92vw,420px);background:linear-gradient(180deg,var(--card),var(--card2));border:1px solid var(--line);border-radius:26px;padding:26px;box-shadow:var(--shadow);text-align:center}
+.lockbox .logo{margin:0 auto 12px}
+.lockbox input{width:100%;background:var(--input);border:1px solid var(--line);border-radius:14px;padding:14px;text-align:center;font-size:18px;letter-spacing:.08em}
+body.locked .app,body.locked .bottomnav,body.locked .fab{visibility:hidden}
+.progress.thin{height:10px}.statline{display:flex;justify-content:space-between;gap:10px;padding:8px 0;border-bottom:1px solid var(--line);font-size:13px}.statline:last-child{border:none}
+.syncstatus{white-space:pre-wrap;word-break:break-word}
+@media(max-width:680px){.kpi-grid{grid-template-columns:1fr 1fr}.timer{font-size:47px}.cal-day{min-height:63px;padding:6px}.timeline{flex-wrap:wrap}.tseg{min-width:46%}.form-grid3{grid-template-columns:1fr 1fr}.topbar .sub{max-width:42vw}}
+#printArea{display:none;background:white;color:#111}
+@media print{body{background:white}.app,.bottomnav,.fab,.toast,.modal-backdrop{display:none!important}#printArea{display:block!important;padding:20px} #printArea table{width:100%;border-collapse:collapse;font-size:12px}#printArea th,#printArea td{border:1px solid #999;padding:6px}#printArea h1{font-size:20px}}
+</style>
+</head>
+<body>
+<div class="app" id="app">
+  <header class="topbar">
+    <div class="logo">⏱️</div>
+    <div>
+      <h1>Mesai Takip</h1>
+      <div class="sub" id="headerSub">07:45 – 17:45 • Günlük net 9 saat</div>
+    </div>
+    <div class="top-actions">
+      <button class="icon-btn hide" id="installBtn">📲 Kur</button>
+      <button class="icon-btn hide" id="lockBtn" title="Kilitle">🔒</button>
+      <button class="icon-btn" id="themeBtn" title="Tema">🌙</button>
+    </div>
+  </header>
+
+  <!-- BUGÜN -->
+  <section class="view active" id="view-home">
+    <div class="card arife-card hide" id="arifeBanner">
+      <div class="row wrap"><div style="flex:1;min-width:210px"><b id="arifeBannerTitle">🌙 Bugün arife</b><div class="small muted" id="arifeBannerText" style="margin-top:4px"></div></div><button class="btn smallbtn primary" id="arifeAskBtn">Durumu seç</button></div>
+    </div>
+    <div class="card hero">
+      <div class="row wrap" style="position:relative;z-index:1">
+        <div>
+          <div class="muted small" id="todayLong">Bugün</div>
+          <div style="font-size:18px;font-weight:900" id="todayStatusTitle">Mesai durumu</div>
+        </div>
+        <div class="spacer"></div>
+        <span class="chip" id="todayChip">—</span>
+      </div>
+      <div class="timer" id="liveTimer">00:00:00</div>
+      <div class="muted" id="liveSub">Henüz mesai başlatılmadı</div>
+      <div class="progress"><div id="todayProgress"></div></div>
+      <div class="row small muted" style="margin-top:8px"><span id="progressText">Hedef: 9s 00dk</span><span class="spacer"></span><span id="expectedText"></span></div>
+
+      <div class="kpi-grid" style="margin-top:14px">
+        <div class="kpi"><div class="label">GİRİŞ</div><div class="value" id="kpiIn">—</div><div class="hint">Normal 07:45</div></div>
+        <div class="kpi"><div class="label">ÇIKIŞ</div><div class="value" id="kpiOut">—</div><div class="hint">Normal 17:45</div></div>
+        <div class="kpi"><div class="label">NET ÇALIŞMA</div><div class="value" id="kpiNet">—</div><div class="hint">Mola düşülmüş</div></div>
+        <div class="kpi"><div class="label">FAZLA / EKSİK</div><div class="value" id="kpiDiff">—</div><div class="hint">Hedefe göre</div></div>
+      </div>
+
+      <div class="action-grid">
+        <button class="btn success" id="startBtn">▶️ Mesaiyi Başlat</button>
+        <button class="btn danger" id="stopBtn">⏹️ Mesaiyi Bitir</button>
+        <button class="btn primary" id="fillNormalBtn">✅ Normal Mesai Yaz</button>
+        <button class="btn soft" id="editTodayBtn">✏️ Bugünü Düzenle</button>
+      </div>
+      <div class="row wrap" style="margin-top:10px">
+        <button class="btn smallbtn soft" id="quickBankBtn">⏳ Saat İzni (bankadan)</button>
+        <button class="btn smallbtn soft" data-quickleave="yillik_izin">🏖️ İzin</button>
+        <button class="btn smallbtn soft" data-quickleave="rapor">🏥 Rapor</button>
+        <button class="btn smallbtn soft" data-quickleave="resmi_tatil">🇹🇷 Tatil</button>
+      </div>
+    </div>
+
+    <div class="card" style="background:linear-gradient(135deg,rgba(124,58,237,.18),rgba(6,182,212,.10)),linear-gradient(180deg,var(--card),var(--card2))">
+      <div class="row wrap"><h2 style="margin:0">⏳ Saat Bankası <span class="muted small">(başa baş 1:1)</span></h2><span class="spacer"></span><span class="chip violet">Ücret değil, izin saati</span></div>
+      <div class="row wrap" style="margin-top:14px;align-items:flex-end"><div><div class="label muted small" style="font-weight:800">KULLANILABİLİR SAAT İZNİ</div><div class="bank-big" id="bankTotal">0s</div><div class="small muted" id="bankTotalEquiv">—</div><div class="small" id="bankExpiryInfo" style="margin-top:5px"></div></div><span class="spacer"></span><button class="btn primary" id="bankUseTodayBtn">⏳ Bugün saat izni kullan</button></div>
+      <div class="kpi-grid" style="margin-top:14px">
+        <div class="kpi"><div class="label">BU AY KAZANILAN</div><div class="value" style="color:var(--orange)" id="bankEarnedMonth">—</div><div class="hint">Fazla çalışmalar</div></div>
+        <div class="kpi"><div class="label">BU AY KULLANILAN</div><div class="value" style="color:var(--violet)" id="bankUsedMonth">—</div><div class="hint">Saat izni olarak</div></div>
+        <div class="kpi"><div class="label">BU AY NET DEĞİŞİM</div><div class="value" id="bankChangeMonth">—</div><div class="hint">Kazanılan − kullanılan</div></div>
+        <div class="kpi"><div class="label">KARŞILANMAMIŞ EKSİK</div><div class="value" style="color:var(--red)" id="bankUncoveredMonth">—</div><div class="hint">Bankayla kapatılmayan</div></div>
+      </div>
+      <p class="small muted" style="line-height:1.6;margin-bottom:0">Kuralınız: <b>1 saat fazla = 1 saat izin</b>. Fazla çalıştıkça banka büyür; erken çıkmak ya da gün kapatmak için <b>Saat İzni</b> kullandıkça bankadan düşer. Erken çıktığınız gün kaydı düzenleyip “Eksik kısmı bankadan karşıla” da diyebilirsiniz. Önceden birikmiş bakiyeniz varsa Ayarlar → <i>Devreden başlangıç bakiyesi</i>ne yazın.</p>
+    </div>
+
+    <div class="card">
+      <div class="row wrap"><h2 style="margin:0">🏖️ Yıllık izin</h2><span class="spacer"></span><span class="chip blue" id="annualYearChip">—</span></div>
+      <div class="row wrap" style="margin-top:12px;align-items:flex-end"><div><div class="muted small" style="font-weight:800">KALAN</div><div class="bank-big" id="annualRemaining">—</div><div class="small muted" id="annualDetail">Ayarlar’dan toplam hakkınızı yazın</div></div><span class="spacer"></span><button class="btn smallbtn soft" onclick="showView('settings')">Hakkımı düzenle</button></div>
+      <div class="progress thin"><div id="annualProgress"></div></div>
+    </div>
+
+    <div id="emptyCta" class="card hide">
+      <h2>👋 Hoş geldin!</h2>
+      <p class="muted" style="line-height:1.6">Henüz kaydın yok. <b>Mesaiyi Başlat</b> ile canlı takip edebilir, <b>Normal Mesai Yaz</b> ile bugünü 07:45–17:45 olarak tek tuşla işleyebilirsin.</p>
+      <div class="row wrap"><button class="btn primary" id="demoBtn">👀 Örnek veriyle dene</button><button class="btn soft" onclick="showView('settings')">⚙️ Ayarlarımı yap</button></div>
+      <p class="tiny muted">Örnek veri sadece deneme içindir, Ayarlar’dan istediğinde tüm verileri temizleyebilirsin.</p>
+    </div>
+
+    <div class="card">
+      <div class="row"><h2 style="margin:0">📆 Bu ay özeti</h2><span class="spacer"></span><span class="chip blue" id="homeMonthChip"></span></div>
+      <div class="kpi-grid" style="margin-top:12px">
+        <div class="kpi"><div class="label">ÇALIŞILAN</div><div class="value" id="mWorked">—</div><div class="hint" id="mWorkedDays"></div></div>
+        <div class="kpi"><div class="label">HEDEF (BUGÜNE K.)</div><div class="value" id="mTarget">—</div><div class="hint" id="mTargetDays"></div></div>
+        <div class="kpi"><div class="label">FAZLA → BANKAYA</div><div class="value" style="color:var(--orange)" id="mOver">—</div><div class="hint">Hedef üstü + tatil çalışması</div></div>
+        <div class="kpi"><div class="label">BAKİYE</div><div class="value" id="mBalance">—</div><div class="hint" id="mMissingHint">Eksik dahil</div></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>🗓️ Bu hafta</h2>
+      <div class="weekbars" id="weekBars"></div>
+      <div class="tiny muted">Hedef çizgisi: günlük net 9 saat. Turuncu = hedef üstü çalışma.</div>
+    </div>
+
+    <div class="card">
+      <h2>🧭 Günlük programın</h2>
+      <div class="timeline" id="programTimeline"></div>
+      <div class="notice" style="margin-top:12px">☕ Molalar: <b>10:00–10:10</b> • 🍽️ <b>12:15–12:55</b> • ☕ <b>15:30–15:40</b> = toplam <b>60 dk</b>. Brüt 10 saat − 60 dk mola = <b>net 9 saat</b>. Hafta sonu ve resmi tatiller hedefe dahil değildir; o gün çalışırsan tamamı <b>saat bankasına fazla</b> sayılır. Fazla ücret yok — fazla <b>başa baş (1:1) saat izni</b> olur.</div>
+    </div>
+
+    <div class="card">
+      <div class="row"><h2 style="margin:0">🕘 Son 7 gün</h2><span class="spacer"></span><button class="btn smallbtn soft" onclick="showView('records')">Tümü →</button></div>
+      <div class="list" id="recentList" style="margin-top:12px"></div>
+    </div>
+  </section>
+
+  <!-- TAKVİM -->
+  <section class="view" id="view-calendar">
+    <div class="card">
+      <h2>📅 Takvim</h2>
+      <div class="calendar-head">
+        <button class="btn soft" id="prevMonthBtn">‹</button>
+        <div class="field" style="margin:0"><input type="month" id="monthPickerCal"></div>
+        <button class="btn soft" id="nextMonthBtn">›</button>
+      </div>
+      <div class="row wrap small" style="margin-bottom:10px"><b id="calSummary"></b><span class="spacer"></span><button class="btn smallbtn primary" id="gotoTodayBtn">Bugün</button></div>
+      <div class="cal-grid" id="calDow"></div>
+      <div class="cal-grid" id="calGrid" style="margin-top:6px"></div>
+      <div class="legend">
+        <span class="chip green">✓ Tamam</span><span class="chip orange">▲ Fazla → bankaya</span><span class="chip violet">⏳ Saat izni</span><span class="chip red">▼ Eksik/Kayıtsız</span><span class="chip blue">İzin/Rapor</span><span class="chip">Tatil</span><span class="chip green">● Canlı</span>
+      </div>
+      <p class="tiny muted">Bir güne dokun: kayıt ekle / düzenle / izin işle.</p>
+    </div>
+  </section>
+
+  <!-- KAYITLAR -->
+  <section class="view" id="view-records">
+    <div class="card">
+      <div class="row wrap"><h2 style="margin:0">📋 Kayıtlar</h2><span class="spacer"></span><button class="btn smallbtn primary" id="addRecordBtn">+ Kayıt Ekle</button></div>
+      <div class="form-grid" style="margin-top:14px">
+        <div class="field" style="margin:0"><label>Ay</label><input type="month" id="monthPickerRec"></div>
+        <div class="field" style="margin:0"><label>Filtre</label><select id="recordFilter"><option value="all">Tümü</option><option value="calisma">Çalışma</option><option value="fazla">Fazla mesaili</option><option value="saatizni">⏳ Saat izni kullanılan</option><option value="eksik">Eksik / kayıtsız</option><option value="izin">İzin / Rapor</option></select></div>
+      </div>
+      <div class="field" style="margin-top:12px"><label>🔎 Notlarda / yapılan işlerde ara</label><input id="recordSearch" placeholder="Örn: sevkiyat, bakım, düğün..."></div>
+      <div class="row wrap" style="margin-top:12px">
+        <button class="btn smallbtn soft" id="bulkFillBtn">✨ Kayıtsız iş günlerini normal mesaiyle doldur</button>
+      </div>
+      <div class="list" id="recordList" style="margin-top:14px"></div>
+    </div>
+  </section>
+
+  <!-- RAPOR -->
+  <section class="view" id="view-report">
+    <div class="card">
+      <div class="row wrap"><h2 style="margin:0">📊 Aylık rapor</h2><span class="spacer"></span><input type="month" id="monthPickerRep" style="background:var(--input);border:1px solid var(--line);border-radius:12px;padding:10px"></div>
+      <div class="kpi-grid" style="margin-top:14px" id="reportKpis"></div>
+      <div class="hr"></div>
+      <h3>📈 Günlük net çalışma (saat)</h3>
+      <canvas class="chart" id="dailyChart" width="800" height="240"></canvas>
+      <div class="tiny muted" style="margin-top:7px">Teal: hedefe kadar • Turuncu: hedef üstü / tatil çalışması (bankaya +) • Mor: bankadan kullanılan süre • Kırmızı: eksik gün • Çizgi: 9 saat hedefi</div>
+    </div>
+    <div class="card">
+      <h2>⏳ Saat Bankası hareketleri <span class="muted small">(başa baş 1:1)</span></h2>
+      <div class="kpi-grid" id="reportBankKpis"></div>
+      <div id="bankLedger" style="margin-top:14px"></div>
+    </div>
+    <div class="card">
+      <h2>🧮 Detay döküm</h2>
+      <div id="reportDetail"></div>
+    </div>
+    <div class="card">
+      <h2>📈 Yıllık & tüm zamanlar istatistik</h2>
+      <div class="kpi-grid" id="statsKpis"></div>
+      <div class="hr"></div>
+      <h3 id="yearChartTitle">Aylara göre net çalışma</h3>
+      <canvas class="chart" id="yearlyChart" width="800" height="240"></canvas>
+      <div id="statsDetail" style="margin-top:12px"></div>
+    </div>
+    <div class="card">
+      <h2>📤 Dışa aktar / Yedek</h2>
+      <div class="action-grid">
+        <button class="btn primary" id="exportCsvBtn">📗 Excel (CSV) indir</button>
+        <button class="btn soft" id="printBtn">🖨️ PDF / Yazdır</button>
+        <button class="btn soft" id="exportJsonBtn">💾 Yedek indir (JSON)</button>
+        <button class="btn soft" id="importJsonBtn">📥 Yedeği geri yükle</button>
+      </div>
+      <input type="file" id="importFile" accept="application/json,.json" class="hide">
+      <p class="small muted" style="line-height:1.6">Excel dosyası Türkçe Excel uyumlu <b>CSV</b> olarak iner. PDF için yazdırma ekranında “PDF olarak kaydet” seç. Telefon değişiminde JSON yedeği yeni cihazda geri yükleyebilirsin.</p>
+    </div>
+  </section>
+
+  <!-- AYARLAR -->
+  <section class="view" id="view-settings">
+    <div class="card">
+      <h2>⚙️ Ayarlar</h2>
+      <div class="form-grid">
+        <div class="field"><label>Ad Soyad (raporda görünür)</label><input id="setName" placeholder="Örn: Ahmet Yılmaz"></div>
+        <div class="field"><label>Şirket / Departman</label><input id="setCompany" placeholder="Örn: ABC Sanayi - Üretim"></div>
+      </div>
+      <div class="form-grid">
+        <div class="field"><label>Normal giriş</label><input type="time" id="setStart"></div>
+        <div class="field"><label>Normal çıkış</label><input type="time" id="setEnd"></div>
+      </div>
+      <div class="field"><label>Molalar</label><div id="breaksEditor"></div><button class="btn smallbtn soft" id="addBreakBtn">+ Mola ekle</button></div>
+      <div class="previewbox" id="settingsCalc">—</div>
+      <div class="form-grid">
+        <div class="field"><label>🌆 Akşam yemeği molası başlangıç (mesai öncesi)</label><input type="time" id="setEveningStart"></div>
+        <div class="field"><label>Akşam molası bitiş / mesai başlangıcı</label><input type="time" id="setEveningEnd"></div>
+        <div class="field"><label>🌙 Gece molası başlangıç (sabahlama)</label><input type="time" id="setNightStart"></div>
+        <div class="field"><label>Gece molası bitiş</label><input type="time" id="setNightEnd"></div>
+      </div>
+      <div class="notice">Akşam kuralı: Çıkış <b>18:15 öncesi</b> ise ekstra yok (net 9 saate tamamlanır). 18:15 sonrası fazla, mola düşülerek hesaplanır. Gece 02:00 molası yalnızca sabahlama o saate sarkarsa düşülür.</div>
+      <div class="hr"></div>
+      <div class="form-grid3">
+        <div class="field"><label>🏖️ izin yılı</label><input type="number" id="setLeaveYear" step="1"></div>
+        <div class="field"><label>Toplam yıllık izin hakkım (gün)</label><input type="number" id="setLeaveTotal" min="0" step="0.5"></div>
+        <div class="field"><label>Uygulamadan önce kullanılan (gün)</label><input type="number" id="setLeavePrior" min="0" step="0.5"></div>
+      </div>
+      <p class="tiny muted">Yıllık izin işaretlediğiniz hafta içi günler otomatik düşer; hafta sonu/resmi tatil üstüne işaretlenen gün izin sayılmaz, arife 0,5 sayılır (kayıt içinde değiştirebilirsiniz).</p>
+      <div class="form-grid">
+        <div class="field"><label>⏳ Banka devir penceresi — ayın son kaç gününde kazanılanlar devredebilir?</label><input type="number" id="setCarryLate" min="0" max="31" step="1"></div>
+        <div class="field"><label>Devredenler sonraki ayın kaçıncı gününe kadar kullanılabilir?</label><input type="number" id="setCarryUse" min="0" max="28" step="1"></div>
+      </div>
+      <div class="field"><label>Devreden başlangıç bakiyesinin tarihi</label><input type="date" id="setBankOpenDate"><div class="tiny muted" style="margin-top:5px">Açılış bakiyesi bu tarihte kazanılmış sayılır ve banka son-kullanma kuralına girer.</div></div>
+      <div class="field"><label>Hafta tatili günleri</label>
+        <div class="row wrap">
+          <label class="chip"><input type="checkbox" class="weekendChk" value="6"> Cumartesi</label>
+          <label class="chip"><input type="checkbox" class="weekendChk" value="0"> Pazar</label>
+          <label class="chip"><input type="checkbox" class="weekendChk" value="5"> Cuma</label>
+        </div>
+      </div>
+      <div class="field"><label>⏳ Devreden başlangıç saat bankası (uygulamadan önce biriken fazla)</label>
+        <div class="form-grid">
+          <input type="number" id="setBankOpenH" step="1" placeholder="Saat (örn: 50)">
+          <input type="number" id="setBankOpenM" min="0" max="59" step="1" placeholder="Dakika (0-59)">
+        </div>
+        <div class="tiny muted" style="margin-top:5px">Borçla başlıyorsanız saat alanına eksi yazın (örn: -5). Bu tutar bankaya bir kez eklenir, kayıtlar üstüne işler.</div>
+      </div>
+      <div class="field"><label>Tema</label><select id="setTheme"><option value="dark">🌙 Koyu (önerilen)</option><option value="light">☀️ Açık</option></select></div>
+      <button class="btn primary block" id="saveSettingsBtn">💾 Ayarları Kaydet</button>
+    </div>
+
+    <div class="card">
+      <h2>📲 Telefona kurulum</h2>
+      <div class="small" style="line-height:1.75">
+        <b>Android (Chrome):</b> Sağ üst ⋮ → <b>Uygulamayı yükle / Ana ekrana ekle</b><br>
+        <b>iPhone (Safari):</b> Paylaş ⬆️ → <b>Ana Ekrana Ekle</b><br>
+        Kurulumdan sonra internet olmadan da çalışır. Verilerin bu cihazda saklanır.
+      </div>
+      <button class="btn primary block" id="installBtn2" style="margin-top:12px">📲 Uygulamayı Kur</button>
+    </div>
+
+    <div class="card">
+      <h2>🔐 Şifre / Kilit</h2>
+      <p class="small muted" id="passwordStatus" style="line-height:1.6">Şifre ayarlı değil.</p>
+      <div class="row wrap"><button class="btn primary" id="setPasswordBtn">🔑 Şifre oluştur / değiştir</button><button class="btn soft hide" id="removePasswordBtn">Şifreyi kaldır</button><button class="btn soft hide" id="lockNowBtn">🔒 Şimdi kilitle</button></div>
+      <p class="tiny muted" style="line-height:1.6">Kilit, telefonu eline alan kişiye karşı gizlilik perdesidir; veriyi şifrelemez. Banka şifrenizi kullanmayın. Şifreyi unutursanız GitHub/JSON yedeğinizden, site verilerini temizleyip geri yükleyerek kurtulabilirsiniz.</p>
+    </div>
+
+    <div class="card">
+      <h2>🐙 GitHub / URL senkronu</h2>
+      <p class="small muted" style="line-height:1.65">PWA aşamasında veriler yine cihazda durur; buradaki alan <b>verinin kaydedileceği/çekileceği yer</b> içindir. Öneri: GitHub'da <b>özel (private)</b> bir repo açın, bu uygulama için sadece o repoya <b>Contents: Read/Write</b> yetkili fine-grained token üretin. Token yalnızca bu cihazda saklanır, senkron dosyasının içine asla yazılmaz.</p>
+      <div class="field"><label>Yöntem</label><select id="syncMode"><option value="github">GitHub repo dosyası (çek + kaydet)</option><option value="url">URL'den sadece çek (raw JSON)</option></select></div>
+      <div id="syncGithubFields">
+        <div class="form-grid">
+          <div class="field"><label>GitHub kullanıcı / organizasyon</label><input id="syncOwner" placeholder="örn: kullaniciadi" autocomplete="off"></div>
+          <div class="field"><label>Repo adı</label><input id="syncRepo" placeholder="örn: mesai-verilerim" autocomplete="off"></div>
+          <div class="field"><label>Dal (branch)</label><input id="syncBranch" placeholder="main"></div>
+          <div class="field"><label>Dosya yolu</label><input id="syncPath" placeholder="mesai-takip.json"></div>
+        </div>
+        <div class="field"><label>Erişim tokenı (PAT) — sadece bu cihazda</label><input type="password" id="syncToken" placeholder="github_pat_... (herkese açık repodan çekmek için boş kalabilir)" autocomplete="off"></div>
+      </div>
+      <div class="field hide" id="syncUrlField"><label>Verinin çekileceği URL (raw JSON)</label><input id="syncUrl" placeholder="https://raw.githubusercontent.com/.../mesai-takip.json"></div>
+      <div class="form-grid">
+        <div class="field"><label>Bu cihazın adı</label><input id="syncDevice" placeholder="Telefonum"></div>
+        <div class="field"><label>Seçenek</label><label class="chip" style="width:100%;justify-content:flex-start"><input type="checkbox" id="syncAutoPull"> Açılışta uzaktaki yeniyse sorarak çek</label></div>
+      </div>
+      <div class="row wrap">
+        <button class="btn primary" id="syncSaveBtn">💾 Bağlantıyı kaydet</button>
+        <button class="btn soft" id="syncTestBtn">🔌 Test et</button>
+        <button class="btn soft" id="syncPullBtn">⬇️ Verileri çek</button>
+        <button class="btn success" id="syncPushBtn">⬆️ GitHub'a kaydet</button>
+      </div>
+      <div class="previewbox syncstatus" id="syncStatus">Senkron durumu: ayar girilmedi.</div>
+      <p class="tiny muted">Çekme işlemi mevcut veriyi değiştirmeden önce sorar ve geri dönüş için cihazda bir önceki kopyayı saklar. Birden fazla cihazda aynı anda değişiklik yaparsanız son kaydeden kazanır; düzenli kullanımda önce çekip sonra kaydetmek en güvenlisidir.</p>
+    </div>
+
+    <div class="card">
+      <h2>🗂️ Veri yönetimi</h2>
+      <div class="action-grid">
+        <button class="btn soft" id="demoBtn2">👀 Örnek veri yükle</button>
+        <button class="btn soft" id="exportJsonBtn2">💾 Yedek indir</button>
+      </div>
+      <button class="btn danger block" id="clearAllBtn" style="margin-top:10px">🗑️ Tüm verileri sil</button>
+      <p class="tiny muted">Silmeden önce yedek almanız önerilir. Resmi tatiller: ulusal bayramlar her yıl otomatik, dini bayramlar 2025–2026 tanımlıdır; farklı yıllar için o günü takvimden “Resmi Tatil” olarak işaretleyebilirsiniz. Arife / 28 Ekim yarım gün hedefi (4,5 saat) olarak hesaplanır ve <b>arife günü uygulama açılınca durumunuzu sorar</b> (yarım gün / tam tatil / saat izni / tam çalışma). Fazla mesai ücreti yoktur: fazlalar <b>başa baş 1:1 saat bankasına</b> yazılır.</p>
+    </div>
+    <div class="card"><h3>Hakkında</h3><p class="small muted" style="line-height:1.65">Mesai Takip v2.0 — Kişisel, çevrimdışı PWA. Saat bankası son kullanma kuralı, akşam/gece molası, sabahlama, yıllık izin, istatistik, GitHub senkronu ve şifre kilidi eklendi. APK sonraki aşamada. Veriler yalnızca cihazınızda (localStorage) saklanır, sunucuya gönderilmez. Saat hesabı bilgilendirme amaçlıdır.</p></div>
+  </section>
+</div>
+
+<button class="fab" id="fabBtn" title="Kayıt ekle">＋</button>
+
+<nav class="bottomnav">
+  <button data-view="home" class="active"><span class="ic">🏠</span>Bugün</button>
+  <button data-view="calendar"><span class="ic">📅</span>Takvim</button>
+  <button data-view="records"><span class="ic">📋</span>Kayıtlar</button>
+  <button data-view="report"><span class="ic">📊</span>Rapor</button>
+  <button data-view="settings"><span class="ic">⚙️</span>Ayarlar</button>
+</nav>
+
+<!-- EDİTÖR -->
+<div class="modal-backdrop" id="editorBackdrop">
+  <div class="modal">
+    <div class="row"><h2 style="margin:0" id="editorTitle">Kayıt</h2><span class="spacer"></span><button class="icon-btn" id="closeEditorBtn">✕</button></div>
+    <div class="muted small" id="editorDayInfo" style="margin:8px 0 14px"></div>
+    <div class="form-grid">
+      <div class="field"><label>Tarih</label><input type="date" id="fDate"></div>
+      <div class="field"><label>Gün türü</label>
+        <select id="fType">
+          <option value="calisma">💼 Çalışma</option>
+          <option value="saat_izni">⏳ Saat izni (fazla bankasından)</option>
+          <option value="yillik_izin">🏖️ Yıllık izin</option>
+          <option value="rapor">🏥 Rapor / hastalık</option>
+          <option value="ucretsiz_izin">📌 Ücretsiz izin</option>
+          <option value="sabahlama_izni">🌙 Sabahlama ertesi dinlenme (kesinti yok)</option>
+          <option value="resmi_tatil">🇹🇷 Resmi tatil</option>
+          <option value="hafta_tatili">🌿 Hafta tatili</option>
+          <option value="devamsiz">⚠️ Devamsız / gelmedim</option>
+        </select>
+      </div>
+    </div>
+    <div id="workFields">
+      <div class="form-grid3">
+        <div class="field"><label>Giriş</label><input type="time" id="fStart"></div>
+        <div class="field"><label>Çıkış</label><input type="time" id="fEnd"></div>
+        <div class="field"><label>Mola (dk)</label><input type="number" id="fBreak" min="0" step="5" inputmode="numeric"></div>
+      </div>
+      <div class="row wrap">
+        <button class="btn smallbtn primary" id="presetNormalBtn">07:45–17:45 doldur</button>
+        <button class="btn smallbtn soft" id="autoBreakBtn">Molayı otomatik hesapla</button>
+        <button class="btn smallbtn soft" id="nowStartBtn">Giriş = şimdi</button>
+        <button class="btn smallbtn soft" id="nowEndBtn">Çıkış = şimdi</button>
+      </div>
+      <div class="previewbox" id="editorPreview">—</div>
+      <p class="tiny muted">Akşam çıkışı 18:15’i geçerse 17:45–18:15 yemek molası otomatik düşülür. Çıkış girişten küçükse ertesi gün sayılır; gece 02:00–02:40 molası da otomatik düşülür. Çıkışı boş bırakırsan canlı mesai ertesi güne de devam eder.</p>
+      <label class="chip violet" style="width:100%;justify-content:flex-start;padding:12px"><input type="checkbox" id="fAllNighter"> 🌙 Sabahlama — gece ertesi sabaha kadar devam (ertesi gün kesintisiz dinlenme sorulur)</label>
+    </div>
+    <div id="leaveFields" class="hide">
+      <div class="field"><label>🏖️ Bu kayıt kaç gün yıllık izinden düşsün?</label><select id="fLeaveDays"><option value="auto">Otomatik (hafta içi 1, arife 0,5, tatil 0)</option><option value="1">1 gün</option><option value="0.5">0,5 gün</option><option value="0">0 — düşme</option></select></div>
+    </div>
+    <div id="bankFields">
+      <div class="field"><label>⏳ Saat bankasından kullanılan izin (dakika)</label><input type="number" id="fBankUsed" min="0" step="5" inputmode="numeric" placeholder="0"></div>
+      <div class="row wrap">
+        <button class="btn smallbtn soft" id="bankFullBtn">Tam gün (hedef kadar)</button>
+        <button class="btn smallbtn soft" id="bankHalfBtn">Yarım gün</button>
+        <button class="btn smallbtn primary" id="bankCoverBtn">Eksik kısmı bankadan karşıla</button>
+        <button class="btn smallbtn soft" id="bankZeroBtn">Sıfırla</button>
+      </div>
+      <p class="tiny muted" id="bankHelp">Erken çıktığınız / gelmediğiniz süreyi birikmiş fazladan kapatıyorsanız buraya yazın. 1:1 düşülür.</p>
+    </div>
+    <div class="field"><label id="fNoteLabel">📝 Günlük not / Yapılan işler</label><textarea id="fNote" style="min-height:118px" placeholder="Yapılan işler, aklınızdaki notlar..."></textarea><div class="tiny muted" id="fNoteHint">Bu not Kayıtlar'da aranabilir ve raporda görünür.</div></div>
+    <div class="action-grid">
+      <button class="btn primary" id="saveEntryBtn">💾 Kaydet</button>
+      <button class="btn soft" id="cancelEditorBtn">Vazgeç</button>
+    </div>
+    <button class="btn danger block hide" id="deleteEntryBtn" style="margin-top:10px">🗑️ Bu kaydı sil</button>
+  </div>
+</div>
+
+<!-- KİLİT -->
+<div class="lockscreen hide" id="lockScreen">
+  <form class="lockbox" id="lockForm">
+    <div class="logo">⏱️</div>
+    <h2 style="margin:0 0 6px">Mesai Takip kilitli</h2>
+    <p class="muted small">Devam etmek için şifrenizi girin.</p>
+    <input type="password" id="lockPassword" autocomplete="current-password" placeholder="Şifre">
+    <p class="small" id="lockError" style="color:var(--red);min-height:20px"></p>
+    <button class="btn primary block" type="submit">🔓 Aç</button>
+  </form>
+</div>
+
+<!-- ŞİFRE OLUŞTUR -->
+<div class="modal-backdrop" id="passwordSetupBackdrop" style="z-index:210">
+  <div class="modal">
+    <div class="row"><h2 style="margin:0">🔐 Şifre oluştur</h2><span class="spacer"></span><button class="icon-btn" id="closePasswordSetupBtn" type="button">✕</button></div>
+    <p class="small muted" style="line-height:1.6">Girerken sorulacak bir şifre belirleyin. Bu şifre yalnızca bu cihazda, özet (hash) olarak saklanır; bana göndermeyin.</p>
+    <div class="field"><label>Yeni şifre (en az 4 karakter)</label><input type="password" id="newPassword" autocomplete="new-password"></div>
+    <div class="field"><label>Yeni şifre tekrar</label><input type="password" id="newPassword2" autocomplete="new-password"></div>
+    <p class="small" id="passwordSetupError" style="color:var(--red)"></p>
+    <div class="action-grid"><button class="btn primary" id="savePasswordSetupBtn" type="button">💾 Şifreyi kaydet</button><button class="btn soft" id="skipPasswordSetupBtn" type="button">Şimdilik geç</button></div>
+  </div>
+</div>
+
+<!-- ARİFE SORUSU -->
+<div class="modal-backdrop" id="arifeBackdrop">
+  <div class="modal">
+    <div class="row"><h2 style="margin:0">🌙 Bugün arife</h2><span class="spacer"></span><button class="icon-btn" id="closeArifeBtn">✕</button></div>
+    <p class="small" style="line-height:1.65" id="arifeText">Bugün yarım gün görünüyor. Sizin için durum ne?</p>
+    <div class="option-list">
+      <button class="btn primary" data-arife="yarim">🏢 Yarım gün çalışacağım <span class="muted small">(13:00 çıkış önerisiyle kayıt açarım, saati düzeltebilirsiniz)</span></button>
+      <button class="btn soft" data-arife="tamtatil">🌴 Bizde tam gün tatil <span class="muted small">(hedef 0 olur)</span></button>
+      <button class="btn soft" data-arife="saatizni">⏳ Saat izniyle kapatacağım <span class="muted small">(arife hedefi 4,5 saat bankadan düşer)</span></button>
+      <button class="btn soft" data-arife="yillik">🏖️ Yıllık izindeyim</button>
+      <button class="btn soft" data-arife="tamcalisma">💼 Tam gün çalışacağım <span class="muted small">(07:45–17:45 yazarsanız yarım gün üzeri bankaya + yazılır)</span></button>
+    </div>
+    <button class="btn block soft" id="arifeLaterBtn" style="margin-top:12px">Sonra karar veririm — bugün tekrar sorma</button>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+<div id="printArea"></div>
+
+<script>
+"use strict";
+/* ========== GÜVENLİ DEPOLAMA ========== */
+const LS_KEY="mesaiTakip_v1";
+let memoryFallback=null;
+function loadState(){
+  try{const raw=localStorage.getItem(LS_KEY); if(raw) return JSON.parse(raw);}catch(e){ if(memoryFallback) return memoryFallback; }
+  return null;
+}
+let suppressUpdatedAt=false;
+function saveState(){
+  if(!suppressUpdatedAt){ if(!state.meta)state.meta={}; state.meta.updatedAt=new Date().toISOString(); }
+  try{localStorage.setItem(LS_KEY,JSON.stringify(state));}catch(e){memoryFallback=JSON.parse(JSON.stringify(state));}
+  renderAll(false);
+}
+
+/* ========== VARSAYILANLAR ========== */
+const defaultState={
+  settings:{
+    name:"", company:"",
+    start:"07:45", end:"17:45",
+    breaks:[
+      {label:"Çay molası", s:"10:00", e:"10:10"},
+      {label:"Yemek molası", s:"12:15", e:"12:55"},
+      {label:"Çay molası", s:"15:30", e:"15:40"}
+    ],
+    weekend:[6,0], theme:"dark", bankOpeningMin:0, bankOpeningDate:"",
+    eveningBreak:{label:"Akşam yemeği",s:"17:45",e:"18:15"},
+    nightBreak:{label:"Gece molası",s:"02:00",e:"02:40"},
+    carryLateDays:14, carryUseDays:7,
+    leaveEntitlements:{}
+  },
+  entries:{}, meta:{}
+};
+let state=loadState()||JSON.parse(JSON.stringify(defaultState));
+function normalizeState(){
+  if(!state.settings) state.settings=JSON.parse(JSON.stringify(defaultState.settings));
+  const ds=defaultState.settings;
+  if(state.settings.bankOpeningMin===undefined) state.settings.bankOpeningMin=0;
+  if(state.settings.bankOpeningDate===undefined) state.settings.bankOpeningDate=state.settings.bankOpeningMin?new Date().toISOString().slice(0,10):"";
+  if(!state.settings.eveningBreak) state.settings.eveningBreak={...ds.eveningBreak};
+  if(!state.settings.nightBreak) state.settings.nightBreak={...ds.nightBreak};
+  if(state.settings.carryLateDays===undefined) state.settings.carryLateDays=14;
+  if(state.settings.carryUseDays===undefined) state.settings.carryUseDays=7;
+  if(!state.settings.leaveEntitlements) state.settings.leaveEntitlements={};
+  if(!state.entries) state.entries={};
+  if(!state.meta) state.meta={};
+}
+normalizeState();
+
+const TYPES={
+  calisma:{label:"Çalışma",icon:"💼"},
+  saat_izni:{label:"Saat İzni (bankadan)",icon:"⏳"},
+  sabahlama_izni:{label:"Sabahlama Ertesi Dinlenme",icon:"🌙"},
+  yillik_izin:{label:"Yıllık İzin",icon:"🏖️"},
+  rapor:{label:"Rapor",icon:"🏥"},
+  ucretsiz_izin:{label:"Ücretsiz İzin",icon:"📌"},
+  resmi_tatil:{label:"Resmi Tatil",icon:"🇹🇷"},
+  hafta_tatili:{label:"Hafta Tatili",icon:"🌿"},
+  devamsiz:{label:"Devamsız",icon:"⚠️"}
+};
+const NON_TARGET_TYPES=["yillik_izin","rapor","resmi_tatil","hafta_tatili","sabahlama_izni"];
+const DAYS_TR=["Pazar","Pazartesi","Salı","Çarşamba","Perşembe","Cuma","Cumartesi"];
+const DAYS_SHORT=["Pz","Pt","Sa","Çr","Pr","Cu","Ct"];
+const MONTHS_TR=["Ocak","Şubat","Mart","Nisan","Mayıs","Haziran","Temmuz","Ağustos","Eylül","Ekim","Kasım","Aralık"];
+
+/* ========== TARİH / SAAT YARDIMCILARI ========== */
+const pad=n=>String(n).padStart(2,"0");
+function dateToStr(d){return d.getFullYear()+"-"+pad(d.getMonth()+1)+"-"+pad(d.getDate());}
+function todayStr(){return dateToStr(new Date());}
+function parseDateStr(s){const[a,b,c]=s.split("-").map(Number);return new Date(a,b-1,c);}
+function addDays(s,n){const d=parseDateStr(s);d.setDate(d.getDate()+n);return dateToStr(d);}
+function monthOf(s){return s.slice(0,7);}
+function nowHM(){const n=new Date();return pad(n.getHours())+":"+pad(n.getMinutes());}
+function hmToMin(hm){if(!hm) return null;const[a,b]=hm.split(":").map(Number);return a*60+b;}
+function fmtMin(min, signed=false){
+  if(min===null||min===undefined||isNaN(min)) return "—";
+  const sign=min<0?"-":(signed&&min>0?"+":""); const a=Math.abs(Math.round(min));
+  const h=Math.floor(a/60), m=a%60;
+  if(h===0) return sign+m+"dk";
+  if(m===0) return sign+h+"s";
+  return sign+h+"s "+pad(m)+"dk";
+}
+function fmtHoursDecimal(min){return (min/60).toFixed(2).replace(".",",");}
+function fmtDateTR(s){const d=parseDateStr(s);return d.getDate()+" "+MONTHS_TR[d.getMonth()]+" "+d.getFullYear()+" "+DAYS_TR[d.getDay()];}
+function fmtDateShort(s){const d=parseDateStr(s);return pad(d.getDate())+"."+pad(d.getMonth()+1)+"."+d.getFullYear();}
+function esc(s){return String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));}
+
+/* ========== RESMİ TATİLLER ========== */
+const RELIGIOUS={
+  "2025-03-29":{name:"Ramazan Bayramı Arifesi",half:true},"2025-03-30":{name:"Ramazan Bayramı 1. Gün"},"2025-03-31":{name:"Ramazan Bayramı 2. Gün"},"2025-04-01":{name:"Ramazan Bayramı 3. Gün"},
+  "2025-06-05":{name:"Kurban Bayramı Arifesi",half:true},"2025-06-06":{name:"Kurban Bayramı 1. Gün"},"2025-06-07":{name:"Kurban Bayramı 2. Gün"},"2025-06-08":{name:"Kurban Bayramı 3. Gün"},"2025-06-09":{name:"Kurban Bayramı 4. Gün"},
+  "2026-03-19":{name:"Ramazan Bayramı Arifesi",half:true},"2026-03-20":{name:"Ramazan Bayramı 1. Gün"},"2026-03-21":{name:"Ramazan Bayramı 2. Gün"},"2026-03-22":{name:"Ramazan Bayramı 3. Gün"},
+  "2026-05-26":{name:"Kurban Bayramı Arifesi",half:true},"2026-05-27":{name:"Kurban Bayramı 1. Gün"},"2026-05-28":{name:"Kurban Bayramı 2. Gün"},"2026-05-29":{name:"Kurban Bayramı 3. Gün"},"2026-05-30":{name:"Kurban Bayramı 4. Gün"}
+};
+function getHoliday(dateStr){
+  const y=dateStr.slice(0,4), md=dateStr.slice(5);
+  const fixed={"01-01":"Yılbaşı","04-23":"23 Nisan Ulusal Egemenlik ve Çocuk Bayramı","05-01":"1 Mayıs Emek ve Dayanışma Günü","05-19":"19 Mayıs Atatürk'ü Anma, Gençlik ve Spor Bayramı","07-15":"15 Temmuz Demokrasi ve Millî Birlik Günü","08-30":"30 Ağustos Zafer Bayramı","10-29":"29 Ekim Cumhuriyet Bayramı"};
+  if(md==="10-28") return {name:"Cumhuriyet Bayramı Arifesi",half:true};
+  if(fixed[md]) return {name:fixed[md],half:false};
+  if(RELIGIOUS[dateStr]) return RELIGIOUS[dateStr];
+  return null;
+}
+
+/* ========== HESAPLAR ========== */
+function totalBreakMin(){return state.settings.breaks.reduce((sum,b)=>{const d=(hmToMin(b.e)??0)-(hmToMin(b.s)??0);return sum+(d>0?d:0);},0);}
+function grossMin(){let d=(hmToMin(state.settings.end)??0)-(hmToMin(state.settings.start)??0); if(d<=0)d+=1440; return d;}
+function dailyTargetMin(){return Math.max(0,grossMin()-totalBreakMin());} // 540
+function allBreakDefs(){
+  const defs=(state.settings.breaks||[]).map(b=>({...b,kind:"day"}));
+  if(state.settings.eveningBreak) defs.push({...state.settings.eveningBreak,kind:"evening"});
+  if(state.settings.nightBreak) defs.push({...state.settings.nightBreak,kind:"night"});
+  return defs;
+}
+function autoBreakOverlap(dateStr,startHM,endHM){
+  if(!startHM||!endHM) return 0;
+  let s=hmToMin(startHM), e=hmToMin(endHM); if(e<=s)e+=1440;
+  let total=0;
+  const lastDayOffset=Math.floor((e-1)/1440);
+  for(let off=0;off<=lastDayOffset;off++){
+    allBreakDefs().forEach(b=>{
+      let bs=hmToMin(b.s), be=hmToMin(b.e); if(bs===null||be===null)return; if(be<=bs)be+=1440;
+      bs+=off*1440; be+=off*1440;
+      total+=Math.max(0,Math.min(e,be)-Math.max(s,bs));
+    });
+  }
+  return total;
+}
+function intervalGrossMin(entry){
+  if(!entry||!entry.start||!entry.end) return null;
+  let s=hmToMin(entry.start), e=hmToMin(entry.end); if(e<=s)e+=1440; return e-s;
+}
+function crossesMidnight(entry){
+  if(!entry||!entry.start||!entry.end) return false;
+  return hmToMin(entry.end)<=hmToMin(entry.start);
+}
+function isAllNighterEntry(entry){
+  if(!entry||entry.type!=="calisma") return false;
+  if(entry.allNighter) return true;
+  if(!entry.end) return false;
+  // 07:45 başlangıçtan ertesi 02:00 ve sonrasına sarkma ya da 16+ saat brüt sabahlama sayılır
+  return crossesMidnight(entry)&&(hmToMin(entry.end)>=120||(intervalGrossMin(entry)||0)>=960);
+}
+function entryNetMin(entry){
+  if(!entry||entry.type!=="calisma"||!entry.start||!entry.end) return null;
+  let s=hmToMin(entry.start), e=hmToMin(entry.end); if(e<=s)e+=1440;
+  const br=Number(entry.breakMin||0);
+  return Math.max(0,(e-s)-br);
+}
+function isLiveEntry(entry){return !!(entry&&entry.type==="calisma"&&entry.start&&!entry.end);}
+function breakMinutesBetween(startAt,endAt){
+  let br=0;
+  const cursor=new Date(startAt); cursor.setHours(0,0,0,0);
+  const lastDay=new Date(endAt); lastDay.setHours(0,0,0,0);
+  while(cursor<=lastDay){
+    const dayStr=dateToStr(cursor);
+    allBreakDefs().forEach(b=>{
+      const sm=hmToMin(b.s), em=hmToMin(b.e); if(sm===null||em===null)return;
+      const bs=parseDateStr(dayStr); bs.setHours(Math.floor(sm/60),sm%60,0,0);
+      const be=parseDateStr(dayStr); be.setHours(Math.floor(em/60),em%60,0,0); if(be<=bs)be.setDate(be.getDate()+1);
+      const ov=Math.max(0,Math.min(endAt,be)-Math.max(startAt,bs))/60000; if(ov>0)br+=ov;
+    });
+    cursor.setDate(cursor.getDate()+1);
+  }
+  return br;
+}
+function liveNetMin(entry,dateStr){
+  if(!isLiveEntry(entry)) return null;
+  const now=new Date();
+  const startAt=entry.startAt?new Date(entry.startAt):(()=>{const d=parseDateStr(dateStr);const m=hmToMin(entry.start);d.setHours(Math.floor(m/60),m%60,0,0);return d;})();
+  let elapsedMin=Math.max(0,(now-startAt)/60000);
+  let br=breakMinutesBetween(startAt,now);
+  return {elapsedMin,breakMin:br,netMin:Math.max(0,elapsedMin-br),startAt};
+}
+function currentBreak(dateStr){
+  // Canlı kayıt ertesi günden devam ediyor olabilir: saate bakılır (akşam/gece molaları dahil)
+  const now=new Date();
+  const cur=now.getHours()*60+now.getMinutes();
+  return allBreakDefs().find(b=>{const s=hmToMin(b.s),e=hmToMin(b.e);return e>s?cur>=s&&cur<e:cur>=s||cur<e;})||null;
+}
+function findLiveEntry(){
+  const t=todayStr();
+  const dates=Object.keys(state.entries).filter(d=>d<=t&&isLiveEntry(state.entries[d])).sort();
+  if(!dates.length) return null;
+  const date=dates[dates.length-1];
+  return {date,entry:state.entries[date]};
+}
+function targetFor(dateStr,entry){
+  if(entry&&NON_TARGET_TYPES.includes(entry.type)) return 0;
+  const d=parseDateStr(dateStr);
+  if(state.settings.weekend.includes(d.getDay())) return 0;
+  const hol=getHoliday(dateStr);
+  if(hol&&!hol.half) return 0;
+  if(hol&&hol.half) return Math.round(dailyTargetMin()/2);
+  return dailyTargetMin();
+}
+function getDayInfo(dateStr){
+  const entry=state.entries[dateStr]||null;
+  const d=parseDateStr(dateStr);
+  const hol=getHoliday(dateStr);
+  const isWeekend=state.settings.weekend.includes(d.getDay());
+  const target=targetFor(dateStr,entry);
+  const live=isLiveEntry(entry);
+  const bankUsed=entry?Math.max(0,Number(entry.bankUsedMin||0)):0;
+  let net=entryNetMin(entry);
+  if(live){const lv=liveNetMin(entry,dateStr); net=lv?Math.floor(lv.netMin):0;}
+  const isToday=dateStr===todayStr();
+  const isPast=dateStr<todayStr();
+  const isFuture=dateStr>todayStr();
+  const coveredMin=(net||0)+bankUsed; // bankadan kapatılan dahil "sayılan" süre
+  let actualDiff=null; // sadece fiilî çalışmaya göre (bankaya kazanım bundan)
+  if(net!==null) actualDiff=net-target;
+  else if(entry&&entry.type==="saat_izni") actualDiff=-target;
+  else if(entry&&NON_TARGET_TYPES.includes(entry.type)) actualDiff=0;
+  else if(entry&&(entry.type==="devamsiz"||entry.type==="ucretsiz_izin")) actualDiff=-target;
+  else if(isPast&&target>0) actualDiff=-target;
+  // Ekrandaki fark: bankayla kapatılan kısım tamamlanmış sayılır
+  let diff=actualDiff;
+  if(bankUsed>0&&(entry&&(entry.type==="calisma"||entry.type==="saat_izni"))) diff=coveredMin-target;
+  else if(entry&&entry.type==="saat_izni") diff=coveredMin-target;
+  let uncovered=0; // bankayla da kapatılmamış eksik
+  if(target>0){
+    if(entry&&(entry.type==="calisma"||entry.type==="saat_izni")) uncovered=Math.max(0,target-coveredMin);
+    else if(entry&&(entry.type==="devamsiz"||entry.type==="ucretsiz_izin")) uncovered=target;
+    else if(!entry&&isPast) uncovered=target;
+    else if(!entry&&isToday&&false) uncovered=0;
+  }
+  const earned=(actualDiff!==null&&actualDiff>0)?actualDiff:0; // bankaya + yazılan fazla (1:1)
+  let status="future";
+  if(live) status="live";
+  else if(entry&&entry.type==="saat_izni") status="bank";
+  else if(entry&&entry.type==="calisma"&&bankUsed>0&&uncovered<=15) status="bank";
+  else if(entry&&entry.type!=="calisma") status=(entry.type==="devamsiz"||entry.type==="ucretsiz_izin")?"under":"leave";
+  else if(entry&&entry.type==="calisma"&&net!==null) status=diff>15?"over":(diff>=-15?"ok":"under");
+  else if(target===0) status="off";
+  else if(isPast) status="under";
+  else if(isToday) status="today-empty";
+  return {date:dateStr,entry,target,net,diff,actualDiff,bankUsed,coveredMin,uncovered,earned,holiday:hol,isWeekend,isToday,isPast,isFuture,live,status,
+          fazla:earned, eksik:uncovered};
+}
+function earningExpiry(dateStr){
+  const d=parseDateStr(dateStr); const y=d.getFullYear(), m=d.getMonth()+1, day=d.getDate();
+  const last=new Date(y,m,0).getDate();
+  const lateDays=Math.max(0,Number(state.settings.carryLateDays??14));
+  const useDays=Math.max(0,Number(state.settings.carryUseDays??7));
+  const lateStart=last-lateDays+1;
+  if(useDays>0&&day>=lateStart){
+    const ny=m===12?y+1:y, nm=m===12?1:m+1;
+    return ny+"-"+pad(nm)+"-"+pad(Math.min(useDays,new Date(ny,nm,0).getDate()));
+  }
+  return y+"-"+pad(m)+"-"+pad(last);
+}
+function allTimeBank(excludeDate=null,asOf=todayStr()){
+  // Parti (lot) bazlı: her fazla kendi son kullanma tarihiyle yaşar, kullanım en erken bitenden düşer.
+  let earned=0, used=0, expired=0, deficit=0;
+  let lots=[]; const expiredEvents=[];
+  function expireBefore(ds,final=false){
+    const keep=[];
+    lots.forEach(l=>{
+      if(l.expiry<ds){ if(l.amount>0){expired+=l.amount;expiredEvents.push({expiry:l.expiry,date:l.date,amount:l.amount});} }
+      else keep.push(l);
+    }); lots=keep;
+  }
+  function addLot(amount,date){
+    if(amount<=0)return;
+    const off=Math.min(deficit,amount); deficit-=off; amount-=off;
+    if(amount>0) lots.push({date,expiry:earningExpiry(date),amount});
+  }
+  function useBank(amount,date){
+    used+=amount; let rem=amount;
+    lots.sort((a,b)=>a.expiry<b.expiry?-1:a.expiry>b.expiry?1:(a.date<b.date?-1:1));
+    for(const l of lots){ if(rem<=0)break; const take=Math.min(l.amount,rem); l.amount-=take; rem-=take; }
+    lots=lots.filter(l=>l.amount>0);
+    if(rem>0) deficit+=rem;
+  }
+  const events=[];
+  const opening=Number(state.settings.bankOpeningMin||0);
+  if(opening!==0){
+    let od=state.settings.bankOpeningDate;
+    if(!od){const keys=Object.keys(state.entries).sort(); od=(keys[0]&&keys[0]<=asOf)?keys[0]:asOf;}
+    if(od<=asOf) events.push({date:od,opening});
+  }
+  Object.keys(state.entries).sort().forEach(ds=>{
+    if(ds>asOf||ds===excludeDate) return;
+    const info=getDayInfo(ds);
+    events.push({date:ds,earned:info.earned||0,bankUsed:info.bankUsed||0});
+  });
+  events.sort((a,b)=>a.date<b.date?-1:1);
+  events.forEach(ev=>{
+    expireBefore(ev.date);
+    if(ev.opening){ if(ev.opening>0)addLot(ev.opening,ev.date); else deficit+=-ev.opening; }
+    if(ev.earned){earned+=ev.earned; addLot(ev.earned,ev.date);}
+    if(ev.bankUsed) useBank(ev.bankUsed,ev.date);
+  });
+  expireBefore(asOf,true);
+  lots.sort((a,b)=>a.expiry<b.expiry?-1:1);
+  const remaining=lots.reduce((s,l)=>s+l.amount,0);
+  return {earned,used,opening,expired,deficit,lots,expiredEvents,balance:remaining-deficit};
+}
+function annualLeaveAmountFor(dateStr,entry){
+  if(!entry||entry.type!=="yillik_izin") return 0;
+  if(entry.leaveDays!==undefined&&entry.leaveDays!==null&&entry.leaveDays!=="") return Number(entry.leaveDays||0);
+  const d=parseDateStr(dateStr);
+  if(state.settings.weekend.includes(d.getDay())) return 0;
+  const hol=getHoliday(dateStr);
+  if(hol&&!hol.half) return 0;
+  if(hol&&hol.half) return 0.5;
+  return 1;
+}
+function annualLeaveStats(year){
+  year=Number(year||new Date().getFullYear());
+  const ent=(state.settings.leaveEntitlements||{})[String(year)]||{};
+  const total=Number(ent.total??14); const priorUsed=Number(ent.priorUsed||0);
+  let appUsed=0; const dates=[];
+  Object.keys(state.entries).sort().forEach(ds=>{ if(ds.startsWith(year+"-")){const a=annualLeaveAmountFor(ds,state.entries[ds]); if(a>0){appUsed+=a;dates.push(ds);}} });
+  return {year,total,priorUsed,appUsed,used:priorUsed+appUsed,remaining:total-priorUsed-appUsed,dates};
+}
+function bankEquivText(balance){
+  const tgt=dailyTargetMin()||540;
+  if(balance>0){const full=Math.floor(balance/tgt);const rem=balance-full*tgt;return "≈ "+(full?full+" tam gün":"")+(full&&rem?" + ":"")+(rem?fmtMin(rem):"")+" izin (gün = "+fmtMin(tgt)+")";}
+  if(balance<0) return "⚠️ Banka ekside — "+fmtMin(-balance)+" telafi / avans kullanılmış";
+  return "Banka sıfır — fazla çalıştıkça birikir";
+}
+function daysInMonth(ym){const[y,m]=ym.split("-").map(Number);return new Date(y,m,0).getDate();}
+function monthDays(ym){const n=daysInMonth(ym);return Array.from({length:n},(_,i)=>ym+"-"+pad(i+1));}
+function monthStats(ym){
+  const days=monthDays(ym).map(getDayInfo);
+  const today=todayStr();
+  const elapsed=days.filter(x=>x.date<today||(x.date===today&&(x.entry&&!x.live))||(x.date===today&&x.live));
+  const worked=days.filter(x=>x.net!==null&&x.net>0);
+  // Hedef: sadece geçmiş + bugün tamamlanmış/canli günler (gelecek eksik yazmaz)
+  const targetElapsed=days.filter(x=>x.date<today||(x.date===today&&x.entry)).reduce((s,x)=>s+x.target,0);
+  const targetAll=days.reduce((s,x)=>s+x.target,0);
+  const netElapsed=days.filter(x=>x.date<=today).reduce((s,x)=>s+(x.net||0),0);
+  const netAll=worked.reduce((s,x)=>s+(x.net||0),0);
+  const fazla=days.filter(x=>x.date<=today).reduce((s,x)=>s+x.fazla,0);
+  const eksik=days.filter(x=>x.date<today||(x.date===today&&x.entry&&!x.live)).reduce((s,x)=>s+x.eksik,0);
+  const balance=netElapsed-targetElapsed;
+  const missingDays=days.filter(x=>x.isPast&&x.target>0&&!x.entry);
+  const leaveDays=days.filter(x=>x.entry&&["yillik_izin","rapor"].includes(x.entry.type));
+  const holidayDays=days.filter(x=>x.holiday&&!x.holiday.half);
+  const targetDaysCount=days.filter(x=>x.target>0).length;
+  const targetElapsedDays=days.filter(x=>(x.date<today||(x.date===today&&x.entry))&&x.target>0).length;
+  const avg=worked.length?netAll/worked.length:0;
+  const longest=worked.length?Math.max(...worked.map(x=>x.net)):0;
+  const bankUsedMonth=days.filter(x=>x.date<=today).reduce((s,x)=>s+(x.bankUsed||0),0);
+  const bankEarnedMonth=fazla; // fazla artık bankaya kazanılan (actualDiff pozitifleri)
+  const bankChangeMonth=bankEarnedMonth-bankUsedMonth;
+  const bankDays=days.filter(x=>(x.bankUsed||0)>0);
+  return {days,worked,workedDays:worked.length,targetElapsed,targetAll,netAll,netElapsed,fazla,eksik,balance,missingDays,leaveDays,holidayDays,targetDaysCount,targetElapsedDays,avg,longest,bankUsedMonth,bankEarnedMonth,bankChangeMonth,bankDays};
+}
+
+/* ========== UI GENEL ========== */
+let viewMonth=monthOf(todayStr());
+let editorOriginalDate=null;
+let editorBreakAuto=true;
+const $=id=>document.getElementById(id);
+function toast(msg){const t=$("toast");t.textContent=msg;t.classList.add("show");clearTimeout(t._tm);t._tm=setTimeout(()=>t.classList.remove("show"),2600);}
+function showView(name){
+  document.querySelectorAll(".view").forEach(v=>v.classList.remove("active"));
+  $("view-"+name).classList.add("active");
+  document.querySelectorAll(".bottomnav button").forEach(b=>b.classList.toggle("active",b.dataset.view===name));
+  $("fabBtn").style.display=(name==="settings")?"none":"block";
+  window.scrollTo({top:0,behavior:"smooth"});
+  if(name==="report") setTimeout(()=>{drawDailyChart();renderStats(Number(viewMonth.slice(0,4)));},60);
+  if(name==="settings") fillSettings();
+}
+document.querySelectorAll(".bottomnav button").forEach(b=>b.addEventListener("click",()=>showView(b.dataset.view)));
+function syncMonthPickers(){["monthPickerCal","monthPickerRec","monthPickerRep"].forEach(id=>{if($(id))$(id).value=viewMonth;});}
+function setMonth(ym){if(!ym)return;viewMonth=ym;syncMonthPickers();renderCalendar();renderRecords();renderReport();}
+["monthPickerCal","monthPickerRec","monthPickerRep"].forEach(id=>$(id).addEventListener("change",e=>setMonth(e.target.value)));
+$("prevMonthBtn").onclick=()=>{const[y,m]=viewMonth.split("-").map(Number);const d=new Date(y,m-2,1);setMonth(d.getFullYear()+"-"+pad(d.getMonth()+1));};
+$("nextMonthBtn").onclick=()=>{const[y,m]=viewMonth.split("-").map(Number);const d=new Date(y,m,1);setMonth(d.getFullYear()+"-"+pad(d.getMonth()+1));};
+$("gotoTodayBtn").onclick=()=>setMonth(monthOf(todayStr()));
+$("recordFilter").addEventListener("change",renderRecords);
+$("recordSearch").addEventListener("input",renderRecords);
+
+/* ========== RENDER: BUGÜN ========== */
+function diffHtml(diff){
+  if(diff===null||diff===undefined) return '<span class="diff zero">—</span>';
+  if(diff>15) return '<span class="diff pos">+'+fmtMin(diff)+'</span>';
+  if(diff>=-0) return '<span class="diff ok">'+(diff>0?"+":"")+fmtMin(diff)+'</span>';
+  if(diff>=-15) return '<span class="diff ok">'+fmtMin(diff,true)+'</span>';
+  return '<span class="diff neg">'+fmtMin(diff,true)+'</span>';
+}
+function expectedExit(entry,dateStr){
+  if(!entry||!entry.start) return state.settings.end;
+  if(entry.start===state.settings.start) return state.settings.end;
+  let start=hmToMin(entry.start); let end=start+grossMin(); if(end>=1440)end-=1440;
+  return pad(Math.floor(end/60))+":"+pad(end%60);
+}
+function renderHome(){
+  const t=todayStr(); const info=getDayInfo(t); const e=info.entry;
+  document.documentElement.dataset.theme=state.settings.theme||"dark";
+  $("themeBtn").textContent=(state.settings.theme==="light")?"☀️":"🌙";
+  const person=[state.settings.name,state.settings.company].filter(Boolean).join(" • ");
+  $("headerSub").textContent=person||(state.settings.start+" – "+state.settings.end+" • Günlük net "+fmtMin(dailyTargetMin()));
+  $("todayLong").textContent=fmtDateTR(t);
+  $("kpiIn").textContent=e&&e.start?e.start:"—";
+  $("kpiOut").textContent=e&&e.end?e.end:"—";
+  $("kpiNet").textContent=info.net!==null?fmtMin(info.net):"—";
+  $("kpiDiff").innerHTML=e&&!info.live?diffHtml(info.diff):(info.live?'<span class="diff ok">Devam…</span>':"—");
+  const liveFx=findLiveEntry();
+  $("startBtn").disabled=!!(liveFx||(e&&e.start&&e.type==="calisma"));
+  $("stopBtn").disabled=!liveFx;
+  if(liveFx&&liveFx.date!==t&&!info.live){
+    const li=getDayInfo(liveFx.date);
+    $("kpiIn").textContent=liveFx.entry.start+" ("+liveFx.date.slice(8)+")";
+    $("kpiNet").textContent=fmtMin(li.net||0);
+    $("kpiDiff").innerHTML='<span class="diff ok">Sabahlama sürüyor</span>';
+  }
+
+  let chip="—", chipCls="chip", title="Mesai başlamadı";
+  const brNow=currentBreak(t);
+  if(info.live&&brNow){chip="☕ Moladasın";chipCls+=" orange";title=brNow.label+" — "+brNow.s+"–"+brNow.e;}
+  else if(info.live){chip="● Mesaidesin";chipCls+=" green";title="Mesai devam ediyor";}
+  else if(e&&e.type==="calisma"&&e.end){chip="✓ Tamamlandı";chipCls+=info.diff>15?" orange":" green";title="Bugünkü mesai tamamlandı";}
+  else if(e&&e.type!=="calisma"){chip=TYPES[e.type].icon+" "+TYPES[e.type].label;chipCls+=" blue";title=TYPES[e.type].label;}
+  else if(info.holiday){chip="🇹🇷 "+info.holiday.name;chipCls+=" blue";title="Resmi tatil";}
+  else if(info.isWeekend){chip="🌿 Hafta tatili";chipCls+=" blue";title="Hafta tatili";}
+  else {chip="○ Kayıt yok";title="Mesai başlamadı";}
+  $("todayChip").textContent=chip; $("todayChip").className=chipCls; $("todayStatusTitle").textContent=title;
+
+  const target=info.target;
+  const net=info.net||0;
+  const pct=target>0?Math.min(100,Math.round(net/target*100)):(net>0?100:0);
+  $("todayProgress").style.width=pct+"%";
+  $("progressText").textContent=target>0?("Hedef "+fmtMin(target)+" • %"+pct):(net>0?"Tatil günü çalışması: "+fmtMin(net):"Bugün hedef yok (tatil)");
+  $("expectedText").textContent=info.live?("Tahmini çıkış: "+expectedExit(e,t)):(e&&e.end?"":"Normal çıkış: "+state.settings.end);
+  if(liveFx&&liveFx.date!==t&&!info.live){
+    $("todayChip").textContent="🌙 Sabahlama devam ediyor";$("todayChip").className="chip violet";$("todayStatusTitle").textContent="Dün başlayan mesai sürüyor";
+  }
+  else if(!info.live){
+    if(e&&e.type==="calisma"&&e.start&&e.end){$("liveTimer").textContent=fmtMin(info.net);$("liveSub").textContent=e.start+" – "+e.end+" • Mola "+Number(e.breakMin||0)+" dk • Fark: "+fmtMin(info.diff,true);}
+    else if(e&&e.type!=="calisma"){$("liveTimer").textContent=TYPES[e.type].icon;$("liveSub").textContent=TYPES[e.type].label+(e.note?" • "+e.note:"");}
+    else if(info.holiday){$("liveTimer").textContent="🇹🇷";$("liveSub").textContent=info.holiday.name+(info.holiday.half?" (yarım gün — hedef "+fmtMin(target)+")":"");}
+    else if(info.isWeekend){$("liveTimer").textContent="🌿";$("liveSub").textContent="Hafta tatili — çalışırsan başlat, tamamı fazla sayılır";}
+    else{$("liveTimer").textContent="00:00:00";$("liveSub").textContent="Henüz mesai başlatılmadı • Normal: "+state.settings.start+" – "+state.settings.end;}
+  }
+  // Bu ay
+  const ym=monthOf(t); const st=monthStats(ym);
+  $("homeMonthChip").textContent=MONTHS_TR[Number(ym.slice(5))-1]+" "+ym.slice(0,4);
+  $("mWorked").textContent=fmtMin(st.netElapsed); $("mWorkedDays").textContent=st.workedDays+" gün çalışıldı";
+  $("mTarget").textContent=fmtMin(st.targetElapsed); $("mTargetDays").textContent=st.targetElapsedDays+" iş günü (bugüne kadar)";
+  $("mOver").textContent="+"+fmtMin(st.fazla);
+  $("mBalance").innerHTML=diffHtml(st.balance);
+  $("mMissingHint").textContent=st.missingDays.length?("⚠️ "+st.missingDays.length+" kayıtsız iş günü var"):("Karşılanmamış eksik: "+fmtMin(st.eksik));
+  $("emptyCta").classList.toggle("hide",Object.keys(state.entries).length>0);
+  // Saat bankası (tüm zamanlar, aya göre sıfırlanmaz)
+  const bank=allTimeBank();
+  $("bankTotal").textContent=fmtMin(bank.balance,true).replace("+","");
+  $("bankTotal").style.color=bank.balance<0?"var(--red)":(bank.balance>0?"var(--green)":"var(--text)");
+  $("bankTotalEquiv").textContent=bankEquivText(bank.balance)+(bank.opening?(" • Devreden: "+fmtMin(bank.opening,true)):"");
+  if(bank.lots&&bank.lots.length){
+    const nx=bank.lots[0];
+    $("bankExpiryInfo").innerHTML="⌛ En yakın son kullanma: <b>"+fmtDateShort(nx.expiry)+"</b> — "+fmtMin(bank.lots.filter(l=>l.expiry===nx.expiry).reduce((s,l)=>s+l.amount,0))+" o tarihe kadar kullanılmazsa yanar."+(bank.expired?(" <span class='muted'>Bugüne kadar yanan: "+fmtMin(bank.expired)+"</span>"):"");
+  } else if(bank.deficit){$("bankExpiryInfo").innerHTML="⚠️ Avans kullanımı: <b>"+fmtMin(bank.deficit)+"</b> sonraki fazlalardan kapanacak.";}
+  else $("bankExpiryInfo").textContent=bank.expired?("Bugüne kadar süresi dolup yanan: "+fmtMin(bank.expired)):"";
+  const al=annualLeaveStats(new Date().getFullYear());
+  $("annualYearChip").textContent=al.year;
+  $("annualRemaining").textContent=(al.remaining%1?al.remaining.toFixed(1).replace(".",","):al.remaining)+" gün";
+  $("annualRemaining").style.color=al.remaining<0?"var(--red)":"var(--green)";
+  $("annualDetail").textContent="Toplam hak "+al.total+" • Kullanılan "+(al.used%1?al.used.toFixed(1).replace(".",","):al.used)+" (uygulamadaki "+al.appUsed+")";
+  $("annualProgress").style.width=(al.total>0?Math.max(0,Math.min(100,al.used/al.total*100)):0)+"%";
+  $("bankEarnedMonth").textContent="+"+fmtMin(st.bankEarnedMonth);
+  $("bankUsedMonth").textContent="-"+fmtMin(st.bankUsedMonth);
+  $("bankChangeMonth").innerHTML=diffHtml(st.bankChangeMonth);
+  $("bankUncoveredMonth").textContent=fmtMin(st.eksik);
+  renderArifeBanner();
+
+  // Program
+  const brs=state.settings.breaks;
+  let tl='<div class="tseg"><b>🟢 '+state.settings.start+'</b><span>Giriş</span></div>';
+  brs.forEach(b=>{tl+='<div class="tseg"><b>'+(b.label.toLowerCase().includes("yemek")?"🍽️":"☕")+" "+b.s+"–"+b.e+'</b><span>'+esc(b.label)+'</span></div>';});
+  tl+='<div class="tseg"><b>🔴 '+state.settings.end+'</b><span>Çıkış • Net '+fmtMin(dailyTargetMin())+'</span></div>';
+  $("programTimeline").innerHTML=tl;
+  renderWeek(); renderRecent();
+}
+function renderArifeBanner(){
+  const t=todayStr(); const hol=getHoliday(t); const banner=$("arifeBanner");
+  if(hol&&hol.half&&!state.entries[t]){
+    banner.classList.remove("hide");
+    $("arifeBannerTitle").textContent="🌙 Bugün arife — "+hol.name;
+    $("arifeBannerText").textContent="Genelde yarım gün ("+fmtMin(Math.round(dailyTargetMin()/2))+" hedef). Bugünkü durumunuzu seçin, ona göre işleyeyim.";
+    $("arifeAskBtn").textContent="Durumu seç";
+    $("arifeAskBtn").onclick=()=>openArifePrompt();
+    return;
+  }
+  const tomorrow=addDays(t,1); const hol2=getHoliday(tomorrow);
+  if(hol2&&hol2.half&&!state.entries[tomorrow]){
+    banner.classList.remove("hide");
+    $("arifeBannerTitle").textContent="🌙 Yarın arife — "+hol2.name;
+    $("arifeBannerText").textContent="Söz verdiğim gibi yarın açılışta durumunuzu soracağım. İsterseniz şimdiden planlayabilirsiniz.";
+    $("arifeAskBtn").textContent="Şimdiden planla";
+    $("arifeAskBtn").onclick=()=>openEditor(tomorrow);
+    return;
+  }
+  banner.classList.add("hide");
+}
+function weekStartStr(dateStr){const d=parseDateStr(dateStr);const dow=(d.getDay()+6)%7;d.setDate(d.getDate()-dow);return dateToStr(d);}
+function renderWeek(){
+  const start=weekStartStr(todayStr()); const target=dailyTargetMin()||540;
+  let html="";
+  for(let i=0;i<7;i++){
+    const ds=addDays(start,i); const info=getDayInfo(ds); const d=parseDateStr(ds);
+    const net=info.net||0; const h=Math.min(100,Math.round(net/Math.max(target,net,1)*100));
+    const over=info.diff!==null&&info.diff>15;
+    html+='<div class="wbar '+(over?"over":"")+'"><div class="h">'+(net?fmtMin(net):"—")+'</div><div class="barwrap"><div class="bar" style="height:'+(net?Math.max(6,h):3)+'%"></div></div><div class="d">'+DAYS_SHORT[d.getDay()]+" "+d.getDate()+(ds===todayStr()?" •":"")+'</div></div>';
+  }
+  $("weekBars").innerHTML=html;
+}
+function dayListItem(info){
+  const d=parseDateStr(info.date); const e=info.entry;
+  let mid="", right="";
+  if(info.live){mid='<b>● Devam ediyor</b><div class="small muted">Giriş '+e.start+' • Net '+fmtMin(info.net)+'</div>';right='<span class="chip green">CANLI</span>';}
+  else if(e&&e.type==="saat_izni"){mid='<b>⏳ Saat İzni (bankadan)</b><div class="small muted">Bankadan '+fmtMin(info.bankUsed)+' kullanıldı'+(info.uncovered>0?(" • Kalan eksik "+fmtMin(info.uncovered)):" • Gün bankayla tamam")+(e.note?" • "+esc(e.note):"")+'</div>';right='<span class="chip violet">-'+fmtMin(info.bankUsed)+' banka</span>';}
+  else if(e&&e.type==="calisma"){mid='<b>'+(isAllNighterEntry(e)?"🌙 ":"")+e.start+" – "+(e.end||"—")+(crossesMidnight(e)?" (+1 gün)":"")+'</b><div class="small muted">Net '+fmtMin(info.net)+' • Mola '+Number(e.breakMin||0)+' dk'+(info.bankUsed?(" • ⏳ Bankadan "+fmtMin(info.bankUsed)):"")+(e.note?"<br>📝 "+esc(e.note):"")+'</div>';right=info.bankUsed&&info.uncovered<=15?'<span class="chip violet">⏳ Bankayla tamam</span>':(info.earned>0?('<span class="diff pos">+'+fmtMin(info.earned)+' bankaya</span>'):diffHtml(info.diff));}
+  else if(e){mid='<b>'+TYPES[e.type].icon+" "+TYPES[e.type].label+'</b><div class="small muted">'+(e.note?esc(e.note):"—")+'</div>';right='<span class="chip blue">'+TYPES[e.type].label+'</span>';}
+  else if(info.holiday){mid='<b>🇹🇷 '+esc(info.holiday.name)+'</b><div class="small muted">Resmi tatil</div>';right='<span class="diff zero">Tatil</span>';}
+  else if(info.isWeekend){mid='<b>🌿 Hafta tatili</b><div class="small muted">Kayıt yok</div>';right='<span class="diff zero">—</span>';}
+  else if(info.isPast){mid='<b style="color:var(--red)">⚠️ Kayıt yok</b><div class="small muted">Dokun ve ekle</div>';right='<span class="diff neg">'+fmtMin(info.diff,true)+'</span>';}
+  else if(info.isToday){mid='<b>Bugün</b><div class="small muted">Henüz kayıt yok</div>';right='<span class="diff zero">—</span>';}
+  else {mid='<b class="muted">Gelecek</b><div class="small muted">—</div>';right='<span class="diff zero">—</span>';}
+  return '<div class="item" onclick="openEditor(\''+info.date+'\')"><div class="datebox"><b>'+d.getDate()+'</b><span>'+DAYS_SHORT[d.getDay()].toUpperCase()+'</span></div><div style="flex:1;min-width:0"><div class="tiny muted">'+fmtDateShort(info.date)+' • '+DAYS_TR[d.getDay()]+'</div>'+mid+'</div><div>'+right+'</div></div>';
+}
+function renderRecent(){
+  let html=""; for(let i=0;i<7;i++){html+=dayListItem(getDayInfo(addDays(todayStr(),-i)));}
+  $("recentList").innerHTML=html;
+}
+
+/* ========== RENDER: TAKVİM ========== */
+function renderCalendar(){
+  $("calDow").innerHTML=["Pt","Sa","Çr","Pr","Cu","Ct","Pz"].map(x=>'<div class="cal-dow">'+x+'</div>').join("");
+  const [y,m]=viewMonth.split("-").map(Number);
+  const first=new Date(y,m-1,1); const offset=(first.getDay()+6)%7;
+  const startDate=new Date(y,m-1,1-offset);
+  let html="";
+  for(let i=0;i<42;i++){
+    const d=new Date(startDate); d.setDate(startDate.getDate()+i);
+    const ds=dateToStr(d); const info=getDayInfo(ds); const out=d.getMonth()!==m-1;
+    let cls="cal-day"+(out?" out":"")+(info.isToday?" today":"")+(info.isFuture?" future":"");
+    if(info.status==="ok")cls+=" st-ok"; else if(info.status==="over")cls+=" st-over"; else if(info.status==="under")cls+=" st-under"; else if(info.status==="leave")cls+=" st-leave"; else if(info.status==="bank")cls+=" st-bank"; else if(info.status==="off")cls+=" st-off"; else if(info.status==="live")cls+=" st-live";
+    let hrs="",tag="";
+    if(info.live){hrs="● "+fmtMin(info.net);tag="Devam ediyor";}
+    else if(info.entry&&info.entry.type==="saat_izni"){hrs="⏳ -"+fmtMin(info.bankUsed);tag="Saat izni";}
+    else if(info.entry&&info.entry.type==="calisma"){hrs=fmtMin(info.net);tag=info.bankUsed?("⏳ +"+fmtMin(info.bankUsed)+" banka"):(info.diff>0?"+"+fmtMin(info.diff)+" bankaya":info.diff<0?fmtMin(info.diff,true):"Tam");}
+    else if(info.entry){hrs=TYPES[info.entry.type].icon;tag=TYPES[info.entry.type].label;}
+    else if(info.holiday){hrs="🇹🇷";tag=info.holiday.half?"Yarım gün":"Tatil";}
+    else if(info.isWeekend){hrs="🌿";tag="Tatil";}
+    else if(info.isPast){hrs="⚠️";tag="Kayıtsız";}
+    html+='<div class="'+cls+'" onclick="openEditor(\''+ds+'\')"><div class="num">'+d.getDate()+'</div><div class="hrs">'+hrs+'</div><div class="tag">'+esc(tag)+'</div></div>';
+    if(i>27&&d.getDate()<7&&out) { /* keep 6 rows for stability */ }
+  }
+  $("calGrid").innerHTML=html;
+  const st=monthStats(viewMonth);
+  $("calSummary").textContent=MONTHS_TR[m-1]+" "+y+": "+fmtMin(st.netAll)+" çalışıldı • Bakiye "+fmtMin(st.balance,true)+(st.missingDays.length?" • ⚠️ "+st.missingDays.length+" kayıtsız":"");
+}
+
+/* ========== RENDER: KAYITLAR ========== */
+function renderRecords(){
+  const st=monthStats(viewMonth); const f=$("recordFilter").value;
+  let days=[...st.days].reverse();
+  if(f==="calisma") days=days.filter(x=>x.entry&&x.entry.type==="calisma");
+  if(f==="fazla") days=days.filter(x=>x.fazla>0);
+  if(f==="saatizni") days=days.filter(x=>(x.bankUsed||0)>0);
+  if(f==="eksik") days=days.filter(x=>x.eksik>0||(x.isPast&&x.target>0&&!x.entry));
+  if(f==="izin") days=days.filter(x=>x.entry&&["yillik_izin","rapor"].includes(x.entry.type));
+  // Varsayılan görünümde gelecek boş günleri gizle
+  if(f==="all") days=days.filter(x=>x.date<=todayStr()||x.entry);
+  const q=($("recordSearch").value||"").trim().toLocaleLowerCase("tr");
+  if(q) days=days.filter(x=>{
+    const e=x.entry; if(!e)return false;
+    const hay=((e.note||"")+" "+(TYPES[e.type]?TYPES[e.type].label:"")+" "+x.date+" "+fmtDateTR(x.date)).toLocaleLowerCase("tr");
+    return hay.includes(q);
+  });
+  $("recordList").innerHTML=days.length?days.map(dayListItem).join(""):'<div class="empty">Bu filtrede kayıt yok.<br><br><button class="btn primary" onclick="openEditor(todayStr())">+ Bugüne kayıt ekle</button></div>';
+}
+
+/* ========== RENDER: RAPOR ========== */
+function renderReport(){
+  const st=monthStats(viewMonth); const [y,m]=viewMonth.split("-").map(Number);
+  const kpis=[
+    ["TOPLAM NET",fmtMin(st.netAll),st.workedDays+" gün çalışıldı"],
+    ["AYIN HEDEFİ",fmtMin(st.targetAll),st.targetDaysCount+" iş günü"],
+    ["BUGÜNE K. HEDEF",fmtMin(st.targetElapsed),st.targetElapsedDays+" iş günü"],
+    ["BAKİYE",fmtMin(st.balance,true),"Fazla − eksik (bugüne k.)"],
+    ["FAZLA → BANKAYA","+"+fmtMin(st.fazla),"Hedef üstü + tatil (1:1)"],
+    ["KARŞILANMAMIŞ EKSİK","-"+fmtMin(st.eksik),st.missingDays.length+" kayıtsız gün dahil, bankayla kapatılmayan"],
+    ["GÜNLÜK ORT.",st.workedDays?fmtMin(st.avg):"—","Çalışılan gün başına"],
+    ["EN UZUN GÜN",st.workedDays?fmtMin(st.longest):"—","İzin/rapor: "+st.leaveDays.length+" gün"]
+  ];
+  $("reportKpis").innerHTML=kpis.map(k=>'<div class="kpi"><div class="label">'+k[0]+'</div><div class="value">'+k[1]+'</div><div class="hint">'+k[2]+'</div></div>').join("");
+  const bankAll=allTimeBank();
+  const bk=[
+    ["TOPLAM BANKA (TÜM ZAMAN)",fmtMin(bankAll.balance,true),bankEquivText(bankAll.balance)],
+    ["DEVREDEN AÇILIŞ",fmtMin(bankAll.opening,true),"Ayarlar'dan girilen"],
+    ["BU AY KAZANILAN","+"+fmtMin(st.bankEarnedMonth),"Bankaya +"],
+    ["BU AY KULLANILAN","-"+fmtMin(st.bankUsedMonth),st.bankDays.length+" günde saat izni"],
+    ["BU AY BANKA DEĞİŞİMİ",fmtMin(st.bankChangeMonth,true),"Kazanılan − kullanılan"],
+    ["TÜM ZAMAN KAZANILAN","+"+fmtMin(bankAll.earned),"Kayıt başlangıcından beri"],
+    ["TÜM ZAMAN KULLANILAN","-"+fmtMin(bankAll.used),"Kayıt başlangıcından beri"],
+    ["SÜRESİ DOLUP YANAN","-"+fmtMin(bankAll.expired||0),"Ay kuralı; geç devir: son "+state.settings.carryLateDays+" gün → sonraki ay "+state.settings.carryUseDays+". gün"]
+  ];
+  $("reportBankKpis").innerHTML=bk.map(k=>'<div class="kpi"><div class="label">'+k[0]+'</div><div class="value">'+k[1]+'</div><div class="hint">'+k[2]+'</div></div>').join("");
+  const moves=st.days.filter(x=>x.date<=todayStr()&&(x.earned>0||x.bankUsed>0));
+  (bankAll.expiredEvents||[]).filter(ev=>monthOf(ev.expiry)===viewMonth).forEach(ev=>moves.push({date:ev.expiry,expiredAmount:ev.amount,sourceDate:ev.date,earned:0,bankUsed:0,entry:null}));
+  moves.sort((a,b)=>a.date<b.date?-1:1);
+  $("bankLedger").innerHTML=moves.length?('<div style="overflow:auto"><table class="table"><thead><tr><th>Tarih</th><th>Hareket</th><th>Tutar</th><th>Açıklama</th></tr></thead><tbody>'+moves.map(x=>{
+    if(x.expiredAmount) return "<tr><td>"+fmtDateShort(x.date)+"</td><td>⌛ Süresi doldu</td><td><b style='color:var(--red)'>-"+fmtMin(x.expiredAmount)+"</b></td><td>"+fmtDateShort(x.sourceDate)+" günü kazanılan kullanılmadı (son kullanma "+fmtDateShort(x.date)+")</td></tr>";
+    const isUse=x.bankUsed>0;
+    return "<tr><td>"+fmtDateShort(x.date)+"</td><td>"+(isUse?"⏳ Kullanım":"▲ Kazanım")+"</td><td><b style='color:"+(isUse?"var(--violet)":"var(--orange)")+"'>"+(isUse?"-":"+")+fmtMin(isUse?x.bankUsed:x.earned)+"</b></td><td>"+(isUse?("Saat izni"+(x.entry&&x.entry.note?" — "+esc(x.entry.note):"")):("Fazla çalışma: net "+fmtMin(x.net)+", hedef "+fmtMin(x.target)+" • Son kullanma: "+fmtDateShort(earningExpiry(x.date))))+"</td></tr>";
+  }).join("")+'</tbody></table></div>'):'<div class="empty">Bu ay banka hareketi yok. Fazla çalıştığınızda +, saat izni kullandığınızda − hareket burada listelenir.</div>';
+  let rows=st.days.map(info=>{
+    const e=info.entry; let tur=e?TYPES[e.type].label:(info.holiday?"Resmi Tatil":info.isWeekend?"Hafta Tatili":info.isFuture?"—":"Kayıtsız");
+    return "<tr><td>"+fmtDateShort(info.date)+"<br><span class='muted'>"+DAYS_TR[parseDateStr(info.date).getDay()]+"</span></td><td>"+(e&&e.start?e.start:"—")+"<br>"+(e&&e.end?e.end:"")+"</td><td>"+(info.net!==null?fmtMin(info.net):"—")+(info.bankUsed?"<br><span class='tiny' style='color:var(--violet)'>⏳ +"+fmtMin(info.bankUsed)+" banka</span>":"")+"</td><td>"+fmtMin(info.target)+"</td><td>"+(info.diff===null?"—":fmtMin(info.diff,true))+(info.earned?"<br><span class='tiny' style='color:var(--orange)'>bankaya +"+fmtMin(info.earned)+"</span>":"")+"</td><td>"+tur+(info.holiday?"<br><span class='muted tiny'>"+esc(info.holiday.name)+"</span>":"")+(e&&e.note?"<br><span class='muted tiny'>"+esc(e.note)+"</span>":"")+"</td></tr>";
+  }).join("");
+  $("reportDetail").innerHTML='<div style="overflow:auto"><table class="table"><thead><tr><th>Tarih</th><th>Giriş/Çıkış</th><th>Net</th><th>Hedef</th><th>Fark</th><th>Tür / Not</th></tr></thead><tbody>'+rows+'</tbody></table></div><p class="small muted">'+MONTHS_TR[m-1]+" "+y+" • Ayın toplam hedefi: <b>"+fmtMin(st.targetAll)+'</b> • Gelecek günler bakiyeye dahil değildir.</p>';
+  renderStats(y);
+  if($("view-report").classList.contains("active")) drawDailyChart();
+}
+function aggregateInfos(infos){
+  const work=infos.filter(x=>x.net!==null&&x.net>0);
+  return {
+    net:work.reduce((s,x)=>s+x.net,0), workedDays:work.length,
+    earned:infos.reduce((s,x)=>s+(x.earned||0),0), bankUsed:infos.reduce((s,x)=>s+(x.bankUsed||0),0),
+    overtimeDays:infos.filter(x=>(x.earned||0)>0).length,
+    nightCount:infos.filter(x=>isAllNighterEntry(x.entry)).length,
+    recoveryDays:infos.filter(x=>x.entry&&x.entry.type==="sabahlama_izni").length,
+    raporDays:infos.filter(x=>x.entry&&x.entry.type==="rapor").length,
+    noteDays:infos.filter(x=>x.entry&&x.entry.note).length,
+    longest:work.length?Math.max(...work.map(x=>x.net)):0,
+    avg:work.length?work.reduce((s,x)=>s+x.net,0)/work.length:0
+  };
+}
+function infosForYear(year){
+  const out=[]; for(let mo=1;mo<=12;mo++){monthDays(year+"-"+pad(mo)).forEach(ds=>out.push(getDayInfo(ds)));}
+  return out;
+}
+function renderStats(year){
+  const yi=infosForYear(year); const a=aggregateInfos(yi.filter(x=>x.date<=todayStr()));
+  const al=annualLeaveStats(year);
+  const allDates=Object.keys(state.entries).sort(); let allAgg={net:0,workedDays:0,earned:0,bankUsed:0,nightCount:0,longest:0};
+  if(allDates.length){
+    const y0=Number(allDates[0].slice(0,4)), y1=new Date().getFullYear(); let infos=[];
+    for(let y=y0;y<=y1;y++) infos=infos.concat(infosForYear(y).filter(x=>x.date<=todayStr()&&x.date>=allDates[0]));
+    allAgg=aggregateInfos(infos);
+  }
+  const kpis=[
+    [year+" NET ÇALIŞMA",fmtMin(a.net),a.workedDays+" gün"],
+    ["GÜNLÜK ORTALAMA",a.workedDays?fmtMin(a.avg):"—","En uzun: "+(a.workedDays?fmtMin(a.longest):"—")],
+    ["MESAİLİ GÜN",a.overtimeDays+" gün","Bankaya +"+fmtMin(a.earned)],
+    ["SAAT İZNİ",fmtMin(a.bankUsed),a.recoveryDays+" sabahlama dinlenmesi (kesintisiz)"],
+    ["🌙 SABAHLAMA",a.nightCount+" kez","Gece molası düşülmüş netten"],
+    ["🏖️ YILLIK İZİN",al.appUsed+" gün","Kalan: "+al.remaining+" / Hak: "+al.total],
+    ["🏥 RAPOR",a.raporDays+" gün","Bu yıl"],
+    ["📝 NOTLU GÜN",a.noteDays+" gün","İş günlüğü notu olan"]
+  ];
+  $("statsKpis").innerHTML=kpis.map(k=>'<div class="kpi"><div class="label">'+k[0]+'</div><div class="value">'+k[1]+'</div><div class="hint">'+k[2]+'</div></div>').join("");
+  $("yearChartTitle").textContent=year+" — Aylara göre net çalışma";
+  const monthly=Array.from({length:12},(_,i)=>{const mm=year+"-"+pad(i+1);return monthDays(mm).reduce((s,ds)=>{const inf=getDayInfo(ds);return s+(ds<=todayStr()?(inf.net||0):0);},0);});
+  const best=Math.max(...monthly); const bestIdx=monthly.indexOf(best);
+  $("statsDetail").innerHTML=
+    '<div class="statline"><span>En yoğun ay</span><b>'+(best?MONTHS_TR[bestIdx]+" — "+fmtMin(best):"—")+'</b></div>'+
+    '<div class="statline"><span>Tüm zamanlar net çalışma</span><b>'+fmtMin(allAgg.net)+" ("+allAgg.workedDays+' gün)</b></div>'+
+    '<div class="statline"><span>Tüm zamanlar kazanılan fazla / kullanılan saat izni</span><b>+' +fmtMin(allAgg.earned)+" / -"+fmtMin(allAgg.bankUsed)+'</b></div>'+
+    '<div class="statline"><span>Tüm zamanlar sabahlama</span><b>'+allAgg.nightCount+' kez</b></div>'+
+    '<div class="statline"><span>İlk kayıt</span><b>'+(allDates.length?fmtDateShort(allDates[0]):"—")+'</b></div>';
+  if($("view-report").classList.contains("active")) drawYearlyChart(year,monthly);
+}
+function drawYearlyChart(year,monthly){
+  const cv=$("yearlyChart"); if(!cv||!cv.clientWidth)return;
+  const dpr=window.devicePixelRatio||1, cssW=cv.clientWidth, cssH=240;
+  cv.width=cssW*dpr; cv.height=cssH*dpr; const ctx=cv.getContext("2d"); ctx.scale(dpr,dpr); ctx.clearRect(0,0,cssW,cssH);
+  const max=Math.max(600,...monthly)*1.12, padL=38,padR=10,padT=14,padB=30,W=cssW-padL-padR,H=cssH-padT-padB;
+  const isLight=state.settings.theme==="light"; ctx.font="11px system-ui"; ctx.fillStyle=isLight?"#687895":"#98a8c7"; ctx.strokeStyle=isLight?"rgba(20,35,75,.12)":"rgba(255,255,255,.10)";
+  [0,0.5,1].forEach(f=>{const v=max*f,y=padT+H-(v/max)*H;ctx.beginPath();ctx.moveTo(padL,y);ctx.lineTo(padL+W,y);ctx.stroke();ctx.fillText(Math.round(v/60)+"s",6,y+4);});
+  const bw=W/12, thisYear=new Date().getFullYear(), thisMonth=new Date().getMonth();
+  monthly.forEach((v,i)=>{const x=padL+i*bw+3,w=Math.max(5,bw-6),h=(v/max)*H;ctx.fillStyle=(year===thisYear&&i===thisMonth)?"#f59e0b":"#14b8a6";if(v>0){ctx.beginPath();ctx.roundRect(x,padT+H-h,w,h,5);ctx.fill();}ctx.fillStyle=isLight?"#687895":"#98a8c7";ctx.fillText(MONTHS_TR[i].slice(0,3),x,cssH-9);});
+}
+function drawDailyChart(){
+  const cv=$("dailyChart"); if(!cv) return;
+  const dpr=window.devicePixelRatio||1; const cssW=cv.clientWidth||800, cssH=240;
+  cv.width=cssW*dpr; cv.height=cssH*dpr;
+  const ctx=cv.getContext("2d"); ctx.scale(dpr,dpr); ctx.clearRect(0,0,cssW,cssH);
+  const st=monthStats(viewMonth); const days=st.days;
+  const maxMin=Math.max(600,...days.map(x=>x.net||0))*1.12;
+  const padL=34,padR=10,padT=14,padB=28, W=cssW-padL-padR, H=cssH-padT-padB;
+  const isLight=state.settings.theme==="light";
+  ctx.font="11px system-ui"; ctx.fillStyle=isLight?"#687895":"#98a8c7"; ctx.strokeStyle=isLight?"rgba(20,35,75,.12)":"rgba(255,255,255,.10)";
+  // yatay çizgiler: 0,3,6,9,12s
+  [0,180,360,540,720].forEach(v=>{if(v>maxMin)return;const y=padT+H-(v/maxMin)*H;ctx.beginPath();ctx.moveTo(padL,y);ctx.lineTo(padL+W,y);ctx.stroke();ctx.fillText((v/60)+"s",8,y+4);});
+  const bw=W/days.length;
+  days.forEach((info,i)=>{
+    const x=padL+i*bw+2, w=Math.max(3,bw-4); const net=info.net||0;
+    if(net>0){
+      const target=info.target||dailyTargetMin(); const base=Math.min(net,target||net); const over=Math.max(0,net-(info.target||0));
+      const hBase=(base/maxMin)*H, hOver=((info.target>0?over:0)/maxMin)*H;
+      const isOffWork=info.target===0;
+      ctx.fillStyle=isOffWork?"#f59e0b":(info.eksik>15?"#fb7185":"#14b8a6");
+      const hAll=(net/maxMin)*H;
+      ctx.beginPath(); ctx.roundRect(x,padT+H-hAll,w,hAll,4); ctx.fill();
+      if(!isOffWork&&over>0){ctx.fillStyle="#f59e0b";ctx.beginPath();ctx.roundRect(x,padT+H-hAll,w,hOver,4);ctx.fill();}
+      if(info.bankUsed>0){const hB=(info.bankUsed/maxMin)*H;ctx.fillStyle="#a78bfa";ctx.fillRect(x,padT+H-hAll-hB,w,hB);}
+    } else if(info.bankUsed>0){
+      const hB=(info.bankUsed/maxMin)*H; ctx.fillStyle="#a78bfa"; ctx.beginPath(); ctx.roundRect(x,padT+H-hB,w,hB,4); ctx.fill();
+    } else if(info.isPast&&info.target>0&&!info.entry){
+      ctx.fillStyle="rgba(251,113,133,.45)"; ctx.fillRect(x,padT+H-4,w,4);
+    }
+    if((i+1)%5===0||i===0){ctx.fillStyle=isLight?"#687895":"#98a8c7";ctx.fillText(String(i+1),x,cssH-8);}
+  });
+  // hedef çizgisi
+  const ty=padT+H-(dailyTargetMin()/maxMin)*H; ctx.strokeStyle="#facc15"; ctx.setLineDash([6,5]); ctx.beginPath();ctx.moveTo(padL,ty);ctx.lineTo(padL+W,ty);ctx.stroke();ctx.setLineDash([]);
+}
+
+/* ========== AYARLAR ========== */
+function fillLeaveEntitlement(year){
+  const ent=(state.settings.leaveEntitlements||{})[String(year)]||{};
+  $("setLeaveYear").value=year;
+  $("setLeaveTotal").value=ent.total??14;
+  $("setLeavePrior").value=ent.priorUsed??0;
+}
+function fillSettings(){
+  $("setName").value=state.settings.name||""; $("setCompany").value=state.settings.company||"";
+  $("setStart").value=state.settings.start; $("setEnd").value=state.settings.end; $("setTheme").value=state.settings.theme||"dark";
+  const opening=Number(state.settings.bankOpeningMin||0); const sgn=opening<0?-1:1;
+  $("setBankOpenH").value=opening?(sgn*Math.floor(Math.abs(opening)/60)):""; $("setBankOpenM").value=opening?(Math.abs(opening)%60):"";
+  $("setBankOpenDate").value=state.settings.bankOpeningDate||todayStr();
+  $("setEveningStart").value=state.settings.eveningBreak.s; $("setEveningEnd").value=state.settings.eveningBreak.e;
+  $("setNightStart").value=state.settings.nightBreak.s; $("setNightEnd").value=state.settings.nightBreak.e;
+  $("setCarryLate").value=state.settings.carryLateDays; $("setCarryUse").value=state.settings.carryUseDays;
+  fillLeaveEntitlement(new Date().getFullYear());
+  fillSyncSettings(); updatePasswordUI();
+  document.querySelectorAll(".weekendChk").forEach(c=>c.checked=state.settings.weekend.includes(Number(c.value)));
+  renderBreaksEditor(); updateSettingsCalc();
+}
+function renderBreaksEditor(){
+  $("breaksEditor").innerHTML=state.settings.breaks.map((b,i)=>'<div class="breakrow"><input data-br="label" data-i="'+i+'" value="'+esc(b.label)+'" placeholder="Mola adı"><input type="time" data-br="s" data-i="'+i+'" value="'+b.s+'"><input type="time" data-br="e" data-i="'+i+'" value="'+b.e+'"><button class="btn smallbtn soft" onclick="removeBreak('+i+')">✕</button></div>').join("");
+  document.querySelectorAll("[data-br]").forEach(inp=>inp.addEventListener("change",()=>{state.settings.breaks[Number(inp.dataset.i)][inp.dataset.br]=inp.value;updateSettingsCalc();}));
+}
+function removeBreak(i){state.settings.breaks.splice(i,1);renderBreaksEditor();updateSettingsCalc();}
+$("addBreakBtn").onclick=()=>{state.settings.breaks.push({label:"Mola",s:"16:00",e:"16:10"});renderBreaksEditor();updateSettingsCalc();};
+function updateSettingsCalc(){
+  const s=$("setStart").value||state.settings.start, e=$("setEnd").value||state.settings.end;
+  const old={...state.settings}; state.settings.start=s; state.settings.end=e;
+  $("settingsCalc").innerHTML="🧮 Brüt: <b>"+fmtMin(grossMin())+"</b> − Mola: <b>"+fmtMin(totalBreakMin())+"</b> = Günlük net hedef: <b>"+fmtMin(dailyTargetMin())+"</b>";
+  state.settings.start=old.start; state.settings.end=old.end;
+}
+["setStart","setEnd"].forEach(id=>$(id).addEventListener("change",updateSettingsCalc));
+$("setLeaveYear").addEventListener("change",()=>fillLeaveEntitlement(Number($("setLeaveYear").value||new Date().getFullYear())));
+$("saveSettingsBtn").onclick=()=>{
+  state.settings.name=$("setName").value.trim(); state.settings.company=$("setCompany").value.trim();
+  state.settings.start=$("setStart").value||"07:45"; state.settings.end=$("setEnd").value||"17:45";
+  state.settings.weekend=[...document.querySelectorAll(".weekendChk:checked")].map(x=>Number(x.value));
+  state.settings.theme=$("setTheme").value;
+  const bh=Number($("setBankOpenH").value||0), bm=Math.abs(Number($("setBankOpenM").value||0));
+  state.settings.bankOpeningMin=(bh<0?-((Math.abs(bh)*60)+bm):(bh*60+bm));
+  state.settings.bankOpeningDate=$("setBankOpenDate").value||todayStr();
+  state.settings.eveningBreak={label:"Akşam yemeği",s:$("setEveningStart").value||"17:45",e:$("setEveningEnd").value||"18:15"};
+  state.settings.nightBreak={label:"Gece molası",s:$("setNightStart").value||"02:00",e:$("setNightEnd").value||"02:40"};
+  state.settings.carryLateDays=Math.max(0,Number($("setCarryLate").value||14));
+  state.settings.carryUseDays=Math.max(0,Number($("setCarryUse").value||7));
+  const ly=String(Number($("setLeaveYear").value||new Date().getFullYear()));
+  if(!state.settings.leaveEntitlements)state.settings.leaveEntitlements={};
+  state.settings.leaveEntitlements[ly]={total:Number($("setLeaveTotal").value||14),priorUsed:Number($("setLeavePrior").value||0)};
+  saveState(); toast("✅ Ayarlar kaydedildi");
+};
+$("themeBtn").onclick=()=>{state.settings.theme=state.settings.theme==="light"?"dark":"light";saveState();};
+
+/* ========== EDİTÖR ========== */
+function editorPreviewUpdate(){
+  const type=$("fType").value; $("workFields").style.display=type==="calisma"?"block":"none";
+  $("bankFields").style.display=(type==="calisma"||type==="saat_izni")?"block":"none";
+  $("leaveFields").classList.toggle("hide",type!=="yillik_izin");
+  const noteLabels={calisma:["📝 Yapılan işler / günün notları","Yapılan işler, teslimler, arızalar, yarına kalacaklar..."],saat_izni:["📝 Saat izninde ne yaptım?","Ne yaptınız, nereye gittiniz..."],yillik_izin:["🏖️ İzinde ne yaptım?","Tatil günlüğünüz..."],rapor:["🏥 Rapor notu","Hastane / rapor detay..."],sabahlama_izni:["🌙 Dinlenme günü notu","Dinlenme günü ne yaptınız..."]};
+  const nl=noteLabels[type]||["📝 Günlük not","Bu günün notları..."];
+  $("fNoteLabel").textContent=nl[0]; $("fNote").placeholder=nl[1];
+  if(type==="calisma"&&editorBreakAuto&&$("fStart").value&&$("fEnd").value){$("fBreak").value=autoBreakOverlap($("fDate").value,$("fStart").value,$("fEnd").value);}
+  const date=$("fDate").value; if(!date)return;
+  const hol=getHoliday(date); const d=parseDateStr(date);
+  $("editorDayInfo").textContent=fmtDateTR(date)+(state.settings.weekend.includes(d.getDay())?" • Hafta tatili":"")+(hol?" • 🇹🇷 "+hol.name+(hol.half?" (yarım gün — arife)":""):"");
+  const bankUsed=Math.max(0,Number($("fBankUsed")?$("fBankUsed").value||0:0));
+  const bankExcl=allTimeBank(date,date); // düzenlene gün hariç, o tarihteki geçerli banka
+  if($("bankHelp")) $("bankHelp").innerHTML="Mevcut bankanız (bu gün hariç): <b>"+fmtMin(bankExcl.balance,true)+"</b>. Erken çıktığınız / gelmediğiniz süreyi fazladan kapatıyorsanız yazın; <b>1:1 düşülür</b>."+(bankExcl.balance<bankUsed&&bankUsed>0?" <b style='color:var(--orange)'>Not: Kullanım bakiyeden büyük — banka eksiye (avansa) geçer.</b>":"");
+  if(type==="saat_izni"){
+    const target=targetFor(date,{type:"saat_izni"}); const uncovered=Math.max(0,target-bankUsed);
+    $("editorPreview").innerHTML="⏳ <b>Saat izni</b> • Bankadan: <b>"+fmtMin(bankUsed)+"</b> düşecek • Günün hedefi: <b>"+fmtMin(target)+"</b>"+(uncovered>0?(" • <b style='color:var(--red)'>Karşılanmamış kalan: "+fmtMin(uncovered)+"</b> (günün bir kısmını çalıştıysanız türü Çalışma yapıp erken çıkış + banka girin)"):" • Gün bankayla tamam ✓")+"<br>Bu kayıt sonrası banka: <b>"+fmtMin(bankExcl.balance-bankUsed,true)+"</b>";
+    return;
+  }
+  if(type==="yillik_izin"){
+    const sel=$("fLeaveDays").value; const tmpE={type,leaveDays:sel==="auto"?"":Number(sel)};
+    const amt=annualLeaveAmountFor(date,tmpE); const ys=annualLeaveStats(Number(date.slice(0,4)));
+    const oldAmt=state.entries[date]&&state.entries[date].type==="yillik_izin"?annualLeaveAmountFor(date,state.entries[date]):0;
+    $("editorPreview").innerHTML="🏖️ <b>Yıllık izin</b> — bu kayıt <b>"+String(amt).replace(".",",")+" gün</b> düşecek. Kaydedersen kalan: <b>"+String(ys.remaining+oldAmt-amt).replace(".",",")+" gün</b> (hak "+ys.total+"). Saat bankasından düşmez.";
+    return;
+  }
+  if(type==="sabahlama_izni"){$("editorPreview").innerHTML="🌙 <b>Sabahlama ertesi dinlenme</b> — maaş / yıllık izin / saat bankasından <b>kesinti yok</b>, gün hedefe dahil edilmez.";return;}
+  if(type!=="calisma"){$("editorPreview").innerHTML=TYPES[type].icon+" <b>"+TYPES[type].label+"</b> — "+(NON_TARGET_TYPES.includes(type)?"Bu gün hedefe ve saat bankasına dahil edilmez.":"Bu gün eksik olarak hedefe işlenir (bankadan düşmez).");return;}
+  const tmp={type:"calisma",start:$("fStart").value,end:$("fEnd").value,breakMin:Number($("fBreak").value||0)};
+  if(!tmp.start){$("editorPreview").textContent="Giriş saati seçin.";return;}
+  if(!tmp.end){$("editorPreview").innerHTML="● <b>Canlı mesai</b> — çıkış boş, kronometre devam edecek.";return;}
+  const net=entryNetMin(tmp); const target=targetFor(date,tmp);
+  const earned=Math.max(0,net-target); const uncovered=Math.max(0,target-net-bankUsed);
+  const after=bankExcl.balance+earned-bankUsed;
+  const ovn=crossesMidnight(tmp); const eb=state.settings.eveningBreak; const eveningApplied=hmToMin(tmp.start)<=hmToMin(eb.s)&&(intervalGrossMin(tmp)||0)>(hmToMin(eb.s)-hmToMin(tmp.start));
+  $("editorPreview").innerHTML="Net: <b>"+fmtMin(net)+"</b> (mola "+Number(tmp.breakMin)+"dk"+(eveningApplied?", akşam yemeği dahil":"")+(ovn?", 🌙 ertesi güne sarkıyor":"")+")"+(bankUsed?(" + ⏳ Banka <b>"+fmtMin(bankUsed)+"</b> = Sayılan <b>"+fmtMin(net+bankUsed)+"</b>"):"")+" • Hedef: <b>"+fmtMin(target)+"</b>"+
+    (earned>0?(" • <b style='color:var(--orange)'>Bankaya +"+fmtMin(earned)+"</b> <span class='muted'>(son kullanma "+fmtDateShort(earningExpiry(date))+")</span>"):"")+
+    ((hmToMin(tmp.end)>hmToMin(state.settings.end)&&hmToMin(tmp.end)<=hmToMin(eb.e)&&!ovn)?" • <b>18:15 öncesi çıkış: ekstra yok</b>":"")+
+    (uncovered>0?(" • <b style='color:var(--red)'>Karşılanmamış eksik "+fmtMin(uncovered)+"</b>"):(bankUsed?" • Bankayla tamam ✓":""))+
+    (target===0&&net>0?" (tatil çalışması — tamamı bankaya fazla)":"")+
+    "<br>Bu kayıt sonrası toplam banka: <b>"+fmtMin(after,true)+"</b>";
+}
+["fDate","fType","fStart","fEnd","fBreak","fBankUsed","fLeaveDays","fAllNighter"].forEach(id=>$(id).addEventListener("change",editorPreviewUpdate));
+["fStart","fEnd","fBankUsed"].forEach(id=>$(id).addEventListener("input",editorPreviewUpdate));
+$("fBreak").addEventListener("input",()=>{editorBreakAuto=false;});
+function openEditor(dateStr,presetType=null){
+  editorOriginalDate=dateStr;
+  const e=state.entries[dateStr];
+  $("fDate").value=dateStr;
+  $("fType").value=presetType||(e?e.type:"calisma");
+  $("fStart").value=e&&e.start?e.start:state.settings.start;
+  $("fEnd").value=e&&e.end?e.end:(e&&isLiveEntry(e)?"":state.settings.end);
+  if(e&&isLiveEntry(e)) $("fEnd").value="";
+  $("fBreak").value=e&&e.breakMin!==undefined?Number(e.breakMin):autoBreakOverlap(dateStr,$("fStart").value,$("fEnd").value||state.settings.end);
+  editorBreakAuto=!e||Number(e.breakMin||0)===autoBreakOverlap(dateStr,$("fStart").value,$("fEnd").value||state.settings.end);
+  $("fAllNighter").checked=e?isAllNighterEntry(e):false;
+  $("fLeaveDays").value=e&&e.leaveDays!==undefined&&e.leaveDays!==null&&e.leaveDays!==""?String(e.leaveDays):"auto";
+  if(e&&e.bankUsedMin!==undefined) $("fBankUsed").value=Number(e.bankUsedMin||0);
+  else if(presetType==="saat_izni") $("fBankUsed").value=targetFor(dateStr,{type:"saat_izni"})||dailyTargetMin();
+  else $("fBankUsed").value=0;
+  $("fNote").value=e&&e.note?e.note:"";
+  $("editorTitle").textContent=e?"Kaydı Düzenle":"Yeni Kayıt";
+  $("deleteEntryBtn").classList.toggle("hide",!e);
+  editorPreviewUpdate();
+  $("editorBackdrop").classList.add("open");
+}
+function closeEditor(){$("editorBackdrop").classList.remove("open");}
+$("closeEditorBtn").onclick=closeEditor; $("cancelEditorBtn").onclick=closeEditor;
+$("editorBackdrop").addEventListener("click",e=>{if(e.target.id==="editorBackdrop")closeEditor();});
+$("presetNormalBtn").onclick=()=>{editorBreakAuto=true;$("fStart").value=state.settings.start;$("fEnd").value=state.settings.end;$("fBreak").value=autoBreakOverlap($("fDate").value,$("fStart").value,$("fEnd").value);editorPreviewUpdate();};
+$("autoBreakBtn").onclick=()=>{editorBreakAuto=true;$("fBreak").value=autoBreakOverlap($("fDate").value,$("fStart").value,$("fEnd").value||nowHM());editorPreviewUpdate();toast("Mola tanımlı molalara (akşam/gece dahil) hesaplandı: "+$("fBreak").value+" dk");};
+$("nowStartBtn").onclick=()=>{$("fStart").value=nowHM();editorPreviewUpdate();};
+$("nowEndBtn").onclick=()=>{$("fEnd").value=nowHM();editorPreviewUpdate();};
+function editorTargetForNow(){const date=$("fDate").value;const type=$("fType").value;return targetFor(date,{type:type==="saat_izni"?"saat_izni":"calisma"})||dailyTargetMin();}
+$("bankFullBtn").onclick=()=>{$("fBankUsed").value=editorTargetForNow();editorPreviewUpdate();};
+$("bankHalfBtn").onclick=()=>{$("fBankUsed").value=Math.round(editorTargetForNow()/2);editorPreviewUpdate();};
+$("bankCoverBtn").onclick=()=>{
+  const date=$("fDate").value; const type=$("fType").value;
+  if(type==="saat_izni"){$("fBankUsed").value=editorTargetForNow();}
+  else{const tmp={type:"calisma",start:$("fStart").value,end:$("fEnd").value,breakMin:Number($("fBreak").value||0)};const net=entryNetMin(tmp)||0;const tgt=targetFor(date,tmp);$("fBankUsed").value=Math.max(0,tgt-net);}
+  editorPreviewUpdate(); toast("⏳ Eksik kısım banka kullanımına yazıldı");
+};
+$("bankZeroBtn").onclick=()=>{$("fBankUsed").value=0;editorPreviewUpdate();};
+$("saveEntryBtn").onclick=()=>{
+  const date=$("fDate").value; if(!date){toast("⚠️ Tarih seçin");return;}
+  const type=$("fType").value;
+  let entry={type,note:$("fNote").value.trim(),updatedAt:new Date().toISOString()};
+  if(type==="yillik_izin"&&$("fLeaveDays").value!=="auto") entry.leaveDays=Number($("fLeaveDays").value);
+  const bankUsedVal=Math.max(0,Number($("fBankUsed").value||0));
+  if(type==="saat_izni"){
+    if(bankUsedVal<=0){toast("⚠️ Saat izni süresi girin (örn. tam gün için hedef kadar)");return;}
+    entry.bankUsedMin=bankUsedVal;
+  }
+  else if(type==="calisma"){
+    entry.start=$("fStart").value; entry.end=$("fEnd").value||"";
+    entry.breakMin=Number($("fBreak").value||0);
+    if($("fAllNighter").checked||crossesMidnight(entry)) entry.allNighter=true;
+    if(bankUsedVal>0) entry.bankUsedMin=bankUsedVal;
+    if(!entry.start){toast("⚠️ Giriş saati gerekli");return;}
+    const old=state.entries[date];
+    if(!entry.end){ entry.startAt=(old&&old.startAt&&old.start===entry.start)?old.startAt:new Date(parseDateStr(date).setHours(Math.floor(hmToMin(entry.start)/60),hmToMin(entry.start)%60,0,0)).toISOString(); }
+    else if(old&&old.startAt&&entry.end){/* tamamlanmış kayıtta startAt gereksiz */}
+  }
+  if(editorOriginalDate&&editorOriginalDate!==date) delete state.entries[editorOriginalDate];
+  state.entries[date]=entry;
+  if(monthOf(date)!==viewMonth) viewMonth=monthOf(date),syncMonthPickers();
+  saveState(); closeEditor(); toast("✅ Kayıt kaydedildi: "+fmtDateShort(date));
+  if(type==="yillik_izin"){const ys=annualLeaveStats(Number(date.slice(0,4))); setTimeout(()=>toast("🏖️ Yıllık izin kalan: "+ys.remaining+" gün"),350);}
+  if(type==="calisma"&&entry.end&&isAllNighterEntry(entry)) maybeOfferRecovery(date);
+};
+function maybeOfferRecovery(date){
+  const next=addDays(date,1);
+  if(state.entries[next]) return;
+  setTimeout(()=>{
+    if(confirm("🌙 Sabahlama yaptınız.\nErtesi gün ("+fmtDateTR(next)+") maaştan, yıllık izinden ve saat bankasından KESİNTİ OLMADAN dinlenme izni yazayım mı?")){
+      state.entries[next]={type:"sabahlama_izni",note:"Sabahlama ertesi dinlenme",updatedAt:new Date().toISOString()};
+      saveState(); toast("🌙 Ertesi gün kesintisiz dinlenme yazıldı");
+    }
+  },300);
+}
+$("deleteEntryBtn").onclick=()=>{const date=$("fDate").value;if(!confirm(fmtDateShort(date)+" kaydı silinsin mi?"))return;delete state.entries[date];saveState();closeEditor();toast("🗑️ Kayıt silindi");};
+$("fabBtn").onclick=()=>openEditor(todayStr());
+$("addRecordBtn").onclick=()=>openEditor(todayStr());
+$("editTodayBtn").onclick=()=>openEditor(todayStr());
+
+/* ========== HIZLI İŞLEMLER ========== */
+$("startBtn").onclick=()=>{
+  const t=todayStr(); const existing=state.entries[t];
+  if(existing&&existing.type!=="calisma"&&!confirm("Bugün "+TYPES[existing.type].label+" işaretli. Mesai ile değiştirilsin mi?"))return;
+  const now=new Date();
+  state.entries[t]={type:"calisma",start:nowHM(),end:"",breakMin:0,note:existing&&existing.note?existing.note:"",startAt:now.toISOString()};
+  saveState(); toast("▶️ Mesai başladı: "+nowHM());
+};
+$("stopBtn").onclick=()=>{
+  const fx=findLiveEntry(); if(!fx)return;
+  const {date:t,entry:e}=fx;
+  e.end=nowHM(); e.breakMin=autoBreakOverlap(t,e.start,e.end);
+  if(crossesMidnight(e)||t!==todayStr()) e.allNighter=true;
+  delete e.startAt; e.updatedAt=new Date().toISOString();
+  saveState(); const info=getDayInfo(t); toast("⏹️ Mesai bitti • Net "+fmtMin(info.net)+" • Banka farkı "+fmtMin(info.actualDiff,true));
+  if(isAllNighterEntry(e)) maybeOfferRecovery(t);
+};
+$("fillNormalBtn").onclick=()=>{
+  const t=todayStr(); const info=getDayInfo(t);
+  if((info.isWeekend||(info.holiday&&!info.holiday.half))&&!confirm("Bugün tatil görünüyor. Yine de normal çalışma yazılsın mı? (Tamamı fazla sayılır)"))return;
+  state.entries[t]={type:"calisma",start:state.settings.start,end:state.settings.end,breakMin:autoBreakOverlap(t,state.settings.start,state.settings.end),note:""};
+  saveState(); toast("✅ Bugün normal mesai yazıldı ("+fmtMin(dailyTargetMin())+")");
+};
+$("quickBankBtn").onclick=()=>openEditor(todayStr(),"saat_izni");
+$("bankUseTodayBtn").onclick=()=>openEditor(todayStr(),"saat_izni");
+document.querySelectorAll("[data-quickleave]").forEach(b=>b.onclick=()=>{
+  const type=b.dataset.quickleave; const t=todayStr();
+  if(state.entries[t]&&!confirm("Bugünkü kayıt "+TYPES[type].label+" ile değiştirilsin mi?"))return;
+  state.entries[t]={type,note:""}; saveState(); toast(TYPES[type].icon+" Bugün: "+TYPES[type].label);
+});
+$("bulkFillBtn").onclick=()=>{
+  const st=monthStats(viewMonth);
+  if(!st.missingDays.length){toast("🎉 Bu ayda kayıtsız geçmiş iş günü yok");return;}
+  if(!confirm(st.missingDays.length+" kayıtsız iş günü, "+state.settings.start+"–"+state.settings.end+" normal mesai olarak doldurulsun mu?\nSonra tek tek düzenleyebilirsiniz."))return;
+  st.missingDays.forEach(x=>{state.entries[x.date]={type:"calisma",start:state.settings.start,end:state.settings.end,breakMin:autoBreakOverlap(x.date,state.settings.start,state.settings.end),note:""};});
+  saveState(); toast("✅ "+st.missingDays.length+" gün dolduruldu");
+};
+
+/* ========== CANLI KRONOMETRE ========== */
+function tick(){
+  const fx=findLiveEntry();
+  if(fx){
+    const {date:t,entry:e}=fx;
+    const lv=liveNetMin(e,t); if(!lv)return;
+    const totalSec=Math.floor(lv.netMin*60); const h=Math.floor(totalSec/3600), m=Math.floor(totalSec%3600/60), s=totalSec%60;
+    $("liveTimer").textContent=pad(h)+":"+pad(m)+":"+pad(s);
+    const br=currentBreak(t); const target=targetFor(t,e); const remaining=target-lv.netMin;
+    const overnight=t!==todayStr();
+    $("liveSub").textContent=br?((br.kind==="night"?"🌙 ":"☕ ")+br.label+" "+br.s+"–"+br.e+" • Kronometre molada duraklatılmış sayılır"):("Giriş "+fmtDateShort(t)+" "+e.start+(overnight?" • 🌙 Sabahlama":"")+" • Brüt "+fmtMin(lv.elapsedMin)+" • Mola -"+Math.floor(lv.breakMin)+"dk • "+(remaining>0?("Hedefe kalan "+fmtMin(remaining)):("Bankaya fazla (akşam molası sonrası): +"+fmtMin(-remaining))));
+    $("kpiNet").textContent=fmtMin(lv.netMin);
+    const pct=target>0?Math.min(100,Math.round(lv.netMin/target*100)):100;
+    $("todayProgress").style.width=pct+"%"; $("progressText").textContent=target>0?("Hedef "+fmtMin(target)+" • %"+pct):"Tatil günü çalışması";
+    $("todayChip").textContent=br?"☕ Moladasın":(overnight?"🌙 Sabahlama sürüyor":"● Mesaidesin"); $("todayChip").className="chip "+(br?"orange":overnight?"violet":"green");
+  }
+}
+setInterval(tick,1000);
+
+/* ========== DIŞA AKTAR ========== */
+function download(filename,content,mime="text/plain;charset=utf-8"){
+  const blob=new Blob([content],{type:mime}); const url=URL.createObjectURL(blob);
+  const a=document.createElement("a");a.href=url;a.download=filename;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1500);
+}
+$("exportCsvBtn").onclick=()=>{
+  const st=monthStats(viewMonth);
+  const bankAll=allTimeBank();
+  const head=["Tarih","Gun","Giris","Cikis","Mola (dk)","Net (dk)","Net (saat)","Bankadan Kullanilan (dk)","Sayilan Net+Banka (dk)","Hedef (dk)","Fark (dk)","Bankaya Kazanilan (dk)","Banka Son Kullanma","Sabahlama","Yillik Izinden Dusen (gun)","Tur","Resmi Tatil","Yapilan Isler / Not"];
+  const rows=st.days.map(info=>{const e=info.entry||{};const tur=e.type?TYPES[e.type].label:(info.holiday?"Resmi Tatil":info.isWeekend?"Hafta Tatili":info.isFuture?"":"Kayitsiz");
+    return [fmtDateShort(info.date),DAYS_TR[parseDateStr(info.date).getDay()],e.start||"",e.end||"",e.breakMin??"",info.net??"",info.net!==null?fmtHoursDecimal(info.net):"",info.bankUsed||0,(info.net||0)+(info.bankUsed||0),info.target,info.diff??"",info.earned||0,info.earned?fmtDateShort(earningExpiry(info.date)):"",isAllNighterEntry(e)?"Evet":"",annualLeaveAmountFor(info.date,e)||"",tur,info.holiday?info.holiday.name:"",(e.note||"").replace(/;/g,",").replace(/\r?\n/g," ")];});
+  rows.push([]); rows.push(["OZET","","","","","Toplam Net (dk)",st.netAll,"Bu Ay Bankadan Kullanilan",st.bankUsedMonth,"Hedef (dk)",st.targetAll,"Bu Ay Bankaya Kazanilan",st.bankEarnedMonth,"Bakiye (bugune kadar dk)",st.balance]);
+  rows.push(["SAAT BANKASI","","","","","Devreden Acilis",bankAll.opening,"Tum Zaman Kullanilan",bankAll.used,"Tum Zaman Kazanilan",bankAll.earned,"TOPLAM BANKA",bankAll.balance,"Kural","Basa bas 1:1"]);
+  const csv="\ufeff"+[head,...rows].map(r=>r.join(";")).join("\r\n");
+  download("Mesai_Rapor_"+viewMonth+".csv",csv,"text/csv;charset=utf-8"); toast("📗 Excel (CSV) indirildi");
+};
+function buildPrint(){
+  const st=monthStats(viewMonth); const[y,m]=viewMonth.split("-").map(Number);
+  const bankAll=allTimeBank();
+  const rows=st.days.map(i=>{const e=i.entry||{};return "<tr><td>"+fmtDateShort(i.date)+" "+DAYS_TR[parseDateStr(i.date).getDay()]+"</td><td>"+(e.start||"—")+"</td><td>"+(e.end||"—")+"</td><td>"+(e.breakMin??"")+"</td><td>"+(i.net!==null?fmtMin(i.net):"—")+"</td><td>"+(i.bankUsed?fmtMin(i.bankUsed):"")+"</td><td>"+fmtMin(i.target)+"</td><td>"+(i.diff===null?"—":fmtMin(i.diff,true))+"</td><td>"+(e.type?TYPES[e.type].label:(i.holiday?"Resmi Tatil":i.isWeekend?"Hafta Tatili":"—"))+"</td><td>"+esc(e.note||"")+"</td></tr>";}).join("");
+  $("printArea").innerHTML="<h1>Mesai Takip Raporu — "+MONTHS_TR[m-1]+" "+y+"</h1><p>"+esc(state.settings.name||"")+" "+(state.settings.company?"• "+esc(state.settings.company):"")+"<br>Normal mesai: "+state.settings.start+"–"+state.settings.end+" • Günlük net hedef: "+fmtMin(dailyTargetMin())+"<br>Toplam net: <b>"+fmtMin(st.netAll)+"</b> • Ayın hedefi: <b>"+fmtMin(st.targetAll)+"</b> • Bakiye (bugüne kadar): <b>"+fmtMin(st.balance,true)+"</b> • Fazla (bankaya): <b>+"+fmtMin(st.fazla)+"</b> • Karşılanmamış eksik: <b>-"+fmtMin(st.eksik)+"</b><br>⏳ Saat Bankası (başa baş 1:1): Bu ay kazanılan <b>+"+fmtMin(st.bankEarnedMonth)+"</b> • Bu ay kullanılan <b>-"+fmtMin(st.bankUsedMonth)+"</b> • <b>GEÇERLİ BANKA: "+fmtMin(bankAll.balance,true)+"</b> ("+bankEquivText(bankAll.balance)+"; süresi dolan toplam "+fmtMin(bankAll.expired||0)+") • 🏖️ Yıllık izin "+y+": kalan <b>"+annualLeaveStats(y).remaining+" gün</b></p><table><thead><tr><th>Tarih</th><th>Giriş</th><th>Çıkış</th><th>Mola dk</th><th>Net</th><th>Bankadan</th><th>Hedef</th><th>Fark</th><th>Tür</th><th>Not</th></tr></thead><tbody>"+rows+"</tbody></table><p style='font-size:11px;color:#555'>Bu rapor kişisel takip amaçlı üretilmiştir. Gelecek günler bakiyeye dahil değildir. Fazla mesai ücreti yoktur; fazlalar başa baş (1:1) saat izni olarak kullanılır.</p>";
+}
+$("printBtn").onclick=()=>{buildPrint();window.print();};
+function exportJson(){download("MesaiTakip_Yedek_"+todayStr()+".json",JSON.stringify(state,null,2),"application/json");toast("💾 Yedek indirildi");}
+$("exportJsonBtn").onclick=exportJson; $("exportJsonBtn2").onclick=exportJson;
+$("importJsonBtn").onclick=()=>$("importFile").click();
+$("importFile").addEventListener("change",e=>{
+  const f=e.target.files[0]; if(!f)return;
+  const r=new FileReader(); r.onload=()=>{try{const data=JSON.parse(r.result);if(!data.settings||!data.entries)throw new Error("Geçersiz");if(!confirm("Yedek geri yüklensin mi? Mevcut veriler değişecek."))return;state=data;normalizeState();saveState();fillSettings();toast("✅ Yedek geri yüklendi");}catch(err){alert("Yedek okunamadı: "+err.message);}};
+  r.readAsText(f); e.target.value="";
+});
+
+/* ========== GITHUB / URL SENKRON ========== */
+const SYNC_KEY="mesaiTakip_sync_v1";
+function loadSyncConfig(){
+  try{return JSON.parse(localStorage.getItem(SYNC_KEY)||"null")||{};}catch(e){return {};}
+}
+function saveSyncConfig(cfg){ try{localStorage.setItem(SYNC_KEY,JSON.stringify(cfg));}catch(e){} }
+function syncConfigFromUI(old={}){
+  return {
+    mode:$("syncMode").value, owner:$("syncOwner").value.trim(), repo:$("syncRepo").value.trim(),
+    branch:$("syncBranch").value.trim()||"main", path:$("syncPath").value.trim()||"mesai-takip.json",
+    token:$("syncToken").value.trim(), url:$("syncUrl").value.trim(), device:$("syncDevice").value.trim()||"Bu cihaz",
+    autoPull:$("syncAutoPull").checked, lastSyncAt:old.lastSyncAt||"", lastSha:old.lastSha||"", lastDirection:old.lastDirection||""
+  };
+}
+function fillSyncSettings(){
+  const c=loadSyncConfig();
+  $("syncMode").value=c.mode||"github"; $("syncOwner").value=c.owner||""; $("syncRepo").value=c.repo||"";
+  $("syncBranch").value=c.branch||"main"; $("syncPath").value=c.path||"mesai-takip.json"; $("syncToken").value=c.token||"";
+  $("syncUrl").value=c.url||""; $("syncDevice").value=c.device||""; $("syncAutoPull").checked=!!c.autoPull;
+  syncModeUI(); setSyncStatus(c.lastSyncAt?("Son senkron: "+new Date(c.lastSyncAt).toLocaleString("tr-TR")+" • "+(c.lastDirection||"")):"Senkron durumu: henüz senkron yapılmadı.");
+}
+function syncModeUI(){const gh=$("syncMode").value==="github";$("syncGithubFields").classList.toggle("hide",!gh);$("syncUrlField").classList.toggle("hide",gh);$("syncPushBtn").disabled=!gh;if(!gh)$("syncPushBtn").title="URL yöntemi sadece çekme içindir";}
+$("syncMode").addEventListener("change",syncModeUI);
+function setSyncStatus(msg){$("syncStatus").textContent="Senkron durumu: "+msg;}
+function purifiedState(){
+  const clone=JSON.parse(JSON.stringify(state));
+  // Şifre/GitHub tokeni state içinde tutulmuyor; yine de olası alanları temizle.
+  if(clone.settings){delete clone.settings.password;delete clone.settings.passwordHash;delete clone.settings.githubToken;delete clone.settings.token;}
+  return clone;
+}
+function buildSyncPayload(cfg){return {app:"MesaiTakip",version:2,exportedAt:new Date().toISOString(),device:cfg.device||"",state:purifiedState()};}
+function parseRemotePayload(data){
+  if(!data||typeof data!=="object") throw new Error("Geçersiz veri");
+  const remoteState=data.state||data;
+  if(!remoteState.settings||!remoteState.entries) throw new Error("Mesai verisi değil (settings/entries yok)");
+  return {exportedAt:data.exportedAt||remoteState.meta?.updatedAt||"",state:remoteState};
+}
+function applyRemoteState(remote){
+  try{localStorage.setItem("mesaiTakip_beforePull",JSON.stringify({at:new Date().toISOString(),state}));}catch(e){}
+  state=JSON.parse(JSON.stringify(remote.state)); normalizeState();
+  suppressUpdatedAt=true; saveState(); suppressUpdatedAt=false;
+  fillSettings();
+}
+function utf8ToB64(str){const bytes=new TextEncoder().encode(str);let bin="";bytes.forEach(b=>bin+=String.fromCharCode(b));return btoa(bin);}
+function b64ToUtf8(b64){const bin=atob((b64||"").replace(/\s/g,""));const bytes=new Uint8Array([...bin].map(c=>c.charCodeAt(0)));return new TextDecoder().decode(bytes);}
+function ghHeaders(cfg){const h={Accept:"application/vnd.github+json","X-GitHub-Api-Version":"2022-11-28"};if(cfg.token)h.Authorization="Bearer "+cfg.token;return h;}
+function ghFileUrl(cfg){return "https://api.github.com/repos/"+encodeURIComponent(cfg.owner)+"/"+encodeURIComponent(cfg.repo)+"/contents/"+cfg.path.split("/").map(encodeURIComponent).join("/");}
+async function ghGetFile(cfg){
+  const r=await fetch(ghFileUrl(cfg)+"?ref="+encodeURIComponent(cfg.branch),{headers:ghHeaders(cfg),cache:"no-store"});
+  if(r.status===404) return null;
+  if(!r.ok) throw new Error("GitHub "+r.status+": "+(await r.text()).slice(0,220));
+  const j=await r.json();
+  return {sha:j.sha,text:b64ToUtf8(j.content||"")};
+}
+async function fetchRemotePayload(cfg){
+  if(cfg.mode==="url"){
+    if(!cfg.url) throw new Error("URL girin");
+    const r=await fetch(cfg.url,{cache:"no-store"}); if(!r.ok)throw new Error("URL "+r.status);
+    return {remote:parseRemotePayload(JSON.parse(await r.text())),sha:""};
+  }
+  if(!cfg.owner||!cfg.repo) throw new Error("GitHub kullanıcı ve repo girin");
+  const f=await ghGetFile(cfg); if(!f) throw new Error("Dosya bulunamadı: "+cfg.path+" (önce GitHub'a kaydet yapın)");
+  return {remote:parseRemotePayload(JSON.parse(f.text)),sha:f.sha};
+}
+$("syncSaveBtn").onclick=()=>{const old=loadSyncConfig();const cfg=syncConfigFromUI(old);saveSyncConfig(cfg);setSyncStatus("bağlantı ayarları bu cihaza kaydedildi.");toast("✅ Senkron ayarları kaydedildi");};
+$("syncTestBtn").onclick=async()=>{
+  const cfg=syncConfigFromUI(loadSyncConfig()); saveSyncConfig(cfg); setSyncStatus("test ediliyor...");
+  try{
+    if(cfg.mode==="url"){const r=await fetch(cfg.url,{cache:"no-store"}); if(!r.ok)throw new Error(r.status); setSyncStatus("✅ URL ulaşılabilir ("+r.status+")");}
+    else{const r=await fetch("https://api.github.com/repos/"+encodeURIComponent(cfg.owner)+"/"+encodeURIComponent(cfg.repo),{headers:ghHeaders(cfg),cache:"no-store"}); if(!r.ok)throw new Error(r.status+": "+(await r.text()).slice(0,180)); const j=await r.json(); setSyncStatus("✅ Repo bulundu: "+j.full_name+" • "+(j.private?"özel":"herkese açık"));}
+  }catch(e){setSyncStatus("❌ Test hatası: "+e.message);}
+};
+$("syncPullBtn").onclick=()=>pullFromRemote(false);
+async function pullFromRemote(auto=false){
+  const cfg=loadSyncConfig(); if(!cfg.mode){if(!auto)toast("Önce bağlantıyı kaydedin");return false;}
+  setSyncStatus("veriler çekiliyor...");
+  try{
+    const {remote,sha}=await fetchRemotePayload(cfg);
+    const localUpdated=state.meta?.updatedAt||"";
+    if(auto&&remote.exportedAt&&localUpdated&&remote.exportedAt<=localUpdated){setSyncStatus("uzaktaki daha yeni değil, çekme gerekmedi.");return false;}
+    if(!confirm("Uzak veriler bu cihazdaki verilerin yerine geçsin mi?\n\nUzak kayıt: "+(remote.exportedAt?new Date(remote.exportedAt).toLocaleString("tr-TR"):"bilinmiyor")+"\nBu cihaz: "+(localUpdated?new Date(localUpdated).toLocaleString("tr-TR"):"bilinmiyor")+"\n\nMevcut veri, geri dönüş için cihazda yedeklenir.")){setSyncStatus("çekme iptal edildi.");return false;}
+    applyRemoteState(remote);
+    cfg.lastSyncAt=new Date().toISOString();cfg.lastSha=sha;cfg.lastDirection="⬇️ çekildi";saveSyncConfig(cfg);fillSyncSettings();
+    toast("⬇️ Veriler çekildi"); return true;
+  }catch(e){setSyncStatus("❌ Çekme hatası: "+e.message); if(!auto)alert("Çekme hatası: "+e.message); return false;}
+}
+$("syncPushBtn").onclick=async()=>{
+  const cfg=syncConfigFromUI(loadSyncConfig()); saveSyncConfig(cfg);
+  if(cfg.mode!=="github"){alert("URL yöntemi sadece çekme içindir.");return;}
+  if(!cfg.token){alert("GitHub'a kaydetmek için token gerekli.");return;}
+  setSyncStatus("GitHub'a kaydediliyor...");
+  try{
+    const existing=await ghGetFile(cfg);
+    if(existing&&cfg.lastSha&&existing.sha!==cfg.lastSha){
+      let remoteNewer=false; try{remoteNewer=(parseRemotePayload(JSON.parse(existing.text)).exportedAt||"")>(state.meta?.updatedAt||"");}catch(e){}
+      if(remoteNewer&&!confirm("GitHub'daki veri bu cihazdan daha yeni görünüyor. Yine de üzerine yazayım mı?")){setSyncStatus("kaydetme iptal edildi (uzaktaki daha yeni).");return;}
+    }
+    const payload=buildSyncPayload(cfg);
+    const body={message:"Mesai Takip senkron "+new Date().toISOString()+" ("+(cfg.device||"cihaz")+")",content:utf8ToB64(JSON.stringify(payload,null,2)),branch:cfg.branch};
+    if(existing) body.sha=existing.sha;
+    const r=await fetch(ghFileUrl(cfg),{method:"PUT",headers:{...ghHeaders(cfg),"Content-Type":"application/json"},body:JSON.stringify(body)});
+    if(!r.ok) throw new Error("GitHub "+r.status+": "+(await r.text()).slice(0,260));
+    const j=await r.json();
+    cfg.lastSyncAt=new Date().toISOString();cfg.lastSha=j.content?.sha||"";cfg.lastDirection="⬆️ GitHub'a kaydedildi";saveSyncConfig(cfg);fillSyncSettings();
+    toast("⬆️ GitHub'a kaydedildi");
+  }catch(e){setSyncStatus("❌ Kaydetme hatası: "+e.message);alert("Kaydetme hatası: "+e.message);}
+};
+async function maybeAutoPull(){const cfg=loadSyncConfig(); if(cfg.autoPull&&(cfg.url||(cfg.owner&&cfg.repo))) pullFromRemote(true);}
+
+/* ========== DEMO / TEMİZLE ========== */
+function loadDemo(){
+  if(Object.keys(state.entries).length&&!confirm("Örnek veri bu aya eklenecek. Mevcut kayıtlarla çakışan günler değişebilir. Devam?"))return;
+  const ym=monthOf(todayStr()); const todayD=parseDateStr(todayStr()).getDate();
+  for(let day=1;day<=Math.min(todayD,28);day++){
+    const ds=ym+"-"+pad(day); const info=getDayInfo(ds);
+    if(info.isWeekend||(info.holiday&&!info.holiday.half)) continue;
+    let end="17:45", note="Örnek", bankU=0;
+    if(day%6===0) end="19:15",note="Örnek — fazla mesai (bankaya +1,5s)";
+    else if(day%8===0) end="16:30",note="Örnek — erken çıkış, eksik bankadan",bankU=75;
+    else if(day%11===0){state.entries[ds]={type:"yillik_izin",note:"Örnek izin"};continue;}
+    else if(day%13===0){state.entries[ds]={type:"saat_izni",bankUsedMin:540,note:"Örnek — fazladan tam gün saat izni"};continue;}
+    const demoEntry={type:"calisma",start:"07:45",end,breakMin:60,note}; if(bankU)demoEntry.bankUsedMin=bankU;
+    state.entries[ds]=demoEntry;
+  }
+  saveState(); setMonth(ym); showView("report"); toast("👀 Örnek veri yüklendi — Rapor ekranındasın");
+}
+$("demoBtn").onclick=loadDemo; $("demoBtn2").onclick=loadDemo;
+$("clearAllBtn").onclick=()=>{if(!confirm("TÜM kayıtlar silinsin mi?\nBu işlem geri alınamaz. Önce yedek almanız önerilir."))return;if(!confirm("Emin misiniz?"))return;state.entries={};saveState();toast("🗑️ Tüm kayıtlar silindi");};
+
+/* ========== ARİFE SORUSU (o gün gelince sor) ========== */
+function openArifePrompt(){
+  const t=todayStr(); const hol=getHoliday(t);
+  $("arifeText").innerHTML="Bugün <b>"+fmtDateTR(t)+"</b>"+(hol?" — <b>"+esc(hol.name)+"</b>":"")+". Genelde yarım gün oluyor demiştiniz; sizin için bugün durum ne? Seçimine göre kaydı işleyeceğim (sonradan takvimden düzeltebilirsiniz).";
+  $("arifeBackdrop").classList.add("open");
+}
+function closeArifePrompt(){$("arifeBackdrop").classList.remove("open");}
+function dismissArifeToday(){
+  if(!state.meta) state.meta={};
+  state.meta.arifeDismissedDate=todayStr();
+}
+function checkArifePrompt(){
+  const t=todayStr(); const hol=getHoliday(t);
+  if(hol&&hol.half&&!state.entries[t]&&(!state.meta||state.meta.arifeDismissedDate!==t)){
+    openArifePrompt();
+  }
+}
+$("closeArifeBtn").onclick=()=>{dismissArifeToday();saveState();closeArifePrompt();};
+$("arifeLaterBtn").onclick=()=>{dismissArifeToday();saveState();closeArifePrompt();toast("Tamam, bugün tekrar sormayacağım. Ana sayfadaki arife kartından istediğinizde seçebilirsiniz.");};
+$("arifeBackdrop").addEventListener("click",e=>{if(e.target.id==="arifeBackdrop"){dismissArifeToday();saveState();closeArifePrompt();}});
+document.querySelectorAll("[data-arife]").forEach(btn=>btn.onclick=()=>{
+  const choice=btn.dataset.arife; const t=todayStr();
+  dismissArifeToday(); closeArifePrompt();
+  if(choice==="tamtatil"){state.entries[t]={type:"resmi_tatil",note:"Arife - tam gün tatil"};saveState();toast("🌴 Arife tam gün tatil yazıldı");}
+  else if(choice==="yillik"){state.entries[t]={type:"yillik_izin",note:"Arife"};saveState();toast("🏖️ Arife yıllık izin yazıldı");}
+  else if(choice==="saatizni"){saveState();openEditor(t,"saat_izni"); /* arife hedefi yarım gün (270 dk) otomatik gelir */ }
+  else if(choice==="tamcalisma"){saveState();openEditor(t);$("fStart").value=state.settings.start;$("fEnd").value=state.settings.end;$("fBreak").value=autoBreakOverlap(t,$("fStart").value,$("fEnd").value);if(!$("fNote").value)$("fNote").value="Arife - tam gün çalışma";editorPreviewUpdate();}
+  else if(choice==="yarim"){saveState();openEditor(t);$("fStart").value=state.settings.start;$("fEnd").value="13:00";$("fBreak").value=autoBreakOverlap(t,$("fStart").value,$("fEnd").value);if(!$("fNote").value)$("fNote").value="Arife - yarım gün";editorPreviewUpdate();toast("Arife yarım gün: 13:00 çıkış önerdim, çıkış saatinize göre düzeltip kaydedin");}
+});
+
+/* ========== ŞİFRE / KİLİT ========== */
+const AUTH_KEY="mesaiTakip_auth_v1";
+const PW_PROMPT_KEY="mesaiTakip_pw_prompt_dismissed";
+let appUnlocked=false; let hiddenAt=0; let postUnlockRan=false;
+function loadAuth(){try{return JSON.parse(localStorage.getItem(AUTH_KEY)||"null");}catch(e){return null;}}
+function saveAuth(a){try{localStorage.setItem(AUTH_KEY,JSON.stringify(a));}catch(e){}}
+function clearAuth(){try{localStorage.removeItem(AUTH_KEY);}catch(e){}}
+function sessionUnlocked(){try{return sessionStorage.getItem("mesaiUnlocked")==="1";}catch(e){return appUnlocked;}}
+function setSessionUnlocked(v){appUnlocked=v;try{v?sessionStorage.setItem("mesaiUnlocked","1"):sessionStorage.removeItem("mesaiUnlocked");}catch(e){}}
+async function hashPassword(password,salt){
+  const material=salt+"•"+password;
+  if(window.crypto&&crypto.subtle){
+    const buf=await crypto.subtle.digest("SHA-256",new TextEncoder().encode(material));
+    return [...new Uint8Array(buf)].map(b=>b.toString(16).padStart(2,"0")).join("");
+  }
+  let h1=0xdeadbeef,h2=0x41c6ce57; // güvenli olmayan yedek (sadece crypto yoksa)
+  for(let round=0;round<800;round++){for(let i=0;i<material.length;i++){const ch=material.charCodeAt(i);h1=Math.imul(h1^ch,2654435761);h2=Math.imul(h2^ch,1597334677);}}
+  return "fallback-"+(h1>>>0).toString(16)+"-"+(h2>>>0).toString(16);
+}
+function makeSalt(){try{return [...crypto.getRandomValues(new Uint8Array(16))].map(b=>b.toString(16).padStart(2,"0")).join("");}catch(e){return Date.now()+"-"+Math.random();}}
+function updatePasswordUI(){
+  const a=loadAuth();
+  $("lockBtn").classList.toggle("hide",!a);
+  $("removePasswordBtn").classList.toggle("hide",!a);
+  $("lockNowBtn").classList.toggle("hide",!a);
+  $("passwordStatus").textContent=a?("🔒 Şifre aktif. Uygulama girerken ve 2 dakikadan uzun arka planda kalınca kilitlenir. Kurulum: "+(a.createdAt?new Date(a.createdAt).toLocaleString("tr-TR"):"")):"Şifre ayarlı değil. Telefonu başkası eline alırsa kayıtlar görünebilir.";
+}
+function lockApp(){
+  if(!loadAuth())return;
+  setSessionUnlocked(false);
+  document.body.classList.add("locked"); $("lockScreen").classList.remove("hide");
+  $("lockPassword").value=""; $("lockError").textContent="";
+  closeArifePrompt();
+  setTimeout(()=>$("lockPassword").focus(),80);
+}
+function unlockApp(){
+  setSessionUnlocked(true);
+  document.body.classList.remove("locked"); $("lockScreen").classList.add("hide");
+  if(!postUnlockRan){postUnlockRan=true; setTimeout(()=>{checkArifePrompt(); maybeAutoPull();},350);}
+}
+$("lockForm").addEventListener("submit",async e=>{
+  e.preventDefault(); const a=loadAuth(); if(!a){unlockApp();return;}
+  const h=await hashPassword($("lockPassword").value,a.salt);
+  if(h===a.hash){unlockApp();toast("🔓 Hoş geldiniz");}
+  else{$("lockError").textContent="Şifre yanlış, tekrar deneyin.";$("lockPassword").select();}
+});
+function openPasswordSetup(){ $("newPassword").value="";$("newPassword2").value="";$("passwordSetupError").textContent="";$("passwordSetupBackdrop").classList.add("open");setTimeout(()=>$("newPassword").focus(),80); }
+function closePasswordSetup(){ $("passwordSetupBackdrop").classList.remove("open"); }
+$("setPasswordBtn").onclick=openPasswordSetup;
+$("closePasswordSetupBtn").onclick=()=>{try{localStorage.setItem(PW_PROMPT_KEY,"1");}catch(e){}closePasswordSetup();};
+$("skipPasswordSetupBtn").onclick=()=>{try{localStorage.setItem(PW_PROMPT_KEY,"1");}catch(e){}closePasswordSetup();toast("Şifreyi sonra Ayarlar > Şifre bölümünden oluşturabilirsiniz");};
+$("savePasswordSetupBtn").onclick=async()=>{
+  const p1=$("newPassword").value, p2=$("newPassword2").value;
+  if(p1.length<4){$("passwordSetupError").textContent="Şifre en az 4 karakter olmalı.";return;}
+  if(p1!==p2){$("passwordSetupError").textContent="Şifreler eşleşmiyor.";return;}
+  const salt=makeSalt(); const hash=await hashPassword(p1,salt);
+  saveAuth({salt,hash,createdAt:new Date().toISOString()});
+  closePasswordSetup(); updatePasswordUI(); unlockApp(); toast("🔐 Şifre oluşturuldu");
+};
+$("removePasswordBtn").onclick=()=>{if(!confirm("Şifre kaldırılsın mı?"))return;clearAuth();setSessionUnlocked(true);updatePasswordUI();toast("Şifre kaldırıldı");};
+$("lockBtn").onclick=lockApp; $("lockNowBtn").onclick=lockApp;
+document.addEventListener("visibilitychange",()=>{
+  if(document.hidden){hiddenAt=Date.now();}
+  else if(loadAuth()&&hiddenAt&&Date.now()-hiddenAt>120000){lockApp();}
+});
+function initLock(){
+  updatePasswordUI();
+  const a=loadAuth();
+  if(a&&!sessionUnlocked()){lockApp();}
+  else{
+    appUnlocked=true;
+    if(!postUnlockRan){postUnlockRan=true; setTimeout(()=>{checkArifePrompt(); maybeAutoPull();},500);}
+    let dismissed=false; try{dismissed=localStorage.getItem(PW_PROMPT_KEY)==="1";}catch(e){}
+    if(!a&&!dismissed) setTimeout(openPasswordSetup,700);
+  }
+}
+
+/* ========== PWA ========== */
+let deferredPrompt=null;
+window.addEventListener("beforeinstallprompt",e=>{e.preventDefault();deferredPrompt=e;$("installBtn").classList.remove("hide");});
+async function tryInstall(){
+  if(deferredPrompt){deferredPrompt.prompt();await deferredPrompt.userChoice;deferredPrompt=null;$("installBtn").classList.add("hide");}
+  else alert("Kurulum için:\n\nAndroid Chrome: ⋮ → Uygulamayı yükle / Ana ekrana ekle\n\niPhone Safari: Paylaş → Ana Ekrana Ekle\n\nNot: Kurulum, uygulama HTTPS ile yayınlandığında görünür.");
+}
+$("installBtn").onclick=tryInstall; $("installBtn2").onclick=tryInstall;
+if("serviceWorker" in navigator && location.protocol.startsWith("http")){
+  window.addEventListener("load",()=>{navigator.serviceWorker.register("sw.js").catch(()=>{});});
+}
+window.addEventListener("resize",()=>{if($("view-report").classList.contains("active")){drawDailyChart();renderStats(Number(viewMonth.slice(0,4)));}});
+
+/* ========== BAŞLAT ========== */
+function renderAll(){
+  syncMonthPickers();
+  renderHome(); renderCalendar(); renderRecords(); renderReport(); tick();
+}
+renderAll();
+initLock();
+</script>
+</body>
+</html>
