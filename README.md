@@ -1,4 +1,4 @@
-# ⏱️ Mesai Takip — PWA (v2)
+# ⏱️ Mesai Takip — PWA (v3, genel kapsamlı / çok iş yerli)
 
 Kişisel mesai takip uygulaması. Portföyüm uygulamasındaki gibi **telefona kurulabilen, internetsiz çalışabilen** modern bir PWA olarak hazırlandı. İlk aşama PWA'dır; istek üzerine sonraki aşamada APK'ya çevrilebilir.
 
@@ -11,7 +11,16 @@ Kişisel mesai takip uygulaması. Portföyüm uygulamasındaki gibi **telefona k
 - Ücret hesabı **yoktur** — fazlalar **başa baş (1:1) saat bankasına** yazılır: 1 saat fazla = 1 saat kullanılabilir izin. Tamamı Ayarlar'dan değiştirilebilir.
 - **Arife kuralı:** Arifeler/28 Ekim varsayılan yarım gün (4,5 saat) ama **arife günü uygulama açılışında sorar:** yarım gün / tam tatil / saat izniyle kapatma / yıllık izin / tam gün çalışma. Bir gün önceden ana sayfada "Yarın arife, yarın soracağım" uyarısı çıkar.
 
-## Yeni kurallar (v2)
+## v3 kapsamı
+- **Çok iş yeri:** Üst çubukta iş yeri seçilir; her iş yerinin kayıtları, programı, yıllık izni ve saat bankası ayrıdır. Ayarlar > İş Yerlerim’den yeni iş yeri eklenir/arşivlenir. Bir kaydı düzenlerken başka iş yerine taşınabilir.
+- **Geçmişe dönük giriş/düzeltme:** Takvim geçmiş ay/yıllara gider, “Geçmişe kayıt” butonu ve kayıt tarihi serbesttir. Eski kayda dokunup düzeltme/silme yapılabilir. Eldeki tablo **CSV aktar** ile toplu alınabilir (şablon indirilebilir); seçili aydaki boş iş günleri toplu normal mesai yapılabilir.
+- **Kronometresiz akış:** Canlı başlat/bitir yoktur. “✓ Bugün normal çalışma yapıldı” normal günü yazar; “＋ Üstüne mesai ekle” ve editördeki +1/+2/+3/+4,5s kısayolları çıkışı uzatır. Çıkış saati zorunludur.
+- **Tarihe duyarlı program:** Mola/çalışma/devir ayarları bir **yürürlük tarihiyle** program sürümü olarak kaydedilir. Her gün kendi tarihindeki programla hesaplanır; kaydedilen günün hedefi `targetSnapshot` ile dondurulur. Yeni ayar geçmişi geriye dönük değiştirmez (bilerek geçmiş yürürlük seçilirse kayıtsız günler etkilenebilir, uygulama uyarır).
+- **Fotoğraf/belge ekleri:** Çalışma, şirket/zorunlu izin dahil her güne fotoğraf/PDF eklenir. Veriler IndexedDB’de saklanır; kayıt içinde yalnızca ek üst bilgisi durur. **Ekleri GitHub ile eşitle**, özel repoda `attachments/...` altına dosyaları gönderir/indirir. PDF için GitHub Contents API sınırı nedeniyle ~950 KB üstü yüklenmeyebilir; fotoğraflar otomatik sıkıştırılır. JSON yedeği ek dosyalarını içermez.
+- **Rapor GitHub’a:** Rapor > “Raporu GitHub’a yükle”, `reports/<iş-yeri>/Mesai_Rapor_YYYY-MM.csv` ve `.md` özetini yükler. “Şimdi eşitle” daha yeni olan tarafı sorarak veri + ekleri eşitler.
+- **İstatistik:** Aylık kartların yanında yıllık ve tüm zamanlar toplam fazla/eksik, net/hedef, tüm iş yerleri toplamı ve grafikler vardır.
+
+## v2 kuralları
 - **Akşam fazla mesaisi:** 17:45–18:15 akşam yemeği molasıdır. Çıkış 18:15 öncesi ise ekstra sayılmaz (gün 9s tamamlanmış olur); 18:15 sonrası süre bu 30 dk düşülerek ekstra yazılır.
 - **Sabahlama:** İş geceye sarkarsa **02:00–02:40 gece molası** otomatik düşülür. Canlı kronometre gece yarısını geçse de ertesi sabah devam eder. Kaydı bitirince uygulama ertesi günü **maaş, yıllık izin ve saat bankasından kesinti olmadan** dinlenme yazmayı sorar (tip: *Sabahlama Ertesi Dinlenme*).
 - **Saat bankası son kullanma:** Fazlalar **ay içinde** kullanılır. Ayın son **14 günü** kazanılanlar sonraki ayın **7. gününe** kadar devreder (Ayarlar > devir penceresi). Parti/parti takip edilir; süresi dolanlar raporda "⌛ Süresi doldu" ve ana sayfada uyarıyla görünür.
