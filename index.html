@@ -71,7 +71,7 @@ input,select,textarea{font:inherit;color:var(--text)}
 .item .datebox b{font-size:19px;line-height:1}.item .datebox span{font-size:10px;color:var(--muted);font-weight:800;margin-top:3px}
 .diff.pos{color:var(--green);font-weight:900}.diff.ok{color:var(--green);font-weight:900}.diff.neg{color:var(--red);font-weight:900}.diff.zero{color:var(--muted);font-weight:800}
 .view{display:none}.view.active{display:block;animation:fade .22s ease}@keyframes fade{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:none}}
-.bottomnav{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(10px + env(safe-area-inset-bottom));width:min(92vw,760px);background:var(--nav);backdrop-filter:blur(16px);border:1px solid var(--line);border-radius:24px;box-shadow:0 18px 42px rgba(0,0,0,.38);display:grid;grid-template-columns:repeat(5,1fr);padding:7px;z-index:50}
+.bottomnav{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(10px + env(safe-area-inset-bottom));width:min(92vw,760px);background:var(--nav);backdrop-filter:blur(16px);border:1px solid var(--line);border-radius:24px;box-shadow:0 18px 42px rgba(0,0,0,.38);display:grid;grid-template-columns:repeat(6,1fr);padding:7px;z-index:50}
 .bottomnav button{border:none;background:transparent;border-radius:17px;padding:9px 4px;cursor:pointer;color:var(--muted);font-weight:850;font-size:11px}
 .bottomnav button .ic{display:block;font-size:21px;margin-bottom:3px}
 .bottomnav button.active{background:linear-gradient(135deg,var(--pri),var(--pri2));color:#fff}
@@ -170,6 +170,9 @@ body{font-size:15px}
 #view-settings .notice{font-size:12px;padding:10px}
 #view-settings .breakrow input{font-size:12px;padding:8px 6px}
 @media(max-width:680px){.timer{font-size:38px}.workplace-manage-row{grid-template-columns:minmax(0,1fr) 126px}.workplace-manage-row .btn{font-size:12px;padding:8px}.workplace-item{align-items:flex-start}.workplace-actions{max-width:150px}.sync-actions{grid-template-columns:1fr}.daychoices{grid-template-columns:repeat(2,1fr)}}
+.time-pair{align-items:stretch}.time-pair .field{display:flex;flex-direction:column}.time-pair .field label{min-height:30px}.time-pair .field input{margin-top:auto}
+.money{font-variant-numeric:tabular-nums}.salary-record,.right-item{background:var(--input);border:1px solid var(--line);border-radius:15px;padding:11px;margin-bottom:9px}.salary-record-head,.right-item-head{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}.salary-total{font-size:19px;font-weight:900}.salary-breakdown{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:5px 12px;margin-top:8px;color:var(--muted);font-size:12px}.salary-breakdown b{color:var(--txt)}.countdown{font-size:24px;font-weight:900;color:var(--pri2);text-align:right;white-space:nowrap}.countdown small{display:block;font-size:10px;color:var(--muted);letter-spacing:.04em}.salary-lock-icon{font-size:48px;text-align:center;margin:8px 0}.comp-total{background:linear-gradient(135deg,rgba(46,229,157,.16),rgba(77,163,255,.12));border:1px solid rgba(46,229,157,.35);border-radius:16px;padding:13px;margin-top:10px}.comp-total .amount{font-size:27px;font-weight:900;line-height:1.15}.security-methods{display:flex;flex-wrap:wrap;gap:7px;margin:8px 0}.security-methods span{background:var(--input);border:1px solid var(--line);border-radius:999px;padding:5px 8px;font-size:11px;font-weight:800}.salary-toolbar{display:flex;gap:8px;flex-wrap:wrap;align-items:end}.salary-toolbar .field{flex:1;min-width:150px;margin-bottom:0}
+@media(max-width:680px){.salary-breakdown{grid-template-columns:1fr}.salary-record-head{align-items:center}.bottomnav button{font-size:9.5px}.bottomnav button .ic{font-size:18px}}
 #printArea{display:none;background:white;color:#111}
 @media print{body{background:white}.app,.bottomnav,.fab,.toast,.modal-backdrop{display:none!important}#printArea{display:block!important;padding:20px} #printArea table{width:100%;border-collapse:collapse;font-size:12px}#printArea th,#printArea td{border:1px solid #999;padding:6px}#printArea h1{font-size:20px}}
 </style>
@@ -359,6 +362,61 @@ body{font-size:15px}
     </div>
   </section>
 
+  <!-- Maaş -->
+  <section class="view" id="view-salary">
+    <div class="card" id="salaryLockCard">
+      <div class="salary-lock-icon">🔐</div>
+      <h2 style="text-align:center">Maaş Bölümü Kilitli</h2>
+      <p class="small muted" style="text-align:center;line-height:1.6">Maaş bilgilerini görmek için PIN, şifre veya parmak izinizi kullanın. Şifrenizi unuttuysanız belirlediğiniz kurtarma şifresini girin.</p>
+      <form id="salaryUnlockForm">
+        <div class="field"><label>PIN / Şifre / Kurtarma Şifresi</label><input type="password" id="salaryUnlockCode" autocomplete="current-password" placeholder="Güvenlik kodunuz"></div>
+        <p class="small" id="salaryLockError" style="color:var(--red);min-height:20px"></p>
+        <div class="action-grid"><button class="btn primary" type="submit">Maaşı Aç</button><button class="btn soft hide" id="salaryBiometricBtn" type="button">👆 Parmak İziyle Aç</button></div>
+      </form>
+      <button class="btn soft block" id="salarySecuritySetupBtn" type="button" style="margin-top:9px">Güvenlik Bilgilerini Belirle</button>
+      <p class="tiny muted" style="line-height:1.6;margin-top:10px">Not: Maaş verileri yalnızca bu cihazda saklanır ve GitHub eşitlemesine gönderilmez.</p>
+    </div>
+
+    <div id="salaryContent" class="hide">
+      <div class="card">
+        <div class="row wrap"><h2 style="margin:0">💰 Maaş</h2><span class="chip" id="salaryWorkplaceChip"></span><span class="spacer"></span><button class="btn smallbtn soft" id="lockSalaryBtn" type="button">🔒 Kilitle</button></div>
+        <p class="small muted" id="salaryEmploymentInfo" style="line-height:1.6;margin-top:9px"></p>
+        <div class="action-grid"><button class="btn primary" id="addSalaryRecordBtn" type="button">➕ Maaş Kaydı Ekle</button><button class="btn soft" id="addFutureRightBtn" type="button">🎁 Gelecek Hak Ekle</button></div>
+      </div>
+
+      <div class="card">
+        <h2 style="margin-top:0">🎁 Gelecek Haklar</h2>
+        <div id="futureRightsList"></div>
+      </div>
+
+      <div class="card">
+        <div class="row wrap"><h2 style="margin:0">🧾 Maaş Kayıtları</h2><span class="spacer"></span><span class="chip" id="salaryRecordCount"></span></div>
+        <div class="salary-toolbar" style="margin:11px 0"><div class="field"><label>Yıl</label><select id="salaryYearFilter"></select></div></div>
+        <div id="salaryRecordsList"></div>
+      </div>
+
+      <div class="card">
+        <h2 style="margin-top:0">📊 Toplam Kazanç İstatistikleri</h2>
+        <div class="kpi-grid" id="salaryKpis"></div>
+        <div id="salaryTotals"></div>
+      </div>
+
+      <div class="card">
+        <h2 style="margin-top:0">⚖️ Tazminat</h2>
+        <p class="small muted" style="line-height:1.6">Bugün işten ayrılma/çıkarılma varsayımıyla tahmini hesap yapılır. Kıdem için en az 1 yıl gerekir; ihbar, bildirim süresi kullandırılmazsa esas alınır.</p>
+        <div class="form-grid">
+          <div class="field"><label>Son Aylık Brüt Maaş (₺)</label><input type="number" id="compGross" min="0" step="0.01" inputmode="decimal"></div>
+          <div class="field"><label>Düzenli Yan Hakların Aylık Brüt Karşılığı (₺)</label><input type="number" id="compBenefitsGross" min="0" step="0.01" inputmode="decimal"></div>
+          <div class="field"><label>Kıdem Tazminatı Tavanı (₺)</label><input type="number" id="compCeiling" min="0" step="0.01" inputmode="decimal"></div>
+          <div class="field"><label>&nbsp;</label><button class="btn soft block" id="updateCeilingBtn" type="button">🌐 Tavanı İnternetten Güncelle</button></div>
+        </div>
+        <div class="previewbox" id="compCeilingStatus"></div>
+        <div id="compensationResults" style="margin-top:10px"></div>
+        <p class="tiny muted" style="line-height:1.6">Bu sonuç bilgilendirme amaçlı tahmindir. Kesin tutar; ayrılma nedeni, giydirilmiş brüt ücret, bordro, vergi ve SGK durumuna göre değişir.</p>
+      </div>
+    </div>
+  </section>
+
   <!-- AYARLAR -->
   <section class="view" id="view-settings">
     <div class="card">
@@ -372,27 +430,30 @@ body{font-size:15px}
     <div class="card">
       <h2>Çalışma Ayarları</h2>
       <div class="field"><label>İş Yeri Adı</label><input id="setCompany" placeholder="İş yerinin tam adı"></div>
-      <div class="form-grid">
+      <div class="form-grid time-pair">
         <div class="field"><label>Mesai Başlangıcı</label><input type="time" id="setStart"></div>
         <div class="field"><label>Mesai Bitişi</label><input type="time" id="setEnd"></div>
       </div>
+      <div class="field"><label>İşe Başlama Tarihi</label><input type="date" id="setEmploymentStart"><div class="previewbox" id="employmentDurationInfo" style="margin-top:7px">İşe başlama tarihi girilmedi.</div></div>
       <div class="field"><label>Molalar</label><div id="breaksEditor"></div><button class="btn smallbtn soft" id="addBreakBtn">+ Mola Ekle</button></div>
       <div class="field"><label>Bu ayarlar hangi tarihten itibaren geçerli olsun?</label><input type="date" id="setScheduleFrom"><div class="tiny muted" style="margin-top:5px">Bu tarihten önceki günler eski programla hesaplanır; eski kayıtlarınız bozulmaz.</div></div>
       <div class="field"><label>Program Geçmişi</label><div id="scheduleHistory"></div></div>
-      <div class="form-grid">
+      <div class="form-grid time-pair">
         <div class="field"><label>Akşam Yemek Molası Başlangıcı</label><input type="time" id="setEveningStart"></div>
         <div class="field"><label>Akşam Molası Bitişi (fazla mesai başlangıcı)</label><input type="time" id="setEveningEnd"></div>
+      </div>
+      <div class="form-grid time-pair">
         <div class="field"><label>Gece Molası Başlangıcı (sabahlama)</label><input type="time" id="setNightStart"></div>
         <div class="field"><label>Gece Molası Bitişi</label><input type="time" id="setNightEnd"></div>
       </div>
       <div class="notice">Akşam molası bitmeden çıkarsanız fazla mesai sayılmaz. Gece molası yalnızca gece çalışılırsa düşülür.</div>
       <div class="hr"></div>
-      <div class="form-grid3">
-        <div class="field"><label>İzin Yılı</label><input type="number" id="setLeaveYear" step="1"></div>
-        <div class="field"><label>Toplam Yıllık İzin (gün)</label><input type="number" id="setLeaveTotal" min="0" step="0.5"></div>
+      <div class="field"><label>Yıllık İzin Dönemi</label><select id="setLeaveYear"></select><div class="tiny muted" style="margin-top:5px">Önceki yılın iznini değiştirmek için listeden önceki dönemi seçin.</div></div>
+      <div class="form-grid">
+        <div class="field"><label>Bu Dönemin Yıllık İzni (gün)</label><input type="number" id="setLeaveTotal" min="0" step="0.5"></div>
         <div class="field"><label>Uygulamadan önce kullanılan (gün)</label><input type="number" id="setLeavePrior" min="0" step="0.5"></div>
       </div>
-      <p class="tiny muted">Hafta içi yıllık izin 1 gün, arife 0,5 gün düşürür; bu değeri kayıtta değiştirebilirsiniz.</p>
+      <p class="tiny muted">İşe başlama tarihi girilirse izin dönemleri bu tarihin yıl dönümlerine göre hesaplanır. Hafta içi yıllık izin 1 gün, arife 0,5 gün düşürür; bu değeri kayıtta değiştirebilirsiniz.</p>
       <div class="form-grid">
         <div class="field"><label>Ayın son kaç günündeki fazla mesai sonraki aya aktarılsın?</label><input type="number" id="setCarryLate" min="0" max="31" step="1"></div>
         <div class="field"><label>Aktarılan fazla mesai sonraki ayın kaçıncı gününe kadar kullanılsın?</label><input type="number" id="setCarryUse" min="0" max="28" step="1"></div>
@@ -412,10 +473,12 @@ body{font-size:15px}
     </div>
 
     <div class="card">
-      <h2>🔐 Şifre / Kilit</h2>
-      <p class="small muted" id="passwordStatus" style="line-height:1.6">Şifre ayarlı değil.</p>
-      <div class="row wrap"><button class="btn primary" id="setPasswordBtn">🔑 Şifre oluştur / değiştir</button><button class="btn soft hide" id="removePasswordBtn">Şifreyi kaldır</button><button class="btn soft hide" id="lockNowBtn">🔒 Şimdi kilitle</button></div>
-      <p class="tiny muted" style="line-height:1.6">Kilit kayıtların görünmesini engeller, ancak veriyi şifrelemez. Şifrenizi unutursanız yedeğinizi kullanın.</p>
+      <h2>🔐 Güvenlik / Kilit</h2>
+      <p class="small muted" id="passwordStatus" style="line-height:1.6">Güvenlik ayarlı değil.</p>
+      <div class="security-methods" id="securityMethods"></div>
+      <label class="chip" style="display:flex;margin:9px 0"><input type="checkbox" id="twoFactorToggle"> İki aşamalı doğrulama kullan <span class="tiny muted">(önce PIN/şifre, sonra parmak izi)</span></label>
+      <div class="row wrap"><button class="btn primary" id="setPasswordBtn">🔑 Güvenlik bilgilerini belirle / değiştir</button><button class="btn soft" id="registerBiometricBtn">👆 Parmak izini kaydet</button><button class="btn soft hide" id="removeBiometricBtn">Parmak izini kaldır</button><button class="btn soft hide" id="removePasswordBtn">Kilidi kaldır</button><button class="btn soft hide" id="lockNowBtn">🔒 Şimdi kilitle</button></div>
+      <p class="tiny muted" style="line-height:1.6">Bu bilgiler uygulama girişinde ve Maaş menüsünde kullanılır. Kilit kayıtların görünmesini engeller; cihaz depolamasını teknik olarak şifrelemez. Kurtarma şifrenizi güvenli bir yerde saklayın.</p>
     </div>
 
     <div class="card">
@@ -447,7 +510,7 @@ body{font-size:15px}
   <button data-view="calendar"><span class="ic">📅</span>Takvim</button>
   <button data-view="records"><span class="ic">📋</span>Kayıtlar</button>
   <button data-view="report"><span class="ic">📊</span>Rapor</button>
-  <button data-view="settings"><span class="ic">⚙️</span>Ayarlar</button>
+  <button data-view="salary"><span class="ic">💰</span>Maaş</button><button data-view="settings"><span class="ic">⚙️</span>Ayarlar</button>
 </nav>
 
 <!-- EDİTÖR -->
@@ -540,22 +603,67 @@ body{font-size:15px}
   <form class="lockbox" id="lockForm">
     <div class="logo">⏱️</div>
     <h2 style="margin:0 0 6px">Uygulama Kilitli</h2>
-    <p class="muted small">Devam etmek için şifrenizi girin.</p>
-    <input type="password" id="lockPassword" autocomplete="current-password" placeholder="Şifre">
+    <p class="muted small">PIN, şifre veya kurtarma şifrenizi girin.</p>
+    <input type="password" id="lockPassword" autocomplete="current-password" placeholder="PIN / Şifre / Kurtarma şifresi">
     <p class="small" id="lockError" style="color:var(--red);min-height:20px"></p>
     <button class="btn primary block" type="submit">Aç</button>
+    <button class="btn soft block hide" id="lockBiometricBtn" type="button" style="margin-top:8px">👆 Parmak İziyle Aç</button>
   </form>
 </div>
 
 <!-- ŞİFRE OLUŞTUR -->
 <div class="modal-backdrop" id="passwordSetupBackdrop" style="z-index:210">
   <div class="modal">
-    <div class="row"><h2 style="margin:0">🔐 Şifre oluştur</h2><span class="spacer"></span><button class="icon-btn" id="closePasswordSetupBtn" type="button">✕</button></div>
-    <p class="small muted" style="line-height:1.6">Uygulama girişi için şifre belirleyin.</p>
-    <div class="field"><label>Yeni şifre (en az 4 karakter)</label><input type="password" id="newPassword" autocomplete="new-password"></div>
-    <div class="field"><label>Yeni şifre tekrar</label><input type="password" id="newPassword2" autocomplete="new-password"></div>
+    <div class="row"><h2 style="margin:0">🔐 Güvenlik bilgileri</h2><span class="spacer"></span><button class="icon-btn" id="closePasswordSetupBtn" type="button">✕</button></div>
+    <p class="small muted" style="line-height:1.6">Uygulama girişi ve Maaş bölümü için kullanılacak bilgileri belirleyin. Var olan güvenlikte yalnızca değiştirmek istediğiniz alanları doldurun.</p>
+    <div class="form-grid">
+      <div class="field"><label>Giriş şifresi (en az 4 karakter)</label><input type="password" id="newPassword" autocomplete="new-password"></div>
+      <div class="field"><label>Giriş şifresi tekrar</label><input type="password" id="newPassword2" autocomplete="new-password"></div>
+      <div class="field"><label>Yedek PIN (4–6 rakam)</label><input type="password" id="newPin" autocomplete="new-password" inputmode="numeric" placeholder="örn. 2468"></div>
+      <div class="field"><label>Yedek PIN tekrar</label><input type="password" id="newPin2" autocomplete="new-password" inputmode="numeric"></div>
+      <div class="field"><label>Kurtarma şifresi (en az 8 karakter)</label><input type="password" id="newRecovery" autocomplete="new-password"></div>
+      <div class="field"><label>Kurtarma şifresi tekrar</label><input type="password" id="newRecovery2" autocomplete="new-password"></div>
+    </div>
+    <label class="chip" style="display:flex;margin:8px 0"><input type="checkbox" id="newTwoFactor"> İki aşamalı doğrulama (PIN/şifre + parmak izi)</label>
+    <p class="tiny muted" style="line-height:1.6">İlk kurulumda şifre, yedek PIN ve kurtarma şifresi zorunludur. Parmak izini kaydettikten sonra iki aşamalı doğrulama kullanılabilir.</p>
     <p class="small" id="passwordSetupError" style="color:var(--red)"></p>
-    <div class="action-grid"><button class="btn primary" id="savePasswordSetupBtn" type="button">Şifreyi Kaydet</button><button class="btn soft" id="skipPasswordSetupBtn" type="button">Şimdilik geç</button></div>
+    <div class="action-grid"><button class="btn primary" id="savePasswordSetupBtn" type="button">Güvenliği Kaydet</button><button class="btn soft" id="skipPasswordSetupBtn" type="button">Şimdilik geç</button></div>
+  </div>
+</div>
+
+<!-- Maaş KAYDI -->
+<div class="modal-backdrop" id="salaryRecordBackdrop">
+  <div class="modal">
+    <div class="row"><h2 style="margin:0" id="salaryRecordTitle">💰 Maaş Kaydı Ekle</h2><span class="spacer"></span><button class="icon-btn" id="closeSalaryRecordBtn" type="button">✕</button></div>
+    <input type="hidden" id="salaryRecordId">
+    <div class="field"><label>Yıl / Ay</label><input type="month" id="salaryMonth"></div>
+    <div class="form-grid">
+      <div class="field"><label>Net Maaş (₺)</label><input type="number" id="salaryNet" min="0" step="0.01" inputmode="decimal"></div>
+      <div class="field"><label>Brüt Maaş (₺)</label><input type="number" id="salaryGross" min="0" step="0.01" inputmode="decimal"></div>
+      <div class="field"><label>Vergi İadesi (₺)</label><input type="number" id="salaryTaxRefund" min="0" step="0.01" inputmode="decimal"></div>
+      <div class="field"><label>Yan Haklar (₺)</label><input type="number" id="salaryBenefits" min="0" step="0.01" inputmode="decimal"></div>
+      <div class="field"><label>Diğer Ödeme (₺)</label><input type="number" id="salaryOther" min="0" step="0.01" inputmode="decimal"></div>
+      <div class="field"><label>Bu Ay Elinize Geçen Toplam</label><div class="previewbox money" id="salaryRecordTotalPreview">₺0</div></div>
+    </div>
+    <div class="field"><label>Not</label><textarea id="salaryNote" rows="2" placeholder="İkramiye, zam, yan hak açıklaması vb."></textarea></div>
+    <p class="small" id="salaryRecordError" style="color:var(--red)"></p>
+    <div class="action-grid"><button class="btn primary" id="saveSalaryRecordBtn" type="button">Kaydet</button><button class="btn soft" id="cancelSalaryRecordBtn" type="button">Vazgeç</button></div>
+  </div>
+</div>
+
+<!-- GELECEK HAK -->
+<div class="modal-backdrop" id="futureRightBackdrop">
+  <div class="modal">
+    <div class="row"><h2 style="margin:0" id="futureRightTitle">🎁 Gelecek Hak Ekle</h2><span class="spacer"></span><button class="icon-btn" id="closeFutureRightBtn" type="button">✕</button></div>
+    <input type="hidden" id="futureRightId">
+    <div class="field"><label>Hak Adı</label><input id="futureRightName" placeholder="örn. 0,5 Maaş İkramiyesi"></div>
+    <div class="form-grid">
+      <div class="field"><label>Hak Tarihi</label><input type="date" id="futureRightDate"></div>
+      <div class="field"><label>Tahmini Tutar (₺, isteğe bağlı)</label><input type="number" id="futureRightAmount" min="0" step="0.01" inputmode="decimal"></div>
+    </div>
+    <div class="field"><label>Not</label><textarea id="futureRightNote" rows="2"></textarea></div>
+    <p class="small" id="futureRightError" style="color:var(--red)"></p>
+    <div class="action-grid"><button class="btn primary" id="saveFutureRightBtn" type="button">Kaydet</button><button class="btn soft" id="cancelFutureRightBtn" type="button">Vazgeç</button></div>
   </div>
 </div>
 
@@ -668,6 +776,7 @@ function normalizeState(){
       bankOpeningMin:Number(state.settings.bankOpeningMin||0),
       bankOpeningDate:state.settings.bankOpeningDate||"",
       leaveEntitlements:JSON.parse(JSON.stringify(state.settings.leaveEntitlements||{})),
+      leavePeriods:{}, employmentStartDate:"",
       schedules:[scheduleFromGlobalSettings("2000-01-01")]
     }];
     state.activeWorkplaceId=defaultId;
@@ -678,6 +787,8 @@ function normalizeState(){
     if(wp.bankOpeningMin===undefined) wp.bankOpeningMin=0;
     if(wp.bankOpeningDate===undefined) wp.bankOpeningDate="";
     if(!wp.leaveEntitlements) wp.leaveEntitlements={};
+    if(!wp.leavePeriods||typeof wp.leavePeriods!=="object") wp.leavePeriods={};
+    if(wp.employmentStartDate===undefined) wp.employmentStartDate="";
     if(!Array.isArray(wp.schedules)||!wp.schedules.length) wp.schedules=[scheduleFromGlobalSettings("2000-01-01")];
     wp.schedules.sort((a,b)=>a.effectiveFrom<b.effectiveFrom?-1:1);
   });
@@ -993,6 +1104,49 @@ function annualLeaveStats(year,workplaceId){
   entryValues(wpId).forEach(en=>{const ds=en.date; if(ds.startsWith(year+"-")){const a=annualLeaveAmountFor(ds,en); if(a>0){appUsed+=a;dates.push(ds);}} });
   return {year,workplaceId:wpId,total,priorUsed,appUsed,used:priorUsed+appUsed,remaining:total-priorUsed-appUsed,dates};
 }
+function utcDateValue(dateStr){const[y,m,d]=String(dateStr).slice(0,10).split("-").map(Number);return Date.UTC(y,(m||1)-1,d||1);}
+function dateDiffDays(fromDate,toDate){if(!fromDate||!toDate)return null;return Math.round((utcDateValue(toDate)-utcDateValue(fromDate))/86400000);}
+function monthDayCount(year,month){return new Date(Date.UTC(year,month,0)).getUTCDate();}
+function addMonthsClamped(dateStr,months){if(!dateStr)return "";let[y,m,d]=dateStr.slice(0,10).split("-").map(Number);const total=(y*12+(m-1))+Number(months||0);y=Math.floor(total/12);m=total%12+1;d=Math.min(d,monthDayCount(y,m));return y+"-"+pad(m)+"-"+pad(d);}
+function addYearsClamped(dateStr,years){return addMonthsClamped(dateStr,Number(years||0)*12);}
+function employmentInfo(workplaceId,asOf){
+  const wp=workplaceById(workplaceId||activeWorkplaceId()); const start=wp&&wp.employmentStartDate; asOf=asOf||todayStr();
+  if(!start)return null;
+  const elapsedDays=dateDiffDays(start,asOf);
+  let fullYears=0; while(addYearsClamped(start,fullYears+1)<=asOf)fullYears++;
+  let fullMonths=0; while(addMonthsClamped(start,fullMonths+1)<=asOf)fullMonths++;
+  const afterMonths=addMonthsClamped(start,fullMonths); const remainderDays=Math.max(0,dateDiffDays(afterMonths,asOf));
+  const periodStart=addYearsClamped(start,fullYears); const nextAnniversary=addYearsClamped(start,fullYears+1); const periodEnd=addDays(nextAnniversary,-1);
+  return {workplaceId:wp.id,start,asOf,elapsedDays,dayNumber:elapsedDays>=0?elapsedDays+1:0,fullYears,fullMonths,remainderDays,periodStart,periodEnd,nextAnniversary,daysToNextAnniversary:dateDiffDays(asOf,nextAnniversary),currentEmploymentYear:fullYears+1};
+}
+function employmentDurationText(info){
+  if(!info)return "İşe başlama tarihi girilmedi";
+  if(info.elapsedDays<0)return "İşe başlama tarihine "+Math.abs(info.elapsedDays)+" gün var";
+  const years=Math.floor(info.fullMonths/12), months=info.fullMonths%12, parts=[];
+  if(years)parts.push(years+" yıl"); if(months)parts.push(months+" ay"); if(info.remainderDays||!parts.length)parts.push(info.remainderDays+" gün");
+  return parts.join(" ")+" • toplam "+info.dayNumber.toLocaleString("tr-TR")+". gün";
+}
+function statutoryLeaveDays(completedYears){completedYears=Number(completedYears||0);if(completedYears<1)return 0;if(completedYears<=5)return 14;if(completedYears<15)return 20;return 26;}
+function leavePeriodsForWorkplace(wp,asOf){
+  if(!wp||!wp.employmentStartDate)return [];
+  asOf=asOf||todayStr(); const info=employmentInfo(wp.id,asOf); const maxIndex=Math.max(1,(info?info.fullYears:0)+1); const periods=[];
+  for(let i=1;i<=maxIndex;i++){const start=addYearsClamped(wp.employmentStartDate,i);periods.push({index:i,start,end:addDays(addYearsClamped(wp.employmentStartDate,i+1),-1),key:start});}
+  return periods;
+}
+function leavePeriodEntitlement(wp,period){
+  if(!wp||!period)return {total:14,priorUsed:0};
+  const stored=(wp.leavePeriods||{})[period.key]; const legacy=(wp.leaveEntitlements||{})[String(Number(period.start.slice(0,4)))]||{};
+  return {total:Number(stored?.total??legacy.total??statutoryLeaveDays(period.index)),priorUsed:Number(stored?.priorUsed??legacy.priorUsed??0)};
+}
+function leaveBalanceStats(workplaceId,asOf,options){
+  const wpId=workplaceId||activeWorkplaceId(); const wp=workplaceById(wpId); asOf=asOf||todayStr(); options=options||{};
+  if(!wp||!wp.employmentStartDate){const legacy=annualLeaveStats(Number(asOf.slice(0,4)),wpId);return {...legacy,periodBased:false,employment:null,nextLeaveDate:"",daysToNextLeave:null,periodLabel:String(legacy.year)};}
+  const emp=employmentInfo(wpId,asOf); const periods=leavePeriodsForWorkplace(wp,asOf); const earned=periods.filter(p=>p.start<=asOf);
+  let total=0,priorUsed=0; earned.forEach(p=>{const e=leavePeriodEntitlement(wp,p);total+=e.total;priorUsed+=e.priorUsed;});
+  const currentPeriod=earned.length?earned[earned.length-1]:null; const cutoff=options.includePlanned&&currentPeriod?currentPeriod.end:asOf;
+  let appUsed=0; const dates=[]; entryValues(wpId).forEach(en=>{if(en.date>=wp.employmentStartDate&&en.date<=cutoff){const a=annualLeaveAmountFor(en.date,en);if(a>0){appUsed+=a;dates.push(en.date);}}});
+  return {year:Number(asOf.slice(0,4)),workplaceId:wpId,total,priorUsed,appUsed,used:priorUsed+appUsed,remaining:total-priorUsed-appUsed,dates,periodBased:true,employment:emp,periods:earned,currentPeriod,nextLeaveDate:emp?emp.nextAnniversary:"",daysToNextLeave:emp?emp.daysToNextAnniversary:null,periodLabel:currentPeriod?(fmtDateShort(currentPeriod.start)+" – "+fmtDateShort(currentPeriod.end)):"İlk izin hakkı bekleniyor"};
+}
 function bankEquivText(balance){
   const tgt=dailyTargetMin()||540;
   if(balance>0){const full=Math.floor(balance/tgt);const rem=balance-full*tgt;return "≈ "+(full?full+" tam gün":"")+(full&&rem?" + ":"")+(rem?fmtMin(rem):"")+" izin (gün = "+fmtMin(tgt)+")";}
@@ -1040,9 +1194,10 @@ function showView(name){
   document.querySelectorAll(".view").forEach(v=>v.classList.remove("active"));
   $("view-"+name).classList.add("active");
   document.querySelectorAll(".bottomnav button").forEach(b=>b.classList.toggle("active",b.dataset.view===name));
-  $("fabBtn").style.display=(name==="settings")?"none":"block";
+  $("fabBtn").style.display=(name==="settings"||name==="salary")?"none":"block";
   window.scrollTo({top:0,behavior:"smooth"});
   if(name==="report") setTimeout(()=>{drawDailyChart();renderStats(Number(viewMonth.slice(0,4)));},60);
+  if(name==="salary") handleSalaryView();
   if(name==="settings") fillSettings();
 }
 document.querySelectorAll(".bottomnav button").forEach(b=>b.addEventListener("click",()=>showView(b.dataset.view)));
@@ -1129,11 +1284,11 @@ function renderHome(){
     $("bankExpiryInfo").innerHTML="En yakında süresi dolacak fazla mesai: <b>"+fmtMin(bank.lots.filter(l=>l.expiry===nx.expiry).reduce((s,l)=>s+l.amount,0))+"</b> — son kullanma "+fmtDateShort(nx.expiry)+(bank.expired?(" <span class='muted'>• Süresi dolan toplam "+fmtMin(bank.expired)+"</span>"):"");
   } else if(bank.deficit){$("bankExpiryInfo").innerHTML="Eksik mesai: <b>"+fmtMin(-bank.deficit,true)+"</b> — sonraki fazla mesailerle kapatılacak.";}
   else $("bankExpiryInfo").textContent=bank.expired?("Süresi dolan toplam fazla mesai: "+fmtMin(bank.expired)):"";
-  const al=annualLeaveStats(new Date().getFullYear());
-  $("annualYearChip").textContent=al.year;
+  const al=leaveBalanceStats(activeWorkplaceId(),todayStr(),{includePlanned:true});
+  $("annualYearChip").textContent=al.periodBased?(al.daysToNextLeave===0?"Bugün hak doğuyor":al.daysToNextLeave+" gün kaldı"):al.year;
   $("annualRemaining").textContent=(al.remaining%1?al.remaining.toFixed(1).replace(".",","):al.remaining)+" gün";
   $("annualRemaining").style.color=al.remaining<0?"var(--red)":"var(--green)";
-  $("annualDetail").textContent="Toplam "+al.total+" gün • Kullanılan "+(al.used%1?al.used.toFixed(1).replace(".",","):al.used)+" gün";
+  $("annualDetail").textContent=al.periodBased?("Dönem: "+al.periodLabel+" • Hak "+al.total+" gün • Kullanılan "+(al.used%1?al.used.toFixed(1).replace(".",","):al.used)+" gün • Yeni izin: "+fmtDateShort(al.nextLeaveDate)):("Toplam "+al.total+" gün • Kullanılan "+(al.used%1?al.used.toFixed(1).replace(".",","):al.used)+" gün");
   $("annualProgress").style.width=(al.total>0?Math.max(0,Math.min(100,al.used/al.total*100)):0)+"%";
   $("bankEarnedMonth").textContent=fmtMin(st.bankEarnedMonth,true);
   $("bankUsedMonth").textContent=fmtMin(-st.bankUsedMonth,true);
@@ -1329,7 +1484,7 @@ function allTimeAggFor(workplaceId){
 function renderStats(year){
   const wpId=activeWorkplaceId();
   const yi=infosForYear(year,wpId); const a=aggregateInfos(yi.filter(x=>x.date<=todayStr()));
-  const al=annualLeaveStats(year,wpId);
+  const al=annualLeaveStats(year,wpId); const leaveNow=leaveBalanceStats(wpId,todayStr(),{includePlanned:true}); const emp=employmentInfo(wpId);
   const activeAll=allTimeAggFor(wpId);
   const grand=mergeAgg((state.workplaces||[]).map(w=>allTimeAggFor(w.id)));
   const kpis=[
@@ -1339,7 +1494,7 @@ function renderStats(year){
     ["GÜNLÜK ORTALAMA",a.workedDays?fmtMin(a.avg):"—","En uzun: "+(a.workedDays?fmtMin(a.longest):"—")],
     ["SAATLİK İZİN",fmtMin(a.bankUsed),a.recoveryDays+" sabahlama sonrası dinlenme"],
     ["SABAHLAMA",a.nightCount+" kez","Gece çalışılan günler"],
-    ["🏖️ YILLIK İZİN",al.appUsed+" gün","Kalan: "+al.remaining+" / Hak: "+al.total],
+    ["🏖️ YILLIK İZİN",(leaveNow.remaining%1?leaveNow.remaining.toFixed(1).replace(".",","):leaveNow.remaining)+" gün",leaveNow.periodBased?("Yeni izne "+leaveNow.daysToNextLeave+" gün • "+fmtDateShort(leaveNow.nextLeaveDate)):("Kalan: "+leaveNow.remaining+" / Hak: "+leaveNow.total)],
     ["FOTOĞRAF / NOT",a.attachDays+" / "+a.noteDays+" gün","Belge ve günlük notu olan günler"]
   ];
   $("statsKpis").innerHTML=kpis.map(k=>'<div class="kpi"><div class="label">'+k[0]+'</div><div class="value">'+k[1]+'</div><div class="hint">'+k[2]+'</div></div>').join("");
@@ -1348,6 +1503,7 @@ function renderStats(year){
   const best=Math.max(...monthly); const bestIdx=monthly.indexOf(best);
   const valsActive=entryValues(wpId); const valsAll=entryValues();
   $("statsDetail").innerHTML=
+    (emp?'<div class="statline"><span>İşe başlama / bu firmada geçen süre</span><b>'+fmtDateShort(emp.start)+' • '+esc(employmentDurationText(emp))+'</b></div><div class="statline"><span>Yeni yıllık iznin ekleneceği tarih</span><b>'+fmtDateShort(emp.nextAnniversary)+' • '+emp.daysToNextAnniversary+' gün kaldı</b></div>':'')+
     '<div class="statline"><span>En yoğun ay ('+esc(workplaceName(wpId))+')</span><b>'+(best?MONTHS_TR[bestIdx]+" — "+fmtMin(best):"—")+'</b></div>'+
     '<div class="statline"><span>Seçili iş yeri — tüm zamanlar fazla / eksik</span><b>+'+fmtMin(activeAll.earned)+" / "+fmtMin(-activeAll.uncovered,true)+'</b></div>'+
     '<div class="statline"><span>Seçili iş yeri — toplam çalışma</span><b>'+fmtMin(activeAll.net)+" ("+activeAll.workedDays+' gün)</b></div>'+
@@ -1402,12 +1558,33 @@ function drawDailyChart(){
 }
 
 /* ========== AYARLAR ========== */
-function fillLeaveEntitlement(year){
-  const wp=activeWorkplace();
-  const ent=((wp&&wp.leaveEntitlements)||state.settings.leaveEntitlements||{})[String(year)]||{};
-  $("setLeaveYear").value=year;
-  $("setLeaveTotal").value=ent.total??14;
-  $("setLeavePrior").value=ent.priorUsed??0;
+function updateEmploymentDurationInfo(){
+  const wp=activeWorkplace(); const start=$("setEmploymentStart").value;
+  if(!wp||!start){$("employmentDurationInfo").textContent="İşe başlama tarihi girilmedi.";return;}
+  const temp={...wp,employmentStartDate:start}; const old=wp.employmentStartDate; wp.employmentStartDate=start; const info=employmentInfo(wp.id); wp.employmentStartDate=old;
+  $("employmentDurationInfo").innerHTML=info?("İşe başlama: <b>"+fmtDateShort(info.start)+"</b><br>Bu iş yerinde geçen süre: <b>"+esc(employmentDurationText(info))+"</b><br>Yeni yıllık izin: <b>"+fmtDateShort(info.nextAnniversary)+"</b> • <b>"+info.daysToNextAnniversary+" gün kaldı</b>"):"İşe başlama tarihi girilmedi.";
+}
+function fillLeaveEntitlement(selectedKey){
+  const wp=activeWorkplace(); const select=$("setLeaveYear"); if(!wp||!select)return;
+  const start=($("setEmploymentStart").value||wp.employmentStartDate||"");
+  let options=[]; let defaultKey="";
+  if(start){
+    const tempWp={...wp,employmentStartDate:start}; const periods=leavePeriodsForWorkplace(tempWp); const today=todayStr();
+    options=periods.map(p=>({key:"period:"+p.key,label:p.index+". dönem • "+fmtDateShort(p.start)+" – "+fmtDateShort(p.end),period:p}));
+    const current=[...periods].reverse().find(p=>p.start<=today)||periods[0]; defaultKey=current?"period:"+current.key:"";
+    select.innerHTML=options.map(o=>'<option value="'+esc(o.key)+'">'+esc(o.label)+'</option>').join("");
+    select.value=selectedKey&&options.some(o=>o.key===selectedKey)?selectedKey:defaultKey;
+    const selected=options.find(o=>o.key===select.value); if(!selected)return;
+    const ent=leavePeriodEntitlement({...wp,employmentStartDate:start},selected.period);
+    $("setLeaveTotal").value=ent.total??14; $("setLeavePrior").value=ent.priorUsed??0;
+  }else{
+    const currentYear=new Date().getFullYear(); const years=[]; for(let y=currentYear-5;y<=currentYear+1;y++)years.push(y);
+    select.innerHTML=years.map(y=>'<option value="calendar:'+y+'">'+y+' yılı</option>').join("");
+    const requested=selectedKey?String(selectedKey):"calendar:"+currentYear; const desired=requested.startsWith("calendar:")?requested:("calendar:"+(Number(requested)||currentYear));
+    select.value=years.some(y=>"calendar:"+y===desired)?desired:"calendar:"+currentYear;
+    const year=Number(select.value.split(":")[1]); const ent=((wp.leaveEntitlements)||state.settings.leaveEntitlements||{})[String(year)]||{};
+    $("setLeaveTotal").value=ent.total??14; $("setLeavePrior").value=ent.priorUsed??0;
+  }
 }
 function fillSettings(){
   renderWorkplaceSelector();
@@ -1416,12 +1593,13 @@ function fillSettings(){
   state.settings.start=sched.start;state.settings.end=sched.end;state.settings.breaks=cloneSchedule(sched).breaks;state.settings.weekend=[...(sched.weekend||[6,0])];
   state.settings.eveningBreak={...sched.eveningBreak};state.settings.nightBreak={...sched.nightBreak};
   $("setCompany").value=wp?wp.name:(state.settings.company||"");
+  $("setEmploymentStart").value=wp?wp.employmentStartDate||"":""; updateEmploymentDurationInfo();
   $("setStart").value=sched.start; $("setEnd").value=sched.end;
   $("setScheduleFrom").value=todayStr();
   $("setEveningStart").value=sched.eveningBreak.s; $("setEveningEnd").value=sched.eveningBreak.e;
   $("setNightStart").value=sched.nightBreak.s; $("setNightEnd").value=sched.nightBreak.e;
   $("setCarryLate").value=sched.carryLateDays??14; $("setCarryUse").value=sched.carryUseDays??7;
-  fillLeaveEntitlement(new Date().getFullYear());
+  fillLeaveEntitlement();
   fillSyncSettings(); updatePasswordUI();
   document.querySelectorAll(".weekendChk").forEach(c=>c.checked=(sched.weekend||[]).includes(Number(c.value)));
   renderBreaksEditor(); renderScheduleHistory();
@@ -1453,7 +1631,8 @@ function renderBreaksEditor(){
 }
 function removeBreak(i){state.settings.breaks.splice(i,1);renderBreaksEditor();}
 $("addBreakBtn").onclick=()=>{state.settings.breaks.push({label:"Mola",s:"16:00",e:"16:10"});renderBreaksEditor();};
-$("setLeaveYear").addEventListener("change",()=>fillLeaveEntitlement(Number($("setLeaveYear").value||new Date().getFullYear())));
+$("setEmploymentStart").addEventListener("change",()=>{updateEmploymentDurationInfo();fillLeaveEntitlement();});
+$("setLeaveYear").addEventListener("change",()=>fillLeaveEntitlement($("setLeaveYear").value));
 $("saveSettingsBtn").onclick=()=>{
   const wp=activeWorkplace(); if(!wp){toast("Önce bir iş yeri seçin");return;}
   const effectiveFrom=$("setScheduleFrom").value||todayStr();
@@ -1478,9 +1657,12 @@ $("saveSettingsBtn").onclick=()=>{
   state.settings.carryLateDays=newSchedule.carryLateDays;state.settings.carryUseDays=newSchedule.carryUseDays;
   // Önceden girilmiş açılış değeri varsa eski kayıtlar bozulmasın diye korunur.
   state.settings.bankOpeningMin=Number(wp.bankOpeningMin||0);state.settings.bankOpeningDate=wp.bankOpeningDate||"";
-  const ly=String(Number($("setLeaveYear").value||new Date().getFullYear()));
+  wp.employmentStartDate=$("setEmploymentStart").value||"";
+  const leaveKey=$("setLeaveYear").value||"";
   if(!wp.leaveEntitlements)wp.leaveEntitlements={};
-  wp.leaveEntitlements[ly]={total:Number($("setLeaveTotal").value||14),priorUsed:Number($("setLeavePrior").value||0)};
+  if(!wp.leavePeriods)wp.leavePeriods={};
+  if(leaveKey.startsWith("period:")) wp.leavePeriods[leaveKey.slice(7)]={total:Number($("setLeaveTotal").value||0),priorUsed:Number($("setLeavePrior").value||0)};
+  else {const ly=String(Number(leaveKey.split(":")[1]||new Date().getFullYear()));wp.leaveEntitlements[ly]={total:Number($("setLeaveTotal").value||14),priorUsed:Number($("setLeavePrior").value||0)};}
   state.settings.leaveEntitlements=wp.leaveEntitlements;
   if(scheduleChanged) upsertSchedule(wp,newSchedule);
   saveState(); fillSettings();
@@ -1492,7 +1674,7 @@ function refreshWorkplaceManager(){
   box.innerHTML=(state.workplaces||[]).map(w=>{
     const count=entryValues(w.id).length;
     const isCurrent=w.id===current;
-    const status=w.archived?"Arşivde":(isCurrent?"Seçili iş yeri":"İş yeri");
+    const emp=employmentInfo(w.id); const status=(w.archived?"Arşivde":(isCurrent?"Seçili iş yeri":"İş yeri"))+(emp?(" • "+fmtDateShort(emp.start)+" • "+employmentDurationText(emp)):"");
     return '<div class="workplace-item"><div class="workplace-item-main"><b>'+esc(w.name)+'</b><span class="tiny muted">'+status+' • '+count+' kayıt</span></div><div class="workplace-actions">'
       +(!isCurrent&&!w.archived?'<button class="btn smallbtn soft" type="button" onclick="selectWorkplaceFromManager(\''+esc(w.id)+'\')">Seç</button>':"")
       +'<button class="btn smallbtn soft" type="button" onclick="toggleWorkplaceArchive(\''+esc(w.id)+'\')">'+(w.archived?"Arşivden Çıkar":"Arşivle")+'</button>'
@@ -1534,6 +1716,7 @@ function deleteWorkplaceById(id){
   const wasActive=activeWorkplaceId()===id;
   state.workplaces=state.workplaces.filter(w=>w.id!==id);
   if(wasActive){const next=state.workplaces.find(w=>!w.archived)||state.workplaces[0];state.activeWorkplaceId=next.id;}
+  deleteSalaryWorkplaceData(id);
   saveState(); fillSettings(); refreshWorkplaceManager(); toast("İş yeri silindi");
 }
 function addWorkplaceFromManager(){
@@ -1541,7 +1724,7 @@ function addWorkplaceFromManager(){
   if(!name){toast("İş yeri adı yazın");$("newWorkplaceName").focus();return;}
   const base=activeWorkplace(); const sched=base?currentSchedule(base.id):scheduleFromGlobalSettings(todayStr());
   const id="wp_"+Date.now().toString(36)+Math.random().toString(36).slice(2,6);
-  state.workplaces.push({id,name,archived:false,createdAt:new Date().toISOString(),bankOpeningMin:0,bankOpeningDate:"",leaveEntitlements:{},schedules:[{...cloneSchedule(sched),effectiveFrom:todayStr()}]});
+  state.workplaces.push({id,name,archived:false,createdAt:new Date().toISOString(),bankOpeningMin:0,bankOpeningDate:"",leaveEntitlements:{},leavePeriods:{},employmentStartDate:"",schedules:[{...cloneSchedule(sched),effectiveFrom:todayStr()}]});
   state.activeWorkplaceId=id; $("newWorkplaceName").value="";
   saveState(); fillSettings(); refreshWorkplaceManager(); toast("İş yeri eklendi: "+name);
 }
@@ -1652,7 +1835,7 @@ function editorPreviewUpdate(){
   }
   if(["yillik_izin","sirket_izni"].includes(type)){
     const sel=$("fLeaveDays").value; const tmpE={type,workplaceId:editorWp,leaveDays:sel==="auto"?"":Number(sel)};
-    const amt=annualLeaveAmountFor(date,tmpE); const ys=annualLeaveStats(Number(date.slice(0,4)),editorWp);
+    const amt=annualLeaveAmountFor(date,tmpE); const ys=leaveBalanceStats(editorWp,date,{includePlanned:true});
     const oldEntry=getEntry(date,editorWp); const oldAmt=oldEntry&&["yillik_izin","sirket_izni"].includes(oldEntry.type)?annualLeaveAmountFor(date,oldEntry):0;
     const lbl="<b>"+TYPES[type].label+"</b>";
     $("editorPreview").innerHTML=lbl+" — yıllık izinden <b>"+String(amt).replace(".",",")+" gün</b> düşecek. Kaydettikten sonra kalan yıllık izin: <b>"+String(ys.remaining+oldAmt-amt).replace(".",",")+" gün</b>.";
@@ -1766,7 +1949,7 @@ $("saveEntryBtn").onclick=async()=>{
   stagedNewAttachmentIds=[];stagedDeletedAttachmentIds=[];
   saveState(); stagedAttachments=[];$("editorBackdrop").classList.remove("open");
   toast("Kayıt kaydedildi: "+fmtDateShort(date));
-  if(["yillik_izin","sirket_izni"].includes(type)){const ys=annualLeaveStats(Number(date.slice(0,4)),wpId); setTimeout(()=>toast("Kalan yıllık izin: "+ys.remaining+" gün"),350);}
+  if(["yillik_izin","sirket_izni"].includes(type)){const ys=leaveBalanceStats(wpId,date,{includePlanned:true}); setTimeout(()=>toast("Kalan yıllık izin: "+ys.remaining+" gün"),350);}
   if(type==="calisma"&&entry.end&&isAllNighterEntry(entry)) maybeOfferRecovery(date,wpId);
 };
 function maybeOfferRecovery(date,workplaceId){
@@ -1853,7 +2036,7 @@ function buildMonthlyCsv(ym,workplaceId){
   return "\ufeff"+[head,...rows].map(r=>r.join(";")).join("\r\n");
 }
 function buildMonthlyMarkdown(ym,workplaceId){
-  const wpId=workplaceId||activeWorkplaceId(); const st=monthStats(ym,wpId); const bank=allTimeBank(null,todayStr(),wpId); const al=annualLeaveStats(Number(ym.slice(0,4)),wpId);
+  const wpId=workplaceId||activeWorkplaceId(); const st=monthStats(ym,wpId); const bank=allTimeBank(null,todayStr(),wpId); const al=leaveBalanceStats(wpId,ym+"-01",{includePlanned:true});
   const[y,m]=ym.split("-").map(Number);
   let md="# Mesai Raporu — "+MONTHS_TR[m-1]+" "+y+"\\n\\n";
   md+="- İş yeri: **"+workplaceName(wpId)+"**\n- Toplam çalışma: **"+fmtMin(st.netAll)+"** ("+st.workedDays+" gün)\n- Ay hedefi: **"+fmtMin(st.targetAll)+"**\n- Fazla mesai: **"+fmtMin(st.fazla,true)+"**\n- Eksik mesai: **"+fmtMin(-st.eksik,true)+"**\n- Ay farkı (bugüne kadar): **"+fmtMin(st.balance,true)+"**\n- Kullanılabilir fazla mesai: **"+fmtMin(bank.balance,true)+"**\n- Kalan yıllık izin ("+y+"): **"+al.remaining+" gün**\n\n";
@@ -1868,7 +2051,7 @@ function buildPrint(){
   const st=monthStats(viewMonth); const[y,m]=viewMonth.split("-").map(Number);
   const bankAll=allTimeBank();
   const rows=st.days.map(i=>{const e=i.entry||{};return "<tr><td>"+fmtDateShort(i.date)+" "+DAYS_TR[parseDateStr(i.date).getDay()]+"</td><td>"+(e.start||"—")+"</td><td>"+(e.end||"—")+"</td><td>"+(e.breakMin??"")+"</td><td>"+(i.net!==null?fmtMin(i.net):"—")+"</td><td>"+(i.bankUsed?fmtMin(i.bankUsed):"")+"</td><td>"+fmtMin(i.target)+"</td><td>"+(i.diff===null?"—":fmtMin(i.diff,true))+"</td><td>"+(e.type?TYPES[e.type].label:(i.holiday?"Resmi Tatil":i.isWeekend?"Hafta Tatili":"—"))+"</td><td>"+esc(e.note||"")+"</td></tr>";}).join("");
-  $("printArea").innerHTML="<h1>Mesai Raporu — "+MONTHS_TR[m-1]+" "+y+"</h1><p>"+esc(workplaceName())+"<br>Toplam çalışma: <b>"+fmtMin(st.netAll)+"</b> • Ay hedefi: <b>"+fmtMin(st.targetAll)+"</b> • Ay farkı (bugüne kadar): <b>"+fmtMin(st.balance,true)+"</b> • Fazla mesai: <b>"+fmtMin(st.fazla,true)+"</b> • Eksik mesai: <b>"+fmtMin(-st.eksik,true)+"</b><br>Bu ay fazla mesai: <b>"+fmtMin(st.bankEarnedMonth,true)+"</b> • Bu ay saatlik izin: <b>"+fmtMin(-st.bankUsedMonth,true)+"</b> • <b>Kullanılabilir fazla mesai: "+fmtMin(bankAll.balance,true)+"</b> • Kalan yıllık izin: <b>"+annualLeaveStats(y).remaining+" gün</b></p><table><thead><tr><th>Tarih</th><th>Giriş</th><th>Çıkış</th><th>Mola (dk)</th><th>Çalışma</th><th>Saatlik İzin</th><th>Hedef</th><th>Fark</th><th>Kayıt Türü</th><th>Not</th></tr></thead><tbody>"+rows+"</tbody></table>";
+  $("printArea").innerHTML="<h1>Mesai Raporu — "+MONTHS_TR[m-1]+" "+y+"</h1><p>"+esc(workplaceName())+"<br>Toplam çalışma: <b>"+fmtMin(st.netAll)+"</b> • Ay hedefi: <b>"+fmtMin(st.targetAll)+"</b> • Ay farkı (bugüne kadar): <b>"+fmtMin(st.balance,true)+"</b> • Fazla mesai: <b>"+fmtMin(st.fazla,true)+"</b> • Eksik mesai: <b>"+fmtMin(-st.eksik,true)+"</b><br>Bu ay fazla mesai: <b>"+fmtMin(st.bankEarnedMonth,true)+"</b> • Bu ay saatlik izin: <b>"+fmtMin(-st.bankUsedMonth,true)+"</b> • <b>Kullanılabilir fazla mesai: "+fmtMin(bankAll.balance,true)+"</b> • Kalan yıllık izin: <b>"+leaveBalanceStats(activeWorkplaceId(),todayStr(),{includePlanned:true}).remaining+" gün</b></p><table><thead><tr><th>Tarih</th><th>Giriş</th><th>Çıkış</th><th>Mola (dk)</th><th>Çalışma</th><th>Saatlik İzin</th><th>Hedef</th><th>Fark</th><th>Kayıt Türü</th><th>Not</th></tr></thead><tbody>"+rows+"</tbody></table>";
 }
 $("printBtn").onclick=()=>{buildPrint();window.print();};
 $("uploadReportBtn").onclick=uploadReportToGithub;
@@ -2212,10 +2395,10 @@ async function maybeAutoPull(){const cfg=loadSyncConfig(); if(cfg.autoPull&&cfg.
 
 /* ========== VERİLERİ TEMİZLE ========== */
 $("clearAllBtn").onclick=async()=>{
-  if(!confirm("Tüm iş yerlerindeki tüm kayıtlar silinsin mi?\nBu işlem geri alınamaz."))return;
+  if(!confirm("Tüm iş yerlerindeki mesai ve Maaş kayıtları silinsin mi?\nBu işlem geri alınamaz."))return;
   if(!confirm("Emin misiniz?"))return;
   const allMeta=entryValues().flatMap(e=>e.attachments||[]);
-  state.entries={};saveState();await deleteAttachmentsByMeta(allMeta);toast("Tüm kayıtlar ve dosyalar silindi");
+  state.entries={};clearSalaryData();saveState();await deleteAttachmentsByMeta(allMeta);toast("Tüm kayıtlar ve dosyalar silindi");
 };
 
 /* ========== ARİFE SORUSU (o gün gelince sor) ========== */
@@ -2268,46 +2451,147 @@ async function hashPassword(password,salt){
   return "fallback-"+(h1>>>0).toString(16)+"-"+(h2>>>0).toString(16);
 }
 function makeSalt(){try{return [...crypto.getRandomValues(new Uint8Array(16))].map(b=>b.toString(16).padStart(2,"0")).join("");}catch(e){return Date.now()+"-"+Math.random();}}
+let pendingAppCodeMethod=null; let recoveryUsedNext=false;
+function bytesToHex(bytes){return [...new Uint8Array(bytes)].map(b=>b.toString(16).padStart(2,"0")).join("");}
+function bytesToB64Url(bytes){let s="";new Uint8Array(bytes).forEach(b=>s+=String.fromCharCode(b));return btoa(s).replace(/\+/g,"-").replace(/\//g,"_").replace(/=+$/,"");}
+function b64UrlToBytes(value){const s=String(value||"").replace(/-/g,"+").replace(/_/g,"/");const padded=s+"=".repeat((4-s.length%4)%4);const bin=atob(padded);const out=new Uint8Array(bin.length);for(let i=0;i<bin.length;i++)out[i]=bin.charCodeAt(i);return out.buffer;}
+async function deriveSecretHash(secret,salt,iterations){
+  iterations=Number(iterations||210000);
+  if(window.crypto&&crypto.subtle&&crypto.subtle.importKey){
+    try{const key=await crypto.subtle.importKey("raw",new TextEncoder().encode(secret),"PBKDF2",false,["deriveBits"]);const bits=await crypto.subtle.deriveBits({name:"PBKDF2",salt:new TextEncoder().encode(salt),iterations,hash:"SHA-256"},key,256);return "pbkdf2-"+iterations+"-"+bytesToHex(bits);}catch(e){}
+  }
+  return hashPassword(secret,salt);
+}
+async function verifyStoredSecret(secret,salt,stored){
+  if(!stored||!salt)return false;
+  if(String(stored).startsWith("pbkdf2-")){const iterations=Number(String(stored).split("-")[1]||210000);return await deriveSecretHash(secret,salt,iterations)===stored;}
+  return await hashPassword(secret,salt)===stored;
+}
+async function verifyAnySecurityCode(code){
+  const a=loadAuth(); if(!a||!code)return null;
+  if(await verifyStoredSecret(code,a.recoverySalt,a.recoveryHash))return "recovery";
+  if(await verifyStoredSecret(code,a.pinSalt,a.pinHash))return "pin";
+  if(await verifyStoredSecret(code,a.salt,a.hash))return "password";
+  return null;
+}
+function authMethods(a){if(!a)return [];const out=["Şifre"];if(a.pinHash)out.push("Yedek PIN");if(a.recoveryHash)out.push("Kurtarma şifresi");if(a.biometric&&a.biometric.credentialId)out.push("Parmak izi");if(a.twoFactor&&a.biometric&&a.biometric.credentialId)out.push("İki aşamalı");return out;}
+function biometricAvailable(){return !!(window.isSecureContext&&window.PublicKeyCredential&&navigator.credentials&&navigator.credentials.create&&navigator.credentials.get);}
+async function platformBiometricAvailable(){try{return biometricAvailable()&&await PublicKeyCredential.isUserVerifyingPlatformAuthenticatorAvailable();}catch(e){return false;}}
+async function registerBiometric(){
+  const a=loadAuth(); if(!a){toast("Önce güvenlik bilgilerini belirleyin");openPasswordSetup();return;}
+  if(!biometricAvailable()){alert("Parmak izi bu tarayıcıda kullanılamıyor. Uygulamayı HTTPS adresinde/PWA olarak açıp tekrar deneyin.");return;}
+  if(!await platformBiometricAvailable()){alert("Bu cihazda parmak izi/cihaz kilidi bulunamadı veya tarayıcı desteklemiyor.");return;}
+  try{
+    const userId=a.biometricUserId?b64UrlToBytes(a.biometricUserId):crypto.getRandomValues(new Uint8Array(16));
+    const challenge=crypto.getRandomValues(new Uint8Array(32));
+    const credential=await navigator.credentials.create({publicKey:{challenge,rp:{name:"Mesai Takip",id:location.hostname},user:{id:userId,name:"mesai-kullanici",displayName:"Mesai Takip"},pubKeyCredParams:[{type:"public-key",alg:-7},{type:"public-key",alg:-257}],authenticatorSelection:{authenticatorAttachment:"platform",residentKey:"preferred",userVerification:"required"},timeout:60000,attestation:"none"}});
+    if(!credential)throw new Error("Kimlik oluşturulamadı");
+    const publicKey=credential.response.getPublicKey?credential.response.getPublicKey():null;
+    const alg=credential.response.getPublicKeyAlgorithm?credential.response.getPublicKeyAlgorithm():-7;
+    if(!publicKey)throw new Error("Tarayıcı açık anahtarı vermedi");
+    a.biometricUserId=bytesToB64Url(userId);
+    a.biometric={credentialId:bytesToB64Url(credential.rawId),publicKey:bytesToB64Url(publicKey),alg,createdAt:new Date().toISOString()};
+    saveAuth(a);updatePasswordUI();toast("Parmak izi kaydedildi");
+  }catch(e){console.warn(e);alert("Parmak izi kaydedilemedi: "+(e&&e.message?e.message:"İşlem iptal edildi"));}
+}
+function es256SignatureToRaw(signature){
+  const der=new Uint8Array(signature); if(der[0]!==0x30)return signature;
+  let off=2; if(der[1]&0x80)off+=der[1]&0x7f;
+  function read(){if(der[off++]!==0x02)throw new Error("İmza biçimi hatalı");let len=der[off++];if(len&0x80){const n=len&0x7f;len=0;for(let i=0;i<n;i++)len=(len<<8)|der[off++];}let v=der.slice(off,off+len);off+=len;while(v.length>32&&v[0]===0)v=v.slice(1);const out=new Uint8Array(32);out.set(v,32-v.length);return out;}
+  const r=read(),s=read(),raw=new Uint8Array(64);raw.set(r,0);raw.set(s,32);return raw.buffer;
+}
+async function verifyBiometric(){
+  const a=loadAuth(); if(!a||!a.biometric||!a.biometric.credentialId)throw new Error("Kayıtlı parmak izi yok");
+  if(!biometricAvailable())throw new Error("Parmak izi bu tarayıcıda kullanılamıyor");
+  const challenge=crypto.getRandomValues(new Uint8Array(32));
+  const assertion=await navigator.credentials.get({publicKey:{challenge,rpId:location.hostname,allowCredentials:[{type:"public-key",id:b64UrlToBytes(a.biometric.credentialId)}],userVerification:"required",timeout:60000}});
+  if(!assertion)throw new Error("Parmak izi doğrulanamadı");
+  const clientData=JSON.parse(new TextDecoder().decode(assertion.response.clientDataJSON));
+  if(clientData.type!=="webauthn.get"||clientData.challenge!==bytesToB64Url(challenge)||clientData.origin!==location.origin)throw new Error("Güvenlik yanıtı doğrulanamadı");
+  const authData=new Uint8Array(assertion.response.authenticatorData);
+  const expectedRpHash=new Uint8Array(await crypto.subtle.digest("SHA-256",new TextEncoder().encode(location.hostname)));
+  if(!expectedRpHash.every((v,i)=>authData[i]===v)||!(authData[32]&1)||!(authData[32]&4))throw new Error("Cihaz doğrulaması tamamlanamadı");
+  const clientHash=await crypto.subtle.digest("SHA-256",assertion.response.clientDataJSON);
+  const signed=new Uint8Array(authData.length+32);signed.set(authData,0);signed.set(new Uint8Array(clientHash),authData.length);
+  const alg=Number(a.biometric.alg||-7); const keyData=b64UrlToBytes(a.biometric.publicKey); let ok=false;
+  if(alg===-7){const key=await crypto.subtle.importKey("spki",keyData,{name:"ECDSA",namedCurve:"P-256"},false,["verify"]);ok=await crypto.subtle.verify({name:"ECDSA",hash:"SHA-256"},key,es256SignatureToRaw(assertion.response.signature),signed);}
+  else if(alg===-257){const key=await crypto.subtle.importKey("spki",keyData,{name:"RSASSA-PKCS1-v1_5",hash:"SHA-256"},false,["verify"]);ok=await crypto.subtle.verify({name:"RSASSA-PKCS1-v1_5"},key,assertion.response.signature,signed);}
+  else throw new Error("Desteklenmeyen parmak izi anahtarı");
+  if(!ok)throw new Error("Parmak izi imzası doğrulanamadı");
+  return true;
+}
 function updatePasswordUI(){
   const a=loadAuth();
-  $("lockBtn").classList.toggle("hide",!a);
-  $("removePasswordBtn").classList.toggle("hide",!a);
-  $("lockNowBtn").classList.toggle("hide",!a);
-  $("passwordStatus").textContent=a?"Şifre kullanılıyor. Uygulama açılışta şifre sorar.":"Şifre kullanılmıyor.";
+  if($("lockBtn"))$("lockBtn").classList.toggle("hide",!a);
+  if($("removePasswordBtn"))$("removePasswordBtn").classList.toggle("hide",!a);
+  if($("lockNowBtn"))$("lockNowBtn").classList.toggle("hide",!a);
+  if($("removeBiometricBtn"))$("removeBiometricBtn").classList.toggle("hide",!(a&&a.biometric&&a.biometric.credentialId));
+  if($("registerBiometricBtn"))$("registerBiometricBtn").textContent=a&&a.biometric&&a.biometric.credentialId?"👆 Parmak izini yenile":"👆 Parmak izini kaydet";
+  if($("twoFactorToggle")){$("twoFactorToggle").checked=!!(a&&a.twoFactor);$("twoFactorToggle").disabled=!a;}
+  if($("securityMethods"))$("securityMethods").innerHTML=authMethods(a).map(x=>"<span>"+esc(x)+"</span>").join("");
+  if($("lockBiometricBtn"))$("lockBiometricBtn").classList.toggle("hide",!(a&&a.biometric&&a.biometric.credentialId));
+  if($("passwordStatus"))$("passwordStatus").textContent=a?"Güvenlik kullanılıyor. Uygulama açılışında ve Maaş menüsünde doğrulama istenir.":"Güvenlik kullanılmıyor. Maaş bölümünü açmak için güvenlik bilgilerini belirleyin.";
 }
 function lockApp(){
   if(!loadAuth())return;
-  setSessionUnlocked(false);
+  setSessionUnlocked(false); pendingAppCodeMethod=null; lockSalary();
+  updatePasswordUI();
   document.body.classList.add("locked"); $("lockScreen").classList.remove("hide");
   $("lockPassword").value=""; $("lockError").textContent="";
   closeArifePrompt();
   setTimeout(()=>$("lockPassword").focus(),80);
 }
-function unlockApp(){
-  setSessionUnlocked(true);
+function completeUnlock(method){
+  pendingAppCodeMethod=null; setSessionUnlocked(true);
   document.body.classList.remove("locked"); $("lockScreen").classList.add("hide");
   if(!postUnlockRan){postUnlockRan=true; setTimeout(()=>{checkArifePrompt(); maybeAutoPull();},350);}
+  if(method==="recovery"||recoveryUsedNext){recoveryUsedNext=false;setTimeout(()=>{showView("settings");toast("Kurtarma şifresiyle giriş yaptınız. Güvenlik bilgilerinizi yenileyin.");},450);}
 }
+function unlockApp(){completeUnlock("password");}
 $("lockForm").addEventListener("submit",async e=>{
-  e.preventDefault(); const a=loadAuth(); if(!a){unlockApp();return;}
-  const h=await hashPassword($("lockPassword").value,a.salt);
-  if(h===a.hash){unlockApp();toast("Hoş geldiniz");}
-  else{$("lockError").textContent="Şifre yanlış, tekrar deneyin.";$("lockPassword").select();}
+  e.preventDefault(); const a=loadAuth(); if(!a){completeUnlock("none");return;}
+  const method=await verifyAnySecurityCode($("lockPassword").value);
+  if(!method){$("lockError").style.color="var(--red)";$("lockError").textContent="Bilgi yanlış, tekrar deneyin.";$("lockPassword").select();return;}
+  if(method==="recovery"){completeUnlock(method);toast("Kurtarma şifresiyle giriş yapıldı");return;}
+  if(a.twoFactor&&a.biometric&&a.biometric.credentialId){
+    pendingAppCodeMethod=method; $("lockError").style.color="var(--green)"; $("lockError").textContent="Kod doğru. Şimdi parmak izinizi doğrulayın.";
+    try{await verifyBiometric();completeUnlock(method);toast("Hoş geldiniz");}catch(err){$("lockError").style.color="var(--red)";$("lockError").textContent=err.message||"Parmak izi doğrulanamadı.";}
+    return;
+  }
+  completeUnlock(method);toast("Hoş geldiniz");
 });
-function openPasswordSetup(){ $("newPassword").value="";$("newPassword2").value="";$("passwordSetupError").textContent="";$("passwordSetupBackdrop").classList.add("open");setTimeout(()=>$("newPassword").focus(),80); }
+$("lockBiometricBtn").onclick=async()=>{
+  const a=loadAuth(); if(!a)return;
+  if(a.twoFactor&&a.biometric&&a.biometric.credentialId&&!pendingAppCodeMethod){$("lockError").style.color="var(--red)";$("lockError").textContent="İki aşamalı doğrulama açık: önce PIN veya şifrenizi girin.";$("lockPassword").focus();return;}
+  try{await verifyBiometric();completeUnlock(pendingAppCodeMethod||"biometric");toast("Hoş geldiniz");}catch(err){$("lockError").style.color="var(--red)";$("lockError").textContent=err.message||"Parmak izi doğrulanamadı.";}
+};
+function openPasswordSetup(){ ["newPassword","newPassword2","newPin","newPin2","newRecovery","newRecovery2"].forEach(id=>$(id).value="");const a=loadAuth();$("newTwoFactor").checked=!!(a&&a.twoFactor);$("passwordSetupError").textContent="";$("passwordSetupBackdrop").classList.add("open");setTimeout(()=>$("newPassword").focus(),80); }
 function closePasswordSetup(){ $("passwordSetupBackdrop").classList.remove("open"); }
 $("setPasswordBtn").onclick=openPasswordSetup;
 $("closePasswordSetupBtn").onclick=()=>{try{localStorage.setItem(PW_PROMPT_KEY,"1");}catch(e){}closePasswordSetup();};
 $("skipPasswordSetupBtn").onclick=()=>{try{localStorage.setItem(PW_PROMPT_KEY,"1");}catch(e){}closePasswordSetup();toast("Şifreyi Ayarlar bölümünden oluşturabilirsiniz");};
 $("savePasswordSetupBtn").onclick=async()=>{
-  const p1=$("newPassword").value, p2=$("newPassword2").value;
-  if(p1.length<4){$("passwordSetupError").textContent="Şifre en az 4 karakter olmalı.";return;}
-  if(p1!==p2){$("passwordSetupError").textContent="Şifreler eşleşmiyor.";return;}
-  const salt=makeSalt(); const hash=await hashPassword(p1,salt);
-  saveAuth({salt,hash,createdAt:new Date().toISOString()});
-  closePasswordSetup(); updatePasswordUI(); unlockApp(); toast("Şifre oluşturuldu");
+  const existing=loadAuth()||{};
+  const p1=$("newPassword").value, p2=$("newPassword2").value, pin1=$("newPin").value.trim(), pin2=$("newPin2").value.trim(), r1=$("newRecovery").value, r2=$("newRecovery2").value;
+  const err=t=>{$("passwordSetupError").textContent=t;};
+  if(!existing.hash&&!p1)return err("İlk kurulumda giriş şifresi zorunludur.");
+  if(p1||p2){if(p1.length<4)return err("Giriş şifresi en az 4 karakter olmalı.");if(p1!==p2)return err("Giriş şifreleri eşleşmiyor.");}
+  if(!existing.pinHash&&!pin1)return err("İlk kurulumda yedek PIN zorunludur.");
+  if(pin1||pin2){if(!/^\d{4,6}$/.test(pin1))return err("Yedek PIN 4–6 rakam olmalı.");if(pin1!==pin2)return err("Yedek PIN'ler eşleşmiyor.");}
+  if(!existing.recoveryHash&&!r1)return err("İlk kurulumda kurtarma şifresi zorunludur.");
+  if(r1||r2){if(r1.length<8)return err("Kurtarma şifresi en az 8 karakter olmalı.");if(r1!==r2)return err("Kurtarma şifreleri eşleşmiyor.");}
+  const next={...existing,createdAt:existing.createdAt||new Date().toISOString(),updatedAt:new Date().toISOString(),twoFactor:$("newTwoFactor").checked};
+  if(next.twoFactor&&!(next.biometric&&next.biometric.credentialId)){toast("İki aşamalı doğrulama parmak izi kaydedilince etkin olur");}
+  if(p1){next.salt=makeSalt();next.hash=await deriveSecretHash(p1,next.salt,210000);}
+  if(pin1){next.pinSalt=makeSalt();next.pinHash=await deriveSecretHash(pin1,next.pinSalt,210000);}
+  if(r1){next.recoverySalt=makeSalt();next.recoveryHash=await deriveSecretHash(r1,next.recoverySalt,210000);}
+  saveAuth(next);
+  closePasswordSetup(); updatePasswordUI(); completeUnlock("setup"); toast("Güvenlik bilgileri kaydedildi");
 };
-$("removePasswordBtn").onclick=()=>{if(!confirm("Şifre kaldırılsın mı?"))return;clearAuth();setSessionUnlocked(true);updatePasswordUI();toast("Şifre kaldırıldı");};
+$("removePasswordBtn").onclick=()=>{if(!confirm("Şifre, PIN, kurtarma şifresi ve parmak izi kaldırılsın mı? Maaş bölümü de kilitlenemeden kullanılamaz."))return;clearAuth();lockSalary();setSessionUnlocked(true);updatePasswordUI();toast("Güvenlik kaldırıldı");};
+$("registerBiometricBtn").onclick=registerBiometric;
+$("removeBiometricBtn").onclick=()=>{const a=loadAuth();if(!a)return;if(!confirm("Kayıtlı parmak izi kaldırılsın mı?"))return;delete a.biometric;a.twoFactor=false;saveAuth(a);updatePasswordUI();toast("Parmak izi kaldırıldı");};
+$("twoFactorToggle").addEventListener("change",e=>{const a=loadAuth();if(!a){e.target.checked=false;return;}if(e.target.checked&&!(a.biometric&&a.biometric.credentialId)){toast("Önce parmak izinizi kaydedin");}a.twoFactor=e.target.checked;saveAuth(a);updatePasswordUI();});
 $("lockBtn").onclick=lockApp; $("lockNowBtn").onclick=lockApp;
 document.addEventListener("visibilitychange",()=>{
   if(document.hidden){hiddenAt=Date.now();}
@@ -2324,6 +2608,202 @@ function initLock(){
     if(!a&&!dismissed) setTimeout(openPasswordSetup,700);
   }
 }
+
+/* ========== Maaş (yalnızca bu cihaz) ========== */
+const SALARY_KEY="mesaiTakip_salary_v1";
+const BUILTIN_SEVERANCE_CEILINGS=[
+  {from:"2024-01-01",to:"2024-06-30",amount:35058.58},{from:"2024-07-01",to:"2024-12-31",amount:41828.42},
+  {from:"2025-01-01",to:"2025-06-30",amount:46655.43},{from:"2025-07-01",to:"2025-12-31",amount:53919.68},
+  {from:"2026-01-01",to:"2026-06-30",amount:64948.77},{from:"2026-07-01",to:"2026-12-31",amount:73729.87}
+];
+let salaryData=loadSalaryData(); let salaryUnlockedUntil=0; let salaryLockTimer=null; let pendingSalaryCodeMethod=null;
+function defaultSalaryData(){return {records:[],futureRights:[],compensation:{},ceilingCache:null};}
+function loadSalaryData(){try{const x=JSON.parse(localStorage.getItem(SALARY_KEY)||"null");if(x&&typeof x==="object")return {records:Array.isArray(x.records)?x.records:[],futureRights:Array.isArray(x.futureRights)?x.futureRights:[],compensation:x.compensation&&typeof x.compensation==="object"?x.compensation:{},ceilingCache:x.ceilingCache||null};}catch(e){}return defaultSalaryData();}
+function saveSalaryData(render=true){try{localStorage.setItem(SALARY_KEY,JSON.stringify(salaryData));}catch(e){}if(render&&salaryIsUnlocked())renderSalary();}
+function clearSalaryData(){salaryData=defaultSalaryData();try{localStorage.removeItem(SALARY_KEY);}catch(e){}lockSalary(false);}
+function deleteSalaryWorkplaceData(workplaceId){if(!workplaceId)return;salaryData.records=salaryData.records.filter(r=>r.workplaceId!==workplaceId);salaryData.futureRights=salaryData.futureRights.filter(r=>r.workplaceId!==workplaceId);delete salaryData.compensation[workplaceId];saveSalaryData(false);}
+function salaryIsUnlocked(){return Date.now()<salaryUnlockedUntil;}
+function lockSalary(updateView=true){salaryUnlockedUntil=0;pendingSalaryCodeMethod=null;if(salaryLockTimer){clearTimeout(salaryLockTimer);salaryLockTimer=null;}if($("salaryRecordBackdrop"))$("salaryRecordBackdrop").classList.remove("open");if($("futureRightBackdrop"))$("futureRightBackdrop").classList.remove("open");if($("salaryContent"))$("salaryContent").classList.add("hide");if($("salaryLockCard"))$("salaryLockCard").classList.remove("hide");if($("salaryRecordsList"))$("salaryRecordsList").innerHTML="";if($("futureRightsList"))$("futureRightsList").innerHTML="";if($("salaryTotals"))$("salaryTotals").innerHTML="";if($("compensationResults"))$("compensationResults").innerHTML="";if(updateView&&$("view-salary")&&$("view-salary").classList.contains("active"))renderSalaryLockState();}
+function renderSalaryLockState(){
+  const a=loadAuth(); updatePasswordUI();
+  $("salaryContent").classList.toggle("hide",!salaryIsUnlocked()); $("salaryLockCard").classList.toggle("hide",salaryIsUnlocked());
+  $("salaryBiometricBtn").classList.toggle("hide",!(a&&a.biometric&&a.biometric.credentialId));
+  $("salarySecuritySetupBtn").textContent=a?"Güvenlik Bilgilerini Güncelle":"Güvenlik Bilgilerini Belirle";
+  if(!a){$("salaryLockError").style.color="var(--red)";$("salaryLockError").textContent="Maaş bölümünü kullanmak için önce şifre, yedek PIN ve kurtarma şifresi belirleyin.";}
+  else if(!a.pinHash||!a.recoveryHash){$("salaryLockError").style.color="#f59e0b";$("salaryLockError").textContent="Güvenliğiniz eksik: yedek PIN ve kurtarma şifrenizi de belirleyin.";}
+}
+function handleSalaryView(){renderSalaryLockState();if(salaryIsUnlocked())renderSalary();else setTimeout(()=>$("salaryUnlockCode").focus(),80);}
+function unlockSalary(method){salaryUnlockedUntil=Date.now()+5*60*1000;pendingSalaryCodeMethod=null;$("salaryUnlockCode").value="";$("salaryLockError").textContent="";if(salaryLockTimer)clearTimeout(salaryLockTimer);salaryLockTimer=setTimeout(()=>{lockSalary();if($("view-salary").classList.contains("active"))toast("Maaş bölümü güvenlik için kilitlendi");},5*60*1000);renderSalaryLockState();renderSalary();if(method==="recovery")toast("Kurtarma şifresiyle açıldı. Güvenlik bilgilerinizi yenileyin.");}
+$("salaryUnlockForm").addEventListener("submit",async e=>{
+  e.preventDefault(); const a=loadAuth();
+  if(!a){$("salaryLockError").textContent="Önce güvenlik bilgilerini belirleyin.";openPasswordSetup();return;}
+  const method=await verifyAnySecurityCode($("salaryUnlockCode").value);
+  if(!method){$("salaryLockError").style.color="var(--red)";$("salaryLockError").textContent="Bilgi yanlış, tekrar deneyin.";$("salaryUnlockCode").select();return;}
+  if(method==="recovery"){unlockSalary(method);return;}
+  if(a.twoFactor&&a.biometric&&a.biometric.credentialId){pendingSalaryCodeMethod=method;$("salaryLockError").style.color="var(--green)";$("salaryLockError").textContent="Kod doğru. Şimdi parmak izinizi doğrulayın.";try{await verifyBiometric();unlockSalary(method);}catch(err){$("salaryLockError").style.color="var(--red)";$("salaryLockError").textContent=err.message||"Parmak izi doğrulanamadı.";}return;}
+  unlockSalary(method);
+});
+$("salaryBiometricBtn").onclick=async()=>{
+  const a=loadAuth(); if(!a)return;
+  if(a.twoFactor&&a.biometric&&a.biometric.credentialId&&!pendingSalaryCodeMethod){$("salaryLockError").style.color="var(--red)";$("salaryLockError").textContent="İki aşamalı doğrulama açık: önce PIN veya şifrenizi girin.";$("salaryUnlockCode").focus();return;}
+  try{await verifyBiometric();unlockSalary(pendingSalaryCodeMethod||"biometric");}catch(err){$("salaryLockError").style.color="var(--red)";$("salaryLockError").textContent=err.message||"Parmak izi doğrulanamadı.";}
+};
+$("salarySecuritySetupBtn").onclick=()=>{showView("settings");setTimeout(openPasswordSetup,90);};
+$("lockSalaryBtn").onclick=()=>{lockSalary();toast("Maaş bölümü kilitlendi");};
+const moneyFormatter=new Intl.NumberFormat("tr-TR",{style:"currency",currency:"TRY",minimumFractionDigits:2,maximumFractionDigits:2});
+function fmtMoney(value){return moneyFormatter.format(Number(value||0));}
+function moneyInputValue(id){const el=$(id);if(!el)return 0;return Math.max(0,Number(String(el.value||"").replace(/\s/g,"").replace(",","."))||0);}
+function salaryRecordTotal(r){return Number(r.netSalary||0)+Number(r.taxRefund||0)+Number(r.benefits||0)+Number(r.other||0);}
+function salaryRecordsFor(workplaceId){return salaryData.records.filter(r=>r.workplaceId===workplaceId).sort((a,b)=>b.month.localeCompare(a.month));}
+function futureRightsFor(workplaceId){return salaryData.futureRights.filter(r=>r.workplaceId===workplaceId).sort((a,b)=>a.date.localeCompare(b.date));}
+function compensationSettings(workplaceId){if(!salaryData.compensation[workplaceId])salaryData.compensation[workplaceId]={grossOverride:"",regularGrossBenefits:0,ceilingOverride:""};return salaryData.compensation[workplaceId];}
+function latestSalaryRecord(workplaceId){return salaryRecordsFor(workplaceId).find(r=>Number(r.grossSalary||0)>0)||null;}
+function renderSalary(){
+  if(!salaryIsUnlocked()){renderSalaryLockState();return;}
+  renderSalaryLockState(); const wpId=activeWorkplaceId();
+  $("salaryWorkplaceChip").textContent=workplaceName(wpId);
+  const emp=employmentInfo(wpId); const leave=leaveBalanceStats(wpId,todayStr(),{includePlanned:true});
+  $("salaryEmploymentInfo").innerHTML=emp?("İşe başlama: <b>"+fmtDateShort(emp.start)+"</b> • Bu firmada geçen süre: <b>"+esc(employmentDurationText(emp))+"</b><br>Yeni yıllık izin: <b>"+fmtDateShort(emp.nextAnniversary)+"</b> • <b>"+emp.daysToNextAnniversary+" gün kaldı</b> • Kalan izin: <b>"+leave.remaining+" gün</b>"):"İşe başlama tarihi girilmedi. Tazminat ve yıllık izin geri sayımı için Ayarlar → Çalışma Ayarları bölümünden tarihi girin.";
+  renderFutureRights(); renderSalaryRecords(); renderSalaryTotals(); renderCompensation(true);
+}
+function renderFutureRights(){
+  const wpId=activeWorkplaceId(); const rows=futureRightsFor(wpId); const today=todayStr();
+  $("futureRightsList").innerHTML=rows.length?rows.map(r=>{const days=dateDiffDays(today,r.date);const label=days===0?"Bugün":days>0?days+" gün":"Geçti";return '<div class="right-item"><div class="right-item-head"><div><b>'+esc(r.title)+'</b><div class="tiny muted" style="margin-top:4px">'+fmtDateShort(r.date)+(Number(r.amount||0)?' • <b class="money">'+fmtMoney(r.amount)+'</b>':'')+'</div>'+(r.note?'<div class="small" style="margin-top:5px">'+esc(r.note)+'</div>':'')+'</div><div class="countdown">'+label+'<small>'+(days>0?" KALDI":days===0?"HAK TARİHİ":"TARİHİ GEÇTİ")+'</small></div></div><div class="row wrap" style="margin-top:8px"><button class="btn smallbtn soft" type="button" onclick="openFutureRightEditor(\''+esc(r.id)+'\')">Düzenle</button><button class="btn smallbtn danger" type="button" onclick="deleteFutureRight(\''+esc(r.id)+'\')">Sil</button></div></div>';}).join(""):'<div class="notice">Henüz gelecek hak yok. Örn. “0,5 Maaş İkramiyesi” yazıp tarihini ekleyebilirsiniz.</div>';
+}
+function renderSalaryRecords(){
+  const wpId=activeWorkplaceId(); const all=salaryRecordsFor(wpId); const select=$("salaryYearFilter"); const previous=select.value||"all";
+  const years=[...new Set(all.map(r=>r.month.slice(0,4)))].sort().reverse();
+  select.innerHTML='<option value="all">Tüm yıllar</option>'+years.map(y=>'<option value="'+y+'">'+y+'</option>').join("");
+  select.value=previous==="all"||years.includes(previous)?previous:"all";
+  const rows=select.value==="all"?all:all.filter(r=>r.month.startsWith(select.value+"-"));
+  $("salaryRecordCount").textContent=rows.length+" kayıt";
+  $("salaryRecordsList").innerHTML=rows.length?rows.map(r=>{const [y,m]=r.month.split("-").map(Number);return '<div class="salary-record"><div class="salary-record-head"><div><b>'+MONTHS_TR[m-1]+' '+y+'</b><div class="tiny muted">Elinize geçen toplam</div></div><div class="salary-total money">'+fmtMoney(salaryRecordTotal(r))+'</div></div><div class="salary-breakdown"><span>Net maaş: <b>'+fmtMoney(r.netSalary)+'</b></span><span>Brüt maaş: <b>'+fmtMoney(r.grossSalary)+'</b></span><span>Vergi iadesi: <b>'+fmtMoney(r.taxRefund)+'</b></span><span>Yan hak: <b>'+fmtMoney(r.benefits)+'</b></span><span>Diğer: <b>'+fmtMoney(r.other)+'</b></span></div>'+(r.note?'<div class="small" style="margin-top:7px">'+esc(r.note)+'</div>':'')+'<div class="row wrap" style="margin-top:8px"><button class="btn smallbtn soft" type="button" onclick="openSalaryRecordEditor(\''+esc(r.id)+'\')">Düzenle</button><button class="btn smallbtn danger" type="button" onclick="deleteSalaryRecord(\''+esc(r.id)+'\')">Sil</button></div></div>';}).join(""):'<div class="notice">Henüz maaş kaydı yok.</div>';
+}
+function renderSalaryTotals(){
+  const wpId=activeWorkplaceId(); const rows=salaryRecordsFor(wpId); const currentYear=String(new Date().getFullYear()); const thisYear=rows.filter(r=>r.month.startsWith(currentYear+"-"));
+  const sum=(list,fn)=>list.reduce((s,r)=>s+Number(fn(r)||0),0); const allReceived=sum(rows,salaryRecordTotal); const yearReceived=sum(thisYear,salaryRecordTotal);
+  const highest=rows.length?[...rows].sort((a,b)=>salaryRecordTotal(b)-salaryRecordTotal(a))[0]:null;
+  const kpis=[["TOPLAM KAZANÇ",fmtMoney(allReceived),rows.length+" aylık kayıt"],[currentYear+" TOPLAM",fmtMoney(yearReceived),thisYear.length+" kayıt"],["AYLIK ORTALAMA",fmtMoney(rows.length?allReceived/rows.length:0),"Kayıtlı aylar üzerinden"],["EN YÜKSEK AY",highest?fmtMoney(salaryRecordTotal(highest)):"—",highest?MONTHS_TR[Number(highest.month.slice(5,7))-1]+" "+highest.month.slice(0,4):"Kayıt yok"]];
+  $("salaryKpis").innerHTML=kpis.map(k=>'<div class="kpi"><div class="label">'+k[0]+'</div><div class="value money" style="font-size:20px">'+k[1]+'</div><div class="hint">'+k[2]+'</div></div>').join("");
+  $("salaryTotals").innerHTML='<div class="statline"><span>Toplam net maaş</span><b class="money">'+fmtMoney(sum(rows,r=>r.netSalary))+'</b></div><div class="statline"><span>Toplam vergi iadesi</span><b class="money">'+fmtMoney(sum(rows,r=>r.taxRefund))+'</b></div><div class="statline"><span>Toplam yan hak</span><b class="money">'+fmtMoney(sum(rows,r=>r.benefits))+'</b></div><div class="statline"><span>Toplam diğer ödeme</span><b class="money">'+fmtMoney(sum(rows,r=>r.other))+'</b></div><div class="statline"><span>Kayıtlı toplam brüt maaş</span><b class="money">'+fmtMoney(sum(rows,r=>r.grossSalary))+'</b></div>';
+}
+function openSalaryRecordEditor(id){
+  const wpId=activeWorkplaceId(); const r=id?salaryData.records.find(x=>x.id===id&&x.workplaceId===wpId):null;
+  $("salaryRecordTitle").textContent=r?"💰 Maaş Kaydını Düzenle":"💰 Maaş Kaydı Ekle"; $("salaryRecordId").value=r?r.id:"";
+  $("salaryMonth").value=r?r.month:todayStr().slice(0,7); $("salaryNet").value=r?r.netSalary:""; $("salaryGross").value=r?r.grossSalary:""; $("salaryTaxRefund").value=r?r.taxRefund:""; $("salaryBenefits").value=r?r.benefits:""; $("salaryOther").value=r?r.other:""; $("salaryNote").value=r?(r.note||""):""; $("salaryRecordError").textContent=""; updateSalaryRecordPreview();
+  $("salaryRecordBackdrop").classList.add("open"); setTimeout(()=>$("salaryNet").focus(),80);
+}
+function closeSalaryRecordEditor(){$("salaryRecordBackdrop").classList.remove("open");}
+function updateSalaryRecordPreview(){$("salaryRecordTotalPreview").textContent=fmtMoney(moneyInputValue("salaryNet")+moneyInputValue("salaryTaxRefund")+moneyInputValue("salaryBenefits")+moneyInputValue("salaryOther"));}
+function saveSalaryRecord(){
+  const wpId=activeWorkplaceId(); const id=$("salaryRecordId").value; const month=$("salaryMonth").value;
+  if(!month){$("salaryRecordError").textContent="Yıl/ay seçin.";return;}
+  const record={id:id||("sal_"+Date.now().toString(36)+Math.random().toString(36).slice(2,6)),workplaceId:wpId,month,netSalary:moneyInputValue("salaryNet"),grossSalary:moneyInputValue("salaryGross"),taxRefund:moneyInputValue("salaryTaxRefund"),benefits:moneyInputValue("salaryBenefits"),other:moneyInputValue("salaryOther"),note:$("salaryNote").value.trim(),updatedAt:new Date().toISOString()};
+  if(salaryRecordTotal(record)<=0&&record.grossSalary<=0){$("salaryRecordError").textContent="En az bir tutar girin.";return;}
+  const clash=salaryData.records.find(r=>r.workplaceId===wpId&&r.month===month&&r.id!==record.id);
+  if(clash){if(!confirm("Bu ay için zaten maaş kaydı var. Üzerine yazılsın mı?"))return;salaryData.records=salaryData.records.filter(r=>r.id!==clash.id);}
+  const ix=salaryData.records.findIndex(r=>r.id===record.id); if(ix>=0)salaryData.records[ix]={...salaryData.records[ix],...record};else salaryData.records.push(record);
+  saveSalaryData(); closeSalaryRecordEditor(); toast("Maaş kaydı kaydedildi");
+}
+function deleteSalaryRecord(id){if(!confirm("Bu maaş kaydı silinsin mi?"))return;salaryData.records=salaryData.records.filter(r=>r.id!==id);saveSalaryData();toast("Maaş kaydı silindi");}
+function openFutureRightEditor(id){
+  const wpId=activeWorkplaceId(); const r=id?salaryData.futureRights.find(x=>x.id===id&&x.workplaceId===wpId):null;
+  $("futureRightTitle").textContent=r?"🎁 Gelecek Hakkı Düzenle":"🎁 Gelecek Hak Ekle"; $("futureRightId").value=r?r.id:""; $("futureRightName").value=r?r.title:""; $("futureRightDate").value=r?r.date:""; $("futureRightAmount").value=r?r.amount:""; $("futureRightNote").value=r?(r.note||""):""; $("futureRightError").textContent="";
+  $("futureRightBackdrop").classList.add("open"); setTimeout(()=>$("futureRightName").focus(),80);
+}
+function closeFutureRightEditor(){$("futureRightBackdrop").classList.remove("open");}
+function saveFutureRight(){
+  const wpId=activeWorkplaceId(); const id=$("futureRightId").value; const title=$("futureRightName").value.trim(); const date=$("futureRightDate").value;
+  if(!title){$("futureRightError").textContent="Hak adı yazın.";return;} if(!date){$("futureRightError").textContent="Hak tarihini seçin.";return;}
+  const record={id:id||("right_"+Date.now().toString(36)+Math.random().toString(36).slice(2,6)),workplaceId:wpId,title,date,amount:moneyInputValue("futureRightAmount"),note:$("futureRightNote").value.trim(),updatedAt:new Date().toISOString()};
+  const ix=salaryData.futureRights.findIndex(r=>r.id===record.id); if(ix>=0)salaryData.futureRights[ix]={...salaryData.futureRights[ix],...record};else salaryData.futureRights.push(record);
+  saveSalaryData(); closeFutureRightEditor(); toast("Gelecek hak kaydedildi");
+}
+function deleteFutureRight(id){if(!confirm("Bu gelecek hak silinsin mi?"))return;salaryData.futureRights=salaryData.futureRights.filter(r=>r.id!==id);saveSalaryData();toast("Gelecek hak silindi");}
+function builtinCeilingFor(dateStr){
+  const found=BUILTIN_SEVERANCE_CEILINGS.find(x=>dateStr>=x.from&&dateStr<=x.to); if(found)return {...found,source:"Uygulamadaki güncel tablo",stale:false};
+  const last=BUILTIN_SEVERANCE_CEILINGS[BUILTIN_SEVERANCE_CEILINGS.length-1]; if(dateStr>last.to)return {...last,source:"Uygulamadaki son bilinen tablo",stale:true};
+  return {...BUILTIN_SEVERANCE_CEILINGS[0],source:"Uygulamadaki tablo",stale:false};
+}
+function currentCeilingInfo(workplaceId){
+  const settings=compensationSettings(workplaceId||activeWorkplaceId()); const override=Number(settings.ceilingOverride||0); const today=todayStr();
+  if(override>0)return {amount:override,from:"",to:"",source:"Elle girdiğiniz değer",sourceUrl:"",fetchedAt:"",stale:false,manual:true};
+  const cache=salaryData.ceilingCache; if(cache&&Number(cache.amount)>0&&today>=cache.from&&today<=cache.to)return {amount:Number(cache.amount),from:cache.from,to:cache.to,source:"ÇSGB resmî e-bülteni",sourceUrl:cache.sourceUrl||"",fetchedAt:cache.fetchedAt||"",stale:false,manual:false};
+  const base=builtinCeilingFor(today); return {amount:base.amount,from:base.from,to:base.to,source:base.source,sourceUrl:"https://www.csgb.gov.tr/yayinlar/calisma-hayati-istatistikleri-e-bulteni/eylul-2026/ucret-ve-sendikal-istatistikler.html",fetchedAt:"",stale:base.stale,manual:false};
+}
+function noticeDaysForEmployment(info){if(!info)return 0;if(info.fullMonths<6)return 14;if(info.fullMonths<18)return 28;if(info.fullMonths<36)return 42;return 56;}
+function calculateCompensation(workplaceId){
+  const wpId=workplaceId||activeWorkplaceId(); const info=employmentInfo(wpId); const settings=compensationSettings(wpId); const latest=latestSalaryRecord(wpId);
+  const gross=Number(settings.grossOverride||0)>0?Number(settings.grossOverride):Number(latest?latest.grossSalary||0:0); const benefits=Number(settings.regularGrossBenefits||0); const monthlyDressed=gross+benefits; const ceiling=currentCeilingInfo(wpId);
+  const serviceDays=info?Math.max(0,info.elapsedDays):0; const years=serviceDays/365; const eligible=!!info&&info.fullYears>=1;
+  const severanceBasis=Math.min(monthlyDressed,Number(ceiling.amount||0)); const severanceGross=eligible?severanceBasis*years:0; const stampTax=severanceGross*0.00759; const severanceNet=severanceGross-stampTax;
+  const daily=monthlyDressed/30; const noticeDays=noticeDaysForEmployment(info); const noticeGross=daily*noticeDays;
+  const leave=leaveBalanceStats(wpId,todayStr()); const unusedLeave=Math.max(0,Number(leave.remaining||0)); const leaveGross=daily*unusedLeave;
+  return {info,gross,benefits,monthlyDressed,ceiling,serviceDays,years,eligible,severanceBasis,severanceGross,stampTax,severanceNet,daily,noticeDays,noticeGross,leave,unusedLeave,leaveGross,total:severanceNet+noticeGross+leaveGross,latest};
+}
+function renderCompensation(fillInputs){
+  const wpId=activeWorkplaceId(); const settings=compensationSettings(wpId); const latest=latestSalaryRecord(wpId); const ceiling=currentCeilingInfo(wpId);
+  if(fillInputs){
+    if(document.activeElement!==$("compGross"))$("compGross").value=Number(settings.grossOverride||0)>0?settings.grossOverride:(latest?latest.grossSalary:"");
+    if(document.activeElement!==$("compBenefitsGross"))$("compBenefitsGross").value=settings.regularGrossBenefits||"";
+    if(document.activeElement!==$("compCeiling"))$("compCeiling").value=ceiling.amount||"";
+  }
+  const fetched=ceiling.fetchedAt?new Date(ceiling.fetchedAt).toLocaleString("tr-TR"):"";
+  $("compCeilingStatus").innerHTML="Tavan: <b class='money'>"+fmtMoney(ceiling.amount)+"</b>"+(ceiling.from?(" • "+fmtDateShort(ceiling.from)+" – "+fmtDateShort(ceiling.to)):"")+"<br>Kaynak: "+esc(ceiling.source)+(fetched?(" • Güncelleme: "+esc(fetched)):"")+(ceiling.stale?"<br><b>Yeni dönem tavanı için internetten güncelleyin.</b>":"")+(ceiling.sourceUrl?('<br><a href="'+esc(ceiling.sourceUrl)+'" target="_blank" rel="noopener">Resmî kaynağı aç</a>'):"");
+  const c=calculateCompensation(wpId);
+  if(!c.info){$("compensationResults").innerHTML='<div class="notice">Tazminat için Ayarlar bölümünden işe başlama tarihini girin.</div>';return;}
+  if(c.monthlyDressed<=0){$("compensationResults").innerHTML='<div class="notice">Tazminat için son aylık brüt maaşınızı girin veya brüt tutarı olan bir maaş kaydı ekleyin.</div>';return;}
+  const capNote=c.monthlyDressed>Number(c.ceiling.amount||0)?"Tavan uygulandı":"Tavanın altında";
+  $("compensationResults").innerHTML=
+    '<div class="statline"><span>Çalışma süresi</span><b>'+esc(employmentDurationText(c.info))+' ('+c.serviceDays.toLocaleString("tr-TR")+' gün)</b></div>'+
+    '<div class="statline"><span>Giydirilmiş aylık brüt</span><b class="money">'+fmtMoney(c.monthlyDressed)+'</b></div>'+
+    '<div class="statline"><span>Kıdem hesabına esas tutar</span><b class="money">'+fmtMoney(c.severanceBasis)+' <span class="tiny muted">('+capNote+')</span></b></div>'+
+    '<div class="statline"><span>İhbar Tazminatı ('+c.noticeDays+' gün, brüt)</span><b class="money">'+fmtMoney(c.noticeGross)+'</b></div>'+
+    '<div class="statline"><span>Kıdem Tazminatı (brüt)</span><b class="money">'+fmtMoney(c.severanceGross)+'</b></div>'+
+    '<div class="statline"><span>Kıdem damga vergisi (%0,759)</span><b class="money">-'+fmtMoney(c.stampTax)+'</b></div>'+
+    '<div class="statline"><span>Kıdem Tazminatı (damga sonrası)</span><b class="money">'+fmtMoney(c.severanceNet)+'</b></div>'+
+    '<div class="statline"><span>Kullanılmayan yıllık izin ('+String(c.unusedLeave).replace(".",",")+' gün, brüt)</span><b class="money">'+fmtMoney(c.leaveGross)+'</b></div>'+
+    (!c.eligible?'<div class="notice">Bir yıl dolmadığı için kıdem tazminatı hesaplanmadı.</div>':'')+
+    '<div class="comp-total"><div class="tiny muted">TAHMİNİ TOPLAM TAZMİNAT</div><div class="amount money">'+fmtMoney(c.total)+'</div><div class="tiny muted">Kıdem damga sonrası; ihbar ve izin karşılığı brüt eklenmiştir.</div></div>';
+}
+function parseTurkishMoney(text){return Number(String(text||"").replace(/\./g,"").replace(",","."))||0;}
+function parseCeilingText(text,sourceUrl){
+  const months={ocak:1,"şubat":2,mart:3,nisan:4,"mayıs":5,haziran:6,temmuz:7,"ağustos":8,"eylül":9,ekim:10,"kasım":11,"aralık":12};
+  const pattern=/(\d{1,2})\s+(Ocak|Şubat|Mart|Nisan|Mayıs|Haziran|Temmuz|Ağustos|Eylül|Ekim|Kasım|Aralık)\s+(\d{4})\s*[-–—]\s*(\d{1,2})\s+(Ocak|Şubat|Mart|Nisan|Mayıs|Haziran|Temmuz|Ağustos|Eylül|Ekim|Kasım|Aralık)\s+(\d{4})[^0-9]{0,80}([0-9]{1,3}(?:\.[0-9]{3})*,[0-9]{2})/gi;
+  const today=todayStr(); const found=[]; let m;
+  function lower(s){return s.toLocaleLowerCase("tr-TR");}
+  while((m=pattern.exec(String(text||"")))!==null){const from=m[3]+"-"+pad(months[lower(m[2])]||1)+"-"+pad(m[1]);const to=m[6]+"-"+pad(months[lower(m[5])]||1)+"-"+pad(m[4]);const amount=parseTurkishMoney(m[7]);if(amount>1000)found.push({from,to,amount,sourceUrl});}
+  return found.find(x=>today>=x.from&&today<=x.to)||found.sort((a,b)=>b.from.localeCompare(a.from)).find(x=>x.from<=today)||null;
+}
+function ceilingCandidateUrls(){
+  const slugs=["ocak","subat","mart","nisan","mayis","haziran","temmuz","agustos","eylul","ekim","kasim","aralik"]; const urls=[]; const now=new Date();
+  function add(date){const url="https://www.csgb.gov.tr/yayinlar/calisma-hayati-istatistikleri-e-bulteni/"+slugs[date.getMonth()]+"-"+date.getFullYear()+"/ucret-ve-sendikal-istatistikler.html";if(!urls.includes(url))urls.push(url);}
+  [0,-1,-2].forEach(off=>add(new Date(now.getFullYear(),now.getMonth()+off,1))); add(new Date(now.getFullYear(),6,1)); add(new Date(now.getFullYear(),0,1)); return urls;
+}
+async function fetchTextWithTimeout(url,timeoutMs){const ctrl=new AbortController();const timer=setTimeout(()=>ctrl.abort(),timeoutMs);try{const res=await fetch(url,{signal:ctrl.signal});if(!res.ok)throw new Error("HTTP "+res.status);return await res.text();}finally{clearTimeout(timer);}}
+async function updateSeveranceCeilingFromInternet(){
+  const btn=$("updateCeilingBtn"); btn.disabled=true; const old=btn.textContent; btn.textContent="Güncelleniyor…"; $("compCeilingStatus").textContent="Resmî ÇSGB kaynağından güncel kıdem tazminatı tavanı aranıyor…";
+  try{
+    for(const url of ceilingCandidateUrls()){
+      const text=await fetchTextWithTimeout("https://r.jina.ai/"+url,30000); const parsed=parseCeilingText(text,url);
+      if(parsed){salaryData.ceilingCache={...parsed,fetchedAt:new Date().toISOString()};const settings=compensationSettings(activeWorkplaceId());settings.ceilingOverride="";saveSalaryData(false);renderCompensation(true);toast("Kıdem tavanı güncellendi: "+fmtMoney(parsed.amount));return;}
+    }
+    throw new Error("Güncel dönem bulunamadı");
+  }catch(e){console.warn(e);renderCompensation(true);$("compCeilingStatus").innerHTML+='<br><b style="color:var(--red)">İnternetten güncellenemedi. Bağlantıyı kontrol edin veya tavanı elle girin.</b>';toast("Tavan güncellenemedi");}
+  finally{btn.disabled=false;btn.textContent=old;}
+}
+$("addSalaryRecordBtn").onclick=()=>openSalaryRecordEditor("");
+$("addFutureRightBtn").onclick=()=>openFutureRightEditor("");
+$("closeSalaryRecordBtn").onclick=closeSalaryRecordEditor; $("cancelSalaryRecordBtn").onclick=closeSalaryRecordEditor; $("saveSalaryRecordBtn").onclick=saveSalaryRecord;
+$("salaryRecordBackdrop").addEventListener("click",e=>{if(e.target.id==="salaryRecordBackdrop")closeSalaryRecordEditor();});
+["salaryNet","salaryTaxRefund","salaryBenefits","salaryOther"].forEach(id=>$(id).addEventListener("input",updateSalaryRecordPreview));
+$("closeFutureRightBtn").onclick=closeFutureRightEditor; $("cancelFutureRightBtn").onclick=closeFutureRightEditor; $("saveFutureRightBtn").onclick=saveFutureRight;
+$("futureRightBackdrop").addEventListener("click",e=>{if(e.target.id==="futureRightBackdrop")closeFutureRightEditor();});
+$("salaryYearFilter").addEventListener("change",renderSalaryRecords);
+$("compGross").addEventListener("input",()=>{const s=compensationSettings(activeWorkplaceId());s.grossOverride=moneyInputValue("compGross")||"";saveSalaryData(false);renderCompensation(false);});
+$("compBenefitsGross").addEventListener("input",()=>{const s=compensationSettings(activeWorkplaceId());s.regularGrossBenefits=moneyInputValue("compBenefitsGross");saveSalaryData(false);renderCompensation(false);});
+$("compCeiling").addEventListener("input",()=>{const s=compensationSettings(activeWorkplaceId());s.ceilingOverride=moneyInputValue("compCeiling")||"";saveSalaryData(false);renderCompensation(false);});
+$("updateCeilingBtn").onclick=updateSeveranceCeilingFromInternet;
 
 /* ========== PWA ========== */
 let deferredPrompt=null;
@@ -2343,6 +2823,7 @@ function renderAll(){
   renderWorkplaceSelector();
   syncMonthPickers();
   renderHome(); renderCalendar(); renderRecords(); renderReport();
+  if(salaryIsUnlocked()&&$("view-salary").classList.contains("active"))renderSalary();
 }
 renderAll();
 initLock();

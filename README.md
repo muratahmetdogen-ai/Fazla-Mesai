@@ -1,6 +1,6 @@
 # Mesai Takip
 
-Telefonda kişisel kullanım için hazırlanmış, internet olmadan da çalışabilen bir PWA uygulamasıdır. Uygulamada ücret veya maaş hesabı yapılmaz; yalnızca çalışma, fazla mesai, eksik mesai ve izin saatleri takip edilir.
+Telefonda kişisel kullanım için hazırlanmış, internet olmadan da çalışabilen bir PWA uygulamasıdır. Mesai bölümünde ücret hesabı yapılmaz; çalışma, fazla mesai, eksik mesai ve izin saatleri takip edilir. Ayrı **Maaş** menüsünde manuel maaş, vergi iadesi ve yan hak kayıtları tutulur.
 
 ## Varsayılan çalışma programı
 
@@ -41,11 +41,21 @@ Varsayılan olarak fazla mesailer ay içinde kullanılmalıdır. Ayın son 14 g�
 - Resmi Tatil
 - Sabahlama Sonrası Dinlenme
 
-Yıllık izin toplamı Ayarlar bölümünden yazılır; kullanılan izinler kalan izinden otomatik düşer. Sabahlama sonrası dinlenme günü yıllık izinden ve fazla mesaiden düşmez.
+Her iş yeri için işe başlama tarihi girilebilir. Uygulama firmada kaç gündür çalıştığınızı ve yeni yıllık iznin ekleneceği tarihe kaç gün kaldığını gösterir. İzin dönemleri işe başlama tarihinin yıl dönümlerine göre listelenir; önceki dönem seçilerek o dönemin izin adedi ve uygulama öncesi kullanılan gün sayısı yazılabilir. Kullanılan izinler kalan izinden otomatik düşer. Sabahlama sonrası dinlenme günü yıllık izinden ve fazla mesaiden düşmez.
 
 ## Birden çok iş yeri
 
 Uygulama tek bir firmaya bağlı değildir. Birden çok iş yeri eklenebilir. Her iş yerinin kayıtları, çalışma saatleri, yıllık izni ve fazla/eksik mesai toplamı ayrı tutulur.
+
+## Güvenlik ve Maaş
+
+Alt menüdeki **Maaş** bölümü uygulama girişinden ayrı olarak yeniden kilitlenir. Güvenlik için giriş şifresi, yedek PIN ve kendi belirlediğiniz kurtarma şifresi kullanılır. Destekleyen cihaz/tarayıcıda parmak izi kaydedilebilir; iki aşamalı doğrulama açılırsa önce PIN/şifre, sonra parmak izi istenir.
+
+Maaş bölümünde yıl/ay bazında net maaş, brüt maaş, vergi iadesi, yan hak ve diğer ödemeler manuel eklenebilir. Ekranın altında toplam kazanç ve aylık ortalama gibi istatistikler gösterilir. Gelecek haklar bölümüne örneğin “0,5 Maaş İkramiyesi” yazıp tarihi eklenirse kalan gün sayısı gösterilir.
+
+**Tazminat** bölümünde işe başlama tarihi ve son giydirilmiş brüt maaşa göre tahmini ihbar tazminatı, kıdem tazminatı ve kullanılmayan yıllık izin karşılığı hesaplanır. Kıdem tavanı elle yazılabilir veya internetten resmî ÇSGB e-bülteni kontrol edilerek güncellenebilir. Sonuç yalnızca tahmindir; kesin tutar ayrılma nedeni, bordro, vergi ve SGK durumuna göre değişir.
+
+Maaş verileri yalnızca cihazda saklanır; GitHub eşitlemesine ve mesai yedeğine eklenmez. Kilit kayıtların görünmesini engeller ancak cihaz depolamasını teknik olarak şifrelemez.
 
 ## Rapor ve yedek
 
@@ -62,7 +72,7 @@ Fotoğraf ve belge dosyalarının kendisi JSON yedeğine eklenmez; GitHub eşitl
 
 Kayıtlar telefonunuzda tutulur. GitHub eşitlemesinde yalnızca depo adı ve erişim anahtarı girilir; veriler kendi özel GitHub deponuza kaydedilir. GitHub erişim anahtarınız yalnızca cihazınızda saklanır; anahtarınızı kimseyle veya sohbetle paylaşmayın.
 
-Şifre kilidi, uygulamanın başka kişiler tarafından açılmasını zorlaştırır ancak verileri şifrelemez.
+Şifre/PIN/parmak izi kilidi, uygulamanın ve Maaş bölümünün başka kişiler tarafından açılmasını zorlaştırır ancak cihaz depolamasını şifrelemez. Kurtarma şifrenizi güvenli bir yerde saklayın.
 
 ## Telefona kurulum
 
