@@ -171,8 +171,95 @@ body{font-size:15px}
 #view-settings .breakrow input{font-size:12px;padding:8px 6px}
 @media(max-width:680px){.timer{font-size:38px}.workplace-manage-row{grid-template-columns:minmax(0,1fr) 126px}.workplace-manage-row .btn{font-size:12px;padding:8px}.workplace-item{align-items:flex-start}.workplace-actions{max-width:150px}.sync-actions{grid-template-columns:1fr}.daychoices{grid-template-columns:repeat(2,1fr)}}
 .time-pair{align-items:stretch}.time-pair .field{display:flex;flex-direction:column}.time-pair .field label{min-height:30px}.time-pair .field input{margin-top:auto}
-.money{font-variant-numeric:tabular-nums}.salary-record,.right-item{background:var(--input);border:1px solid var(--line);border-radius:15px;padding:11px;margin-bottom:9px}.salary-record-head,.right-item-head{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}.salary-total{font-size:19px;font-weight:900}.salary-breakdown{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:5px 12px;margin-top:8px;color:var(--muted);font-size:12px}.salary-breakdown b{color:var(--txt)}.countdown{font-size:24px;font-weight:900;color:var(--pri2);text-align:right;white-space:nowrap}.countdown small{display:block;font-size:10px;color:var(--muted);letter-spacing:.04em}.salary-lock-icon{font-size:48px;text-align:center;margin:8px 0}.comp-total{background:linear-gradient(135deg,rgba(46,229,157,.16),rgba(77,163,255,.12));border:1px solid rgba(46,229,157,.35);border-radius:16px;padding:13px;margin-top:10px}.comp-total .amount{font-size:27px;font-weight:900;line-height:1.15}.security-methods{display:flex;flex-wrap:wrap;gap:7px;margin:8px 0}.security-methods span{background:var(--input);border:1px solid var(--line);border-radius:999px;padding:5px 8px;font-size:11px;font-weight:800}.salary-toolbar{display:flex;gap:8px;flex-wrap:wrap;align-items:end}.salary-toolbar .field{flex:1;min-width:150px;margin-bottom:0}
+.money{font-variant-numeric:tabular-nums}.salary-record,.right-item{background:var(--input);border:1px solid var(--line);border-radius:15px;padding:11px;margin-bottom:9px}.salary-record-head,.right-item-head{display:flex;justify-content:space-between;gap:10px;align-items:center}.salary-total{font-size:19px;font-weight:900}.salary-breakdown{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:5px 12px;margin-top:8px;color:var(--muted);font-size:12px}.salary-breakdown b{color:var(--text)}.countdown{font-size:24px;font-weight:900;color:var(--pri2);text-align:right;white-space:nowrap}.countdown small{display:block;font-size:10px;color:var(--muted);letter-spacing:.04em}.salary-lock-icon{font-size:48px;text-align:center;margin:8px 0}.comp-total{background:linear-gradient(135deg,rgba(46,229,157,.16),rgba(77,163,255,.12));border:1px solid rgba(46,229,157,.35);border-radius:16px;padding:13px;margin-top:10px}.comp-total .amount{font-size:27px;font-weight:900;line-height:1.15}.security-methods{display:flex;flex-wrap:wrap;gap:7px;margin:8px 0}.security-methods span{background:var(--input);border:1px solid var(--line);border-radius:999px;padding:5px 8px;font-size:11px;font-weight:800}.salary-toolbar{display:flex;gap:8px;flex-wrap:wrap;align-items:end}.salary-toolbar .field{flex:1;min-width:150px;margin-bottom:0}
 @media(max-width:680px){.salary-breakdown{grid-template-columns:1fr}.salary-record-head{align-items:center}.bottomnav button{font-size:9.5px}.bottomnav button .ic{font-size:18px}}
+/* ===== Hizalama, form şablonları ve PIN düzeni ===== */
+:root{--control-h:44px;--label-h:30px}
+html{color-scheme:dark}html[data-theme="light"]{color-scheme:light}
+button,input,select,textarea{max-width:100%}
+input[type="checkbox"]{width:20px;height:20px;flex:0 0 20px;margin:0;accent-color:var(--pri)}
+.topbar>div:nth-child(2){min-width:0}.top-actions{align-items:center}.top-actions .icon-btn{height:38px;display:inline-flex;align-items:center;justify-content:center}
+.topbar .sub{max-width:100%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1.3}
+.hero-head{position:relative;z-index:1;display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:start;gap:10px}.hero-head-text{min-width:0}.hero-head #todayLong{line-height:1.35;overflow-wrap:anywhere}.hero-head #todayChip{justify-self:end;max-width:42vw;margin-top:2px;text-align:center;white-space:normal}
+.field{min-width:0}.field input,.field select,.field textarea{min-height:var(--control-h);line-height:1.25}.field textarea{min-height:82px}.field input[type="file"]{display:flex;align-items:center}
+.field input:focus,.field select:focus,.field textarea:focus,.lockbox input:focus,#monthPickerRep:focus{border-color:rgba(6,182,212,.72);box-shadow:0 0 0 3px rgba(6,182,212,.16);outline:none}
+.form-grid,.form-grid3{align-items:stretch}.form-grid>.field,.form-grid3>.field{display:flex;flex-direction:column;min-width:0}
+.form-grid>.field>label,.form-grid3>.field>label{min-height:var(--label-h);display:flex;align-items:flex-start;line-height:1.25}
+.form-grid>.field>input,.form-grid>.field>select,.form-grid>.field>textarea,.form-grid>.field>.btn,.form-grid>.field>.previewbox,.form-grid3>.field>input,.form-grid3>.field>select,.form-grid3>.field>textarea{margin-top:auto}
+.form-grid>.field>.previewbox{min-height:var(--control-h);display:flex;align-items:center;margin-bottom:0}.form-grid>.field>.btn{width:100%;min-height:var(--control-h)}
+.action-grid{align-items:stretch}.action-grid>.btn{height:100%}
+.kpi{display:flex;flex-direction:column;min-width:0}.kpi .label{min-height:28px;line-height:1.25}.kpi .value{overflow-wrap:anywhere}.kpi .hint{line-height:1.35}
+.timeline{display:grid;grid-template-columns:repeat(auto-fit,minmax(104px,1fr));align-items:stretch}.tseg{display:flex;flex-direction:column;justify-content:center;min-height:58px}
+.item>div:last-child{margin-left:auto;text-align:right;flex:0 1 auto}.item .datebox{align-self:center}
+.statline{align-items:center}.statline>span{min-width:0}.statline>b{text-align:right}
+.salary-breakdown>span{display:flex;justify-content:space-between;gap:8px;min-width:0}.salary-breakdown b{text-align:right;white-space:nowrap}
+.wpbar{min-height:58px}.wpbar select,.wpbar .btn{height:42px}.wpbar>span{display:grid;place-items:center;width:30px;height:42px;flex:0 0 30px}
+.calendar-head .btn,.calendar-head input{height:var(--control-h)}.calendar-head .btn{display:grid;place-items:center;padding:0;font-size:22px}
+#monthPickerRep{width:174px;max-width:48vw;height:var(--control-h);background:var(--input);border:1px solid var(--line);border-radius:12px;padding:9px 11px}
+.cal-day{display:flex;flex-direction:column}.cal-day .hrs{margin-top:auto}
+.bottomnav button{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px}.bottomnav button .ic{margin:0;line-height:1}
+.break-head,.breakrow{display:grid;grid-template-columns:minmax(86px,1fr) minmax(94px,.95fr) minmax(94px,.95fr) 42px;gap:6px;align-items:center}
+.break-head{color:var(--muted);font-size:11px;font-weight:850;padding:0 2px 5px}.breakrow input,.breakrow .btn{height:42px}.breakrow .btn{width:42px;padding:0}
+.workplace-manage-row{align-items:end}.workplace-manage-row .field select,.workplace-manage-row .field input{height:var(--control-h)}.workplace-manage-row>.btn{height:var(--control-h);min-height:var(--control-h);display:inline-flex;align-items:center;justify-content:center}
+.workplace-item-main .tiny{display:block;margin-top:3px;line-height:1.35}.workplace-actions{align-items:center}.workplace-actions .btn{height:37px}
+.calendar-summary{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:start;gap:10px;margin-bottom:10px}.calendar-summary b{min-width:0;line-height:1.4}.calendar-summary .btn{justify-self:end;min-width:72px}
+.records-actions{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:10px}.records-actions .btn{width:100%;height:100%;white-space:normal;line-height:1.2}
+.quick-leave-grid,.editor-quick-grid{display:grid;gap:8px;margin-top:10px}.quick-leave-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.quick-leave-grid .btn,.editor-quick-grid .btn{width:100%;height:100%;white-space:normal;line-height:1.2}
+.editor-quick-main,.editor-quick-bank{grid-template-columns:repeat(2,minmax(0,1fr))}.editor-quick-overtime{grid-template-columns:repeat(4,minmax(0,1fr))}
+.cal-day{min-width:0}.cal-day .tag{overflow-wrap:anywhere;word-break:break-word}
+.card-title-row{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:start;gap:10px}.card-title-row .chip{justify-self:end;max-width:46vw;text-align:center;white-space:normal}
+.summary-action-row{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:end;gap:12px;margin-top:14px}.summary-action-row>div{min-width:0}
+.security-actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}.security-actions .btn{flex:1 1 150px;white-space:normal;line-height:1.2}.security-actions #setPasswordBtn{flex-basis:100%}
+#importJsonBtn{grid-column:span 2}
+.modal>.row:first-child{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:start;gap:10px}.modal>.row:first-child .spacer{display:none}.modal>.row:first-child h2{line-height:1.2}.modal>.row:first-child .icon-btn{justify-self:end}
+.auth-actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:14px}.auth-actions .btn{flex:1 1 150px;white-space:normal;line-height:1.2}
+.check-row{display:flex;align-items:center;gap:10px;width:100%;padding:12px;margin:9px 0;border:1px solid var(--line);border-radius:14px;background:var(--input);font-size:13px;font-weight:780;line-height:1.35;cursor:pointer;color:var(--text)}
+.check-row>span{display:block;min-width:0}.check-row small{display:block;color:var(--muted);font-size:11px;font-weight:650;margin-top:2px}
+/* Hafta tatili: yazı ve seçim aynı kutunun içinde, aynı satırda */
+.daychoices{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;align-items:stretch}
+.field .day-choice{position:relative;display:flex;align-items:center;gap:9px;min-height:48px;margin:0;padding:10px 11px;border:1px solid var(--line);border-radius:14px;background:var(--input);color:var(--text);font-size:13px;font-weight:820;line-height:1.2;cursor:pointer;transition:border-color .15s,background .15s,transform .1s}
+.field .day-choice:active{transform:scale(.985)}
+.field .day-choice input[type="checkbox"]{position:relative;appearance:none;-webkit-appearance:none;width:23px;min-width:23px;height:23px;min-height:23px;flex:0 0 23px;display:grid;place-items:center;align-self:center;margin:0;padding:0;border:1.5px solid var(--line);border-radius:8px;background:var(--card2);color:#fff;cursor:pointer}
+.day-choice input:checked{background:linear-gradient(135deg,var(--pri),var(--pri2));border-color:transparent}
+.day-choice input:checked::after{content:"✓";font-size:15px;font-weight:950;line-height:1}
+.day-choice .day-check{display:none}
+.day-choice .day-name{flex:1;min-width:0;text-align:left}
+.day-choice:has(input:checked){border-color:rgba(6,182,212,.68);background:linear-gradient(135deg,rgba(99,102,241,.22),rgba(6,182,212,.15))}
+.day-choice:has(input:checked) .day-check{background:linear-gradient(135deg,var(--pri),var(--pri2));border-color:transparent;color:#fff}
+.day-choice:has(input:focus-visible){outline:2px solid var(--pri2);outline-offset:2px}
+.weekend-summary{margin-top:7px;color:var(--muted);font-size:11.5px;line-height:1.4}
+/* PIN girişleri */
+.auth-form{max-width:440px;margin:0 auto;text-align:left}
+.auth-code-input{font-variant-numeric:tabular-nums}
+.auth-code-input.pin-mode{text-align:center!important;font-size:24px!important;letter-spacing:.32em!important}
+.pin-native-input{text-align:center;font-size:20px!important;letter-spacing:.28em;font-variant-numeric:tabular-nums}
+.auth-lockout{margin:10px 0;padding:12px 14px;border:1px solid rgba(245,158,11,.5);border-radius:16px;background:linear-gradient(135deg,rgba(245,158,11,.17),rgba(239,68,68,.08));text-align:center}
+.auth-lockout span{display:block;color:var(--muted);font-size:12px;font-weight:800;line-height:1.35}
+.auth-lockout strong{display:block;margin:3px 0 1px;color:#fbbf24;font-size:36px;line-height:1.05;font-weight:950;font-variant-numeric:tabular-nums}
+.auth-lockout small{display:block;color:var(--muted);font-size:11.5px;font-weight:700}
+.forgot-link{width:100%;margin-top:9px}
+#salaryForgotBtn,#salarySecuritySetupBtn{width:min(100%,440px);margin-left:auto;margin-right:auto}
+#salarySecuritySetupBtn{margin-top:9px}
+@media(max-width:680px){
+  .form-grid{gap:8px}.form-grid3{grid-template-columns:repeat(3,minmax(0,1fr));gap:7px}.form-grid3>.field>input{padding:9px 7px;font-size:13px}
+  .timeline{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .daychoices{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .daychoices .day-choice:last-child{grid-column:span 2}
+  .workplace-manage-row{grid-template-columns:minmax(0,1fr) 118px}.workplace-manage-row>.btn{white-space:normal;line-height:1.15;padding:7px}
+  .kpi .value{font-size:17px}.salary-breakdown{grid-template-columns:1fr}
+  .records-actions{grid-template-columns:repeat(2,minmax(0,1fr))}.records-actions .btn.primary{grid-column:span 2}
+  .editor-quick-overtime{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .cal-grid{gap:5px}.cal-day{padding:5px;border-radius:12px}.cal-day .tag{font-size:8.5px;letter-spacing:-.01em}
+  .summary-action-row{grid-template-columns:1fr}.summary-action-row>.btn{width:100%}
+  .daily-detail-table{table-layout:fixed;font-size:10.5px}.daily-detail-table th{font-size:8.5px;line-height:1.2}.daily-detail-table th,.daily-detail-table td{padding:6px 4px;overflow-wrap:break-word}
+  .daily-detail-table th:nth-child(1),.daily-detail-table td:nth-child(1){width:23%}.daily-detail-table th:nth-child(2),.daily-detail-table td:nth-child(2){width:14%}.daily-detail-table th:nth-child(3),.daily-detail-table td:nth-child(3){width:16%}
+  .daily-detail-table th:nth-child(4),.daily-detail-table td:nth-child(4){width:13%}.daily-detail-table th:nth-child(5),.daily-detail-table td:nth-child(5){width:13%}.daily-detail-table th:nth-child(6),.daily-detail-table td:nth-child(6){width:21%;overflow-wrap:anywhere}
+}
+@media(max-width:420px){
+  :root{--label-h:32px}
+  .field .day-choice{padding:9px;gap:8px;font-size:12.5px}
+  .break-head,.breakrow{grid-template-columns:minmax(78px,1fr) minmax(90px,.95fr) minmax(90px,.95fr) 38px;gap:5px}.breakrow input{font-size:12px;padding:8px 5px}.breakrow .btn{width:38px}
+}
 #printArea{display:none;background:white;color:#111}
 @media print{body{background:white}.app,.bottomnav,.fab,.toast,.modal-backdrop{display:none!important}#printArea{display:block!important;padding:20px} #printArea table{width:100%;border-collapse:collapse;font-size:12px}#printArea th,#printArea td{border:1px solid #999;padding:6px}#printArea h1{font-size:20px}}
 </style>
@@ -200,12 +287,11 @@ body{font-size:15px}
       <div class="row wrap"><div style="flex:1;min-width:210px"><b id="arifeBannerTitle">🌙 Bugün arife</b><div class="small muted" id="arifeBannerText" style="margin-top:4px"></div></div><button class="btn smallbtn primary" id="arifeAskBtn">Durumu seç</button></div>
     </div>
     <div class="card hero">
-      <div class="row wrap" style="position:relative;z-index:1">
-        <div>
+      <div class="hero-head">
+        <div class="hero-head-text">
           <div class="muted small" id="todayLong">Bugün</div>
           <div style="font-size:18px;font-weight:900" id="todayStatusTitle">Mesai durumu</div>
         </div>
-        <div class="spacer"></div>
         <span class="chip" id="todayChip">—</span>
       </div>
       <div class="timer" id="liveTimer">9s</div>
@@ -226,7 +312,7 @@ body{font-size:15px}
         <button class="btn soft" id="editTodayBtn">Bugünü düzenle</button>
         <button class="btn soft" id="pastAddBtn">Geçmiş Kayıt Ekle</button>
       </div>
-      <div class="row wrap" style="margin-top:10px">
+      <div class="quick-leave-grid">
         <button class="btn smallbtn soft" id="quickBankBtn">Saatlik İzin</button>
         <button class="btn smallbtn soft" data-quickleave="yillik_izin">🏖️ Yıllık İzin</button>
         <button class="btn smallbtn soft" data-quickleave="rapor">🏥 Sağlık Raporu</button>
@@ -235,8 +321,8 @@ body{font-size:15px}
     </div>
 
     <div class="card" style="background:linear-gradient(135deg,rgba(124,58,237,.18),rgba(6,182,212,.10)),linear-gradient(180deg,var(--card),var(--card2))">
-      <div class="row wrap"><h2 style="margin:0">Fazla/Eksik Mesai Saati</h2><span class="spacer"></span><span class="chip violet">1 saat fazla mesai = 1 saat izin</span></div>
-      <div class="row wrap" style="margin-top:14px;align-items:flex-end"><div><div class="label muted small" style="font-weight:800">TOPLAM</div><div class="bank-big" id="bankTotal">0s</div><div class="small muted" id="bankTotalEquiv">—</div><div class="small" id="bankExpiryInfo" style="margin-top:5px"></div></div><span class="spacer"></span><button class="btn primary" id="bankUseTodayBtn">Bugün Saatlik İzin Kullan</button></div>
+      <div class="card-title-row"><h2 style="margin:0">Fazla/Eksik Mesai Saati</h2><span class="chip violet">1 saat fazla mesai = 1 saat izin</span></div>
+      <div class="summary-action-row"><div><div class="label muted small" style="font-weight:800">TOPLAM</div><div class="bank-big" id="bankTotal">0s</div><div class="small muted" id="bankTotalEquiv">—</div><div class="small" id="bankExpiryInfo" style="margin-top:5px"></div></div><button class="btn primary" id="bankUseTodayBtn">Bugün Saatlik İzin Kullan</button></div>
       <div class="kpi-grid" style="margin-top:14px">
         <div class="kpi"><div class="label">BU AY FAZLA MESAİ</div><div class="value" style="color:var(--green)" id="bankEarnedMonth">—</div><div class="hint">Yapılan fazla çalışma</div></div>
         <div class="kpi"><div class="label">BU AY SAATLİK İZİN</div><div class="value" style="color:var(--violet)" id="bankUsedMonth">—</div><div class="hint">Fazla mesaiden kullanılan</div></div>
@@ -246,8 +332,8 @@ body{font-size:15px}
     </div>
 
     <div class="card">
-      <div class="row wrap"><h2 style="margin:0">🏖️ Yıllık İzin</h2><span class="spacer"></span><span class="chip blue" id="annualYearChip">—</span></div>
-      <div class="row wrap" style="margin-top:12px;align-items:flex-end"><div><div class="muted small" style="font-weight:800">KALAN YILLIK İZİN</div><div class="bank-big" id="annualRemaining">—</div><div class="small muted" id="annualDetail">Ayarlardan toplam izin gününüzü yazın</div></div><span class="spacer"></span><button class="btn smallbtn soft" onclick="showView('settings')">Ayarlar</button></div>
+      <div class="card-title-row"><h2 style="margin:0">🏖️ Yıllık İzin</h2><span class="chip blue" id="annualYearChip">—</span></div>
+      <div class="summary-action-row"><div><div class="muted small" style="font-weight:800">KALAN YILLIK İZİN</div><div class="bank-big" id="annualRemaining">—</div><div class="small muted" id="annualDetail">Ayarlardan toplam izin gününüzü yazın</div></div><button class="btn smallbtn soft" onclick="showView('settings')">Ayarlar</button></div>
       <div class="progress thin"><div id="annualProgress"></div></div>
     </div>
 
@@ -292,7 +378,7 @@ body{font-size:15px}
         <div class="field" style="margin:0"><input type="month" id="monthPickerCal"></div>
         <button class="btn soft" id="nextMonthBtn">›</button>
       </div>
-      <div class="row wrap small" style="margin-bottom:10px"><b id="calSummary"></b><span class="spacer"></span><button class="btn smallbtn primary" id="gotoTodayBtn">Bugün</button></div>
+      <div class="calendar-summary small"><b id="calSummary"></b><button class="btn smallbtn primary" id="gotoTodayBtn">Bugün</button></div>
       <div class="cal-grid" id="calDow"></div>
       <div class="cal-grid" id="calGrid" style="margin-top:6px"></div>
       <div class="legend">
@@ -305,7 +391,8 @@ body{font-size:15px}
   <!-- KAYITLAR -->
   <section class="view" id="view-records">
     <div class="card">
-      <div class="row wrap"><h2 style="margin:0">📋 Kayıtlar</h2><span class="spacer"></span><button class="btn smallbtn soft" id="csvImportBtn">CSV’den Aktar</button><button class="btn smallbtn soft" id="csvTemplateBtn">CSV Şablonu</button><button class="btn smallbtn primary" id="addRecordBtn">Geçmiş Kayıt Ekle</button></div>
+      <h2 style="margin:0">📋 Kayıtlar</h2>
+      <div class="records-actions"><button class="btn smallbtn soft" id="csvImportBtn">CSV’den Aktar</button><button class="btn smallbtn soft" id="csvTemplateBtn">CSV Şablonu</button><button class="btn smallbtn primary" id="addRecordBtn">Geçmiş Kayıt Ekle</button></div>
       <input type="file" id="csvImportFile" accept=".csv,text/csv,text/plain" class="hide">
       <p class="tiny muted">Geçmiş kayıtları ekleyebilir, yanlış kaydı dokunarak düzeltebilirsiniz.</p>
       <div class="form-grid" style="margin-top:14px">
@@ -323,7 +410,7 @@ body{font-size:15px}
   <!-- RAPOR -->
   <section class="view" id="view-report">
     <div class="card">
-      <div class="row wrap"><h2 style="margin:0">Aylık Rapor</h2><span class="spacer"></span><input type="month" id="monthPickerRep" style="background:var(--input);border:1px solid var(--line);border-radius:12px;padding:10px"></div>
+      <div class="row wrap"><h2 style="margin:0">Aylık Rapor</h2><span class="spacer"></span><input type="month" id="monthPickerRep" aria-label="Rapor ayı"></div>
       <div class="kpi-grid" style="margin-top:14px" id="reportKpis"></div>
       <div class="hr"></div>
       <h3>Günlük Çalışma Grafiği</h3>
@@ -367,13 +454,16 @@ body{font-size:15px}
     <div class="card" id="salaryLockCard">
       <div class="salary-lock-icon">🔐</div>
       <h2 style="text-align:center">Maaş Bölümü Kilitli</h2>
-      <p class="small muted" style="text-align:center;line-height:1.6">Maaş bilgilerini görmek için PIN, şifre veya parmak izinizi kullanın. Şifrenizi unuttuysanız belirlediğiniz kurtarma şifresini girin.</p>
-      <form id="salaryUnlockForm">
-        <div class="field"><label>PIN / Şifre / Kurtarma Şifresi</label><input type="password" id="salaryUnlockCode" autocomplete="current-password" placeholder="Güvenlik kodunuz"></div>
+      <p class="small muted" style="text-align:center;line-height:1.6">Maaş bilgilerini görmek için PIN’inizi girin.</p>
+      <form id="salaryUnlockForm" class="auth-form">
+        <div class="field"><label id="salaryUnlockLabel" for="salaryUnlockCode">PIN</label><input type="password" class="auth-code-input pin-mode" id="salaryUnlockCode" autocomplete="one-time-code" inputmode="numeric" pattern="[0-9]*" maxlength="6" enterkeyhint="done" placeholder="••••" aria-label="PIN"></div>
+        <p class="tiny muted" id="salaryModeHint" style="line-height:1.5;margin-top:8px">PIN alanına dokunduğunuzda sayı klavyesi açılır.</p>
+        <div class="auth-lockout hide" id="salaryLockout" role="timer" aria-live="polite"><span>Çok fazla yanlış deneme yapıldı</span><strong id="salaryCountdown">60</strong><small id="salaryCountdownUnit">saniye sonra tekrar deneyebilirsiniz</small></div>
         <p class="small" id="salaryLockError" style="color:var(--red);min-height:20px"></p>
-        <div class="action-grid"><button class="btn primary" type="submit">Maaşı Aç</button><button class="btn soft hide" id="salaryBiometricBtn" type="button">👆 Parmak İziyle Aç</button></div>
+        <div class="auth-actions"><button class="btn primary" id="salaryUnlockSubmitBtn" type="submit">Maaşı Aç</button><button class="btn soft hide" id="salaryBiometricBtn" type="button">👆 Parmak İziyle Aç</button></div>
+        <button class="btn soft forgot-link" id="salaryForgotBtn" type="button">Şifreyi Unuttum</button>
       </form>
-      <button class="btn soft block" id="salarySecuritySetupBtn" type="button" style="margin-top:9px">Güvenlik Bilgilerini Belirle</button>
+      <button class="btn soft block hide" id="salarySecuritySetupBtn" type="button">Güvenlik Bilgilerini Belirle</button>
       <p class="tiny muted" style="line-height:1.6;margin-top:10px">Not: Maaş verileri yalnızca bu cihazda saklanır ve GitHub eşitlemesine gönderilmez.</p>
     </div>
 
@@ -407,8 +497,8 @@ body{font-size:15px}
         <div class="form-grid">
           <div class="field"><label>Son Aylık Brüt Maaş (₺)</label><input type="number" id="compGross" min="0" step="0.01" inputmode="decimal"></div>
           <div class="field"><label>Düzenli Yan Hakların Aylık Brüt Karşılığı (₺)</label><input type="number" id="compBenefitsGross" min="0" step="0.01" inputmode="decimal"></div>
-          <div class="field"><label>Kıdem Tazminatı Tavanı (₺)</label><input type="number" id="compCeiling" min="0" step="0.01" inputmode="decimal"></div>
-          <div class="field"><label>&nbsp;</label><button class="btn soft block" id="updateCeilingBtn" type="button">🌐 Tavanı İnternetten Güncelle</button></div>
+          <div class="field"><label>Kıdem Tavanı (₺)</label><input type="number" id="compCeiling" min="0" step="0.01" inputmode="decimal"></div>
+          <div class="field"><label>&nbsp;</label><button class="btn soft block" id="updateCeilingBtn" type="button" aria-label="Kıdem tazminatı tavanını internetten güncelle">🌐 Tavanı Güncelle</button></div>
         </div>
         <div class="previewbox" id="compCeilingStatus"></div>
         <div id="compensationResults" style="margin-top:10px"></div>
@@ -435,7 +525,7 @@ body{font-size:15px}
         <div class="field"><label>Mesai Bitişi</label><input type="time" id="setEnd"></div>
       </div>
       <div class="field"><label>İşe Başlama Tarihi</label><input type="date" id="setEmploymentStart"><div class="previewbox" id="employmentDurationInfo" style="margin-top:7px">İşe başlama tarihi girilmedi.</div></div>
-      <div class="field"><label>Molalar</label><div id="breaksEditor"></div><button class="btn smallbtn soft" id="addBreakBtn">+ Mola Ekle</button></div>
+      <div class="field"><label>Molalar</label><div class="break-head" aria-hidden="true"><span>Mola adı</span><span>Başlangıç</span><span>Bitiş</span><span></span></div><div id="breaksEditor"></div><button class="btn smallbtn soft" id="addBreakBtn">+ Mola Ekle</button></div>
       <div class="field"><label>Bu ayarlar hangi tarihten itibaren geçerli olsun?</label><input type="date" id="setScheduleFrom"><div class="tiny muted" style="margin-top:5px">Bu tarihten önceki günler eski programla hesaplanır; eski kayıtlarınız bozulmaz.</div></div>
       <div class="field"><label>Program Geçmişi</label><div id="scheduleHistory"></div></div>
       <div class="form-grid time-pair">
@@ -459,15 +549,16 @@ body{font-size:15px}
         <div class="field"><label>Aktarılan fazla mesai sonraki ayın kaçıncı gününe kadar kullanılsın?</label><input type="number" id="setCarryUse" min="0" max="28" step="1"></div>
       </div>
       <div class="field"><label>Hafta Tatili Günleri</label>
-        <div class="daychoices">
-          <label class="chip"><input type="checkbox" class="weekendChk" value="1"> Pazartesi</label>
-          <label class="chip"><input type="checkbox" class="weekendChk" value="2"> Salı</label>
-          <label class="chip"><input type="checkbox" class="weekendChk" value="3"> Çarşamba</label>
-          <label class="chip"><input type="checkbox" class="weekendChk" value="4"> Perşembe</label>
-          <label class="chip"><input type="checkbox" class="weekendChk" value="5"> Cuma</label>
-          <label class="chip"><input type="checkbox" class="weekendChk" value="6"> Cumartesi</label>
-          <label class="chip"><input type="checkbox" class="weekendChk" value="0"> Pazar</label>
+        <div class="daychoices" role="group" aria-label="Hafta tatili günleri">
+          <label class="day-choice"><input type="checkbox" class="weekendChk" value="1"><span class="day-check">✓</span><span class="day-name">Pazartesi</span></label>
+          <label class="day-choice"><input type="checkbox" class="weekendChk" value="2"><span class="day-check">✓</span><span class="day-name">Salı</span></label>
+          <label class="day-choice"><input type="checkbox" class="weekendChk" value="3"><span class="day-check">✓</span><span class="day-name">Çarşamba</span></label>
+          <label class="day-choice"><input type="checkbox" class="weekendChk" value="4"><span class="day-check">✓</span><span class="day-name">Perşembe</span></label>
+          <label class="day-choice"><input type="checkbox" class="weekendChk" value="5"><span class="day-check">✓</span><span class="day-name">Cuma</span></label>
+          <label class="day-choice"><input type="checkbox" class="weekendChk" value="6"><span class="day-check">✓</span><span class="day-name">Cumartesi</span></label>
+          <label class="day-choice"><input type="checkbox" class="weekendChk" value="0"><span class="day-check">✓</span><span class="day-name">Pazar</span></label>
         </div>
+        <div class="weekend-summary" id="weekendSummary">Seçili günler: —</div>
       </div>
       <button class="btn primary block" id="saveSettingsBtn">Ayarları Kaydet</button>
     </div>
@@ -476,8 +567,8 @@ body{font-size:15px}
       <h2>🔐 Güvenlik / Kilit</h2>
       <p class="small muted" id="passwordStatus" style="line-height:1.6">Güvenlik ayarlı değil.</p>
       <div class="security-methods" id="securityMethods"></div>
-      <label class="chip" style="display:flex;margin:9px 0"><input type="checkbox" id="twoFactorToggle"> İki aşamalı doğrulama kullan <span class="tiny muted">(önce PIN/şifre, sonra parmak izi)</span></label>
-      <div class="row wrap"><button class="btn primary" id="setPasswordBtn">🔑 Güvenlik bilgilerini belirle / değiştir</button><button class="btn soft" id="registerBiometricBtn">👆 Parmak izini kaydet</button><button class="btn soft hide" id="removeBiometricBtn">Parmak izini kaldır</button><button class="btn soft hide" id="removePasswordBtn">Kilidi kaldır</button><button class="btn soft hide" id="lockNowBtn">🔒 Şimdi kilitle</button></div>
+      <label class="check-row"><input type="checkbox" id="twoFactorToggle"><span>İki aşamalı doğrulama kullan<small>Önce PIN, sonra parmak izi</small></span></label>
+      <div class="security-actions"><button class="btn primary" id="setPasswordBtn">🔑 Güvenlik bilgilerini belirle / değiştir</button><button class="btn soft" id="registerBiometricBtn">👆 Parmak izini kaydet</button><button class="btn soft hide" id="removeBiometricBtn">Parmak izini kaldır</button><button class="btn soft hide" id="removePasswordBtn">Kilidi kaldır</button><button class="btn soft hide" id="lockNowBtn">🔒 Şimdi kilitle</button></div>
       <p class="tiny muted" style="line-height:1.6">Bu bilgiler uygulama girişinde ve Maaş menüsünde kullanılır. Kilit kayıtların görünmesini engeller; cihaz depolamasını teknik olarak şifrelemez. Kurtarma şifrenizi güvenli bir yerde saklayın.</p>
     </div>
 
@@ -542,11 +633,13 @@ body{font-size:15px}
         <div class="field"><label>Çıkış</label><input type="time" id="fEnd"></div>
         <div class="field"><label>Mola (dk)</label><input type="number" id="fBreak" min="0" step="5" inputmode="numeric"></div>
       </div>
-      <div class="row wrap">
+      <div class="editor-quick-grid editor-quick-main">
         <button class="btn smallbtn primary" id="presetNormalBtn">Normal Saatleri Doldur</button>
         <button class="btn smallbtn soft" id="autoBreakBtn">Molayı Otomatik Hesapla</button>
         <button class="btn smallbtn soft" id="nowStartBtn">Giriş: Şimdi</button>
         <button class="btn smallbtn soft" id="nowEndBtn">Çıkış: Şimdi</button>
+      </div>
+      <div class="editor-quick-grid editor-quick-overtime">
         <button class="btn smallbtn primary" data-overtime-min="60">+1 Saat</button>
         <button class="btn smallbtn primary" data-overtime-min="120">+2 Saat</button>
         <button class="btn smallbtn primary" data-overtime-min="180">+3 Saat</button>
@@ -554,14 +647,14 @@ body{font-size:15px}
       </div>
       <div class="previewbox" id="editorPreview">—</div>
       <p class="tiny muted">Çıkış saati gece yarısını geçerse ertesi gün sayılır; akşam ve gece molaları otomatik düşülür.</p>
-      <label class="chip violet" style="width:100%;justify-content:flex-start;padding:12px"><input type="checkbox" id="fAllNighter">Sabahlama (ertesi sabah biten çalışma)</label>
+      <label class="check-row"><input type="checkbox" id="fAllNighter"><span>Sabahlama<small>Ertesi sabah biten çalışma</small></span></label>
     </div>
     <div id="leaveFields" class="hide">
       <div class="field"><label id="fLeaveLabel">Yıllık İzinden Kaç Gün Düşsün?</label><select id="fLeaveDays"><option value="auto">Otomatik (hafta içi 1, arife 0,5, tatil 0)</option><option value="1">1 gün</option><option value="0.5">0,5 gün</option><option value="0">0 — düşme</option></select></div>
     </div>
     <div id="bankFields">
       <div class="field"><label>Fazla Mesaiden Kullanılacak Saatlik İzin (dakika)</label><input type="number" id="fBankUsed" min="0" step="5" inputmode="numeric" placeholder="0"></div>
-      <div class="row wrap">
+      <div class="editor-quick-grid editor-quick-bank">
         <button class="btn smallbtn soft" id="bankFullBtn">Tam Gün</button>
         <button class="btn smallbtn soft" id="bankHalfBtn">Yarım Gün</button>
         <button class="btn smallbtn primary" id="bankCoverBtn">Eksik Kısmı Tamamla</button>
@@ -603,11 +696,14 @@ body{font-size:15px}
   <form class="lockbox" id="lockForm">
     <div class="logo">⏱️</div>
     <h2 style="margin:0 0 6px">Uygulama Kilitli</h2>
-    <p class="muted small">PIN, şifre veya kurtarma şifrenizi girin.</p>
-    <input type="password" id="lockPassword" autocomplete="current-password" placeholder="PIN / Şifre / Kurtarma şifresi">
+    <p class="muted small">PIN’inizi girin.</p>
+    <div class="field" style="text-align:left"><label id="lockUnlockLabel" for="lockPassword">PIN</label><input type="password" class="auth-code-input pin-mode" id="lockPassword" autocomplete="one-time-code" inputmode="numeric" pattern="[0-9]*" maxlength="6" enterkeyhint="done" placeholder="••••" aria-label="PIN"></div>
+    <p class="tiny muted" id="lockModeHint" style="line-height:1.5;margin-top:8px">PIN alanına dokunduğunuzda sayı klavyesi açılır.</p>
+    <div class="auth-lockout hide" id="lockLockout" role="timer" aria-live="polite"><span>Çok fazla yanlış deneme yapıldı</span><strong id="lockCountdown">60</strong><small id="lockCountdownUnit">saniye sonra tekrar deneyebilirsiniz</small></div>
     <p class="small" id="lockError" style="color:var(--red);min-height:20px"></p>
-    <button class="btn primary block" type="submit">Aç</button>
+    <button class="btn primary block" id="lockSubmitBtn" type="submit">Aç</button>
     <button class="btn soft block hide" id="lockBiometricBtn" type="button" style="margin-top:8px">👆 Parmak İziyle Aç</button>
+    <button class="btn soft block forgot-link" id="lockForgotBtn" type="button">Şifreyi Unuttum</button>
   </form>
 </div>
 
@@ -615,19 +711,40 @@ body{font-size:15px}
 <div class="modal-backdrop" id="passwordSetupBackdrop" style="z-index:210">
   <div class="modal">
     <div class="row"><h2 style="margin:0">🔐 Güvenlik bilgileri</h2><span class="spacer"></span><button class="icon-btn" id="closePasswordSetupBtn" type="button">✕</button></div>
-    <p class="small muted" style="line-height:1.6">Uygulama girişi ve Maaş bölümü için kullanılacak bilgileri belirleyin. Var olan güvenlikte yalnızca değiştirmek istediğiniz alanları doldurun.</p>
+    <p class="small muted" style="line-height:1.6">Uygulama girişi ve Maaş bölümü için aynı PIN kullanılır. PIN’i unutursanız kurtarma şifresiyle yeni PIN belirleyebilirsiniz. Var olan güvenlikte yalnızca değiştirmek istediğiniz alanları doldurun.</p>
     <div class="form-grid">
-      <div class="field"><label>Giriş şifresi (en az 4 karakter)</label><input type="password" id="newPassword" autocomplete="new-password"></div>
-      <div class="field"><label>Giriş şifresi tekrar</label><input type="password" id="newPassword2" autocomplete="new-password"></div>
-      <div class="field"><label>Yedek PIN (4–6 rakam)</label><input type="password" id="newPin" autocomplete="new-password" inputmode="numeric" placeholder="örn. 2468"></div>
-      <div class="field"><label>Yedek PIN tekrar</label><input type="password" id="newPin2" autocomplete="new-password" inputmode="numeric"></div>
+      <div class="field"><label>PIN (4–6 rakam)</label><input type="password" class="pin-native-input" id="newPin" autocomplete="off" inputmode="numeric" pattern="[0-9]*" maxlength="6" enterkeyhint="next" placeholder="••••"></div>
+      <div class="field"><label>PIN tekrar</label><input type="password" class="pin-native-input" id="newPin2" autocomplete="off" inputmode="numeric" pattern="[0-9]*" maxlength="6" enterkeyhint="next" placeholder="••••"></div>
       <div class="field"><label>Kurtarma şifresi (en az 8 karakter)</label><input type="password" id="newRecovery" autocomplete="new-password"></div>
       <div class="field"><label>Kurtarma şifresi tekrar</label><input type="password" id="newRecovery2" autocomplete="new-password"></div>
     </div>
-    <label class="chip" style="display:flex;margin:8px 0"><input type="checkbox" id="newTwoFactor"> İki aşamalı doğrulama (PIN/şifre + parmak izi)</label>
-    <p class="tiny muted" style="line-height:1.6">İlk kurulumda şifre, yedek PIN ve kurtarma şifresi zorunludur. Parmak izini kaydettikten sonra iki aşamalı doğrulama kullanılabilir.</p>
+    <label class="check-row"><input type="checkbox" id="newTwoFactor"><span>İki aşamalı doğrulama<small>PIN + parmak izi</small></span></label>
+    <p class="tiny muted" style="line-height:1.6">İlk kurulumda PIN ve kurtarma şifresi zorunludur. Parmak izini kaydettikten sonra iki aşamalı doğrulama kullanılabilir.</p>
     <p class="small" id="passwordSetupError" style="color:var(--red)"></p>
     <div class="action-grid"><button class="btn primary" id="savePasswordSetupBtn" type="button">Güvenliği Kaydet</button><button class="btn soft" id="skipPasswordSetupBtn" type="button">Şimdilik geç</button></div>
+  </div>
+</div>
+
+<!-- ŞİFREYİ UNUTTUM -->
+<div class="modal-backdrop" id="forgotPasswordBackdrop" style="z-index:230">
+  <div class="modal">
+    <div class="row"><h2 style="margin:0">🔑 Şifreyi Unuttum</h2><span class="spacer"></span><button class="icon-btn" id="closeForgotPasswordBtn" type="button" aria-label="Kapat">✕</button></div>
+    <form id="forgotRecoveryForm">
+      <p class="small muted" style="line-height:1.6">Yeni PIN belirlemek için daha önce tanımladığınız kurtarma şifresini girin.</p>
+      <div class="field"><label for="forgotRecoveryCode">Kurtarma şifresi</label><input type="password" id="forgotRecoveryCode" autocomplete="current-password" enterkeyhint="done"></div>
+      <p class="small" id="forgotPasswordError" style="color:var(--red);min-height:20px"></p>
+      <div class="action-grid"><button class="btn primary" id="verifyRecoveryBtn" type="submit">Doğrula</button><button class="btn soft" id="cancelForgotPasswordBtn" type="button">Vazgeç</button></div>
+    </form>
+    <form id="forgotResetForm" class="hide">
+      <div class="previewbox" style="border-color:rgba(52,211,153,.45)">Kurtarma şifresi doğrulandı. Şimdi yeni PIN belirleyin.</div>
+      <div class="form-grid" style="margin-top:12px">
+        <div class="field"><label for="resetPin">Yeni PIN (4–6 rakam)</label><input type="password" class="pin-native-input" id="resetPin" autocomplete="off" inputmode="numeric" pattern="[0-9]*" maxlength="6" enterkeyhint="next" placeholder="••••"></div>
+        <div class="field"><label for="resetPin2">Yeni PIN tekrar</label><input type="password" class="pin-native-input" id="resetPin2" autocomplete="off" inputmode="numeric" pattern="[0-9]*" maxlength="6" enterkeyhint="done" placeholder="••••"></div>
+      </div>
+      <p class="tiny muted" style="line-height:1.5">PIN alanına dokunduğunuzda sayı klavyesi açılır.</p>
+      <p class="small" id="resetPinError" style="color:var(--red);min-height:20px"></p>
+      <div class="action-grid"><button class="btn primary" id="saveResetPinBtn" type="submit">Yeni PIN’i Kaydet</button><button class="btn soft" id="cancelResetPinBtn" type="button">Vazgeç</button></div>
+    </form>
   </div>
 </div>
 
@@ -1236,7 +1353,7 @@ function renderHome(){
   document.documentElement.dataset.theme=state.settings.theme||"dark";
   $("themeBtn").textContent=(state.settings.theme==="light")?"☀️":"🌙";
   const person=workplaceName();
-  $("headerSub").textContent=person+" • "+sched.start+" – "+sched.end+" • Günlük Hedef "+fmtMin(schedTarget(sched));
+  $("headerSub").textContent=sched.start+" – "+sched.end+" • Günlük Hedef "+fmtMin(schedTarget(sched));
   $("kpiInHint").textContent="Başlangıç "+sched.start; $("kpiOutHint").textContent="Bitiş "+sched.end;
   $("todayLong").textContent=fmtDateTR(t)+" • "+workplaceName();
   $("kpiIn").textContent=e&&e.start?e.start:"—";
@@ -1375,7 +1492,7 @@ function renderCalendar(){
     else if(info.entry){hrs=TYPES[info.entry.type].icon;tag=TYPES[info.entry.type].label;}
     else if(info.holiday){hrs="🇹🇷";tag=info.holiday.half?"Yarım Gün":"Resmi Tatil";}
     else if(info.isWeekend){hrs="🌿";tag="Hafta Tatili";}
-    else if(info.isPast){hrs="⚠️";tag="Kayıtsız";}
+    else if(info.isPast){hrs="⚠️";tag="Kayıt Yok";}
     html+='<div class="'+cls+'" onclick="openEditor(\''+ds+'\')"><div class="num">'+d.getDate()+'</div><div class="hrs">'+hrs+'</div><div class="tag">'+esc(tag)+'</div></div>';
     if(i>27&&d.getDate()<7&&out) { /* keep 6 rows for stability */ }
   }
@@ -1442,7 +1559,7 @@ function renderReport(){
     const e=info.entry; let tur=e?TYPES[e.type].label:(info.holiday?"Resmi Tatil":info.isWeekend?"Hafta Tatili":info.isFuture?"—":"Kayıtsız");
     return "<tr><td>"+fmtDateShort(info.date)+"<br><span class='muted'>"+DAYS_TR[parseDateStr(info.date).getDay()]+"</span></td><td>"+(e&&e.start?e.start:"—")+"<br>"+(e&&e.end?e.end:"")+"</td><td>"+(info.net!==null?fmtMin(info.net):"—")+(info.bankUsed?"<br><span class='tiny' style='color:var(--violet)'>⏳ +"+fmtMin(info.bankUsed)+" saatlik izin</span>":"")+"</td><td>"+fmtMin(info.target)+"</td><td>"+(info.diff===null?"—":fmtMin(info.diff,true))+(info.earned?"<br><span class='tiny' style='color:var(--green)'>fazla mesai +"+fmtMin(info.earned)+"</span>":"")+"</td><td>"+tur+(info.holiday?"<br><span class='muted tiny'>"+esc(info.holiday.name)+"</span>":"")+(e&&e.note?"<br><span class='muted tiny'>"+esc(e.note)+"</span>":"")+"</td></tr>";
   }).join("");
-  $("reportDetail").innerHTML='<div style="overflow:auto"><table class="table"><thead><tr><th>Tarih</th><th>Giriş / Çıkış</th><th>Çalışma</th><th>Hedef</th><th>Fark</th><th>Kayıt Türü / Not</th></tr></thead><tbody>'+rows+'</tbody></table></div><p class="small muted">'+MONTHS_TR[m-1]+" "+y+" • Ay hedefi: <b>"+fmtMin(st.targetAll)+'</b></p>';
+  $("reportDetail").innerHTML='<div style="overflow:auto"><table class="table daily-detail-table"><thead><tr><th>Tarih</th><th>Giriş / Çıkış</th><th>Çalışma</th><th>Hedef</th><th>Fark</th><th>Kayıt Türü / Not</th></tr></thead><tbody>'+rows+'</tbody></table></div><p class="small muted">'+MONTHS_TR[m-1]+" "+y+" • Ay hedefi: <b>"+fmtMin(st.targetAll)+'</b></p>';
   renderStats(y);
   if($("view-report").classList.contains("active")) drawDailyChart();
 }
@@ -1586,6 +1703,10 @@ function fillLeaveEntitlement(selectedKey){
     $("setLeaveTotal").value=ent.total??14; $("setLeavePrior").value=ent.priorUsed??0;
   }
 }
+function updateWeekendSummary(){
+  const names=[...document.querySelectorAll(".weekendChk:checked")].map(c=>{const label=c.closest(".day-choice");const name=label?label.querySelector(".day-name"):null;return name?name.textContent.trim():"";}).filter(Boolean);
+  if($("weekendSummary"))$("weekendSummary").textContent="Seçili günler: "+(names.length?names.join(", "):"Yok");
+}
 function fillSettings(){
   renderWorkplaceSelector();
   const wp=activeWorkplace(); const sched=currentSchedule();
@@ -1601,7 +1722,7 @@ function fillSettings(){
   $("setCarryLate").value=sched.carryLateDays??14; $("setCarryUse").value=sched.carryUseDays??7;
   fillLeaveEntitlement();
   fillSyncSettings(); updatePasswordUI();
-  document.querySelectorAll(".weekendChk").forEach(c=>c.checked=(sched.weekend||[]).includes(Number(c.value)));
+  document.querySelectorAll(".weekendChk").forEach(c=>c.checked=(sched.weekend||[]).includes(Number(c.value))); updateWeekendSummary();
   renderBreaksEditor(); renderScheduleHistory();
 }
 function renderScheduleHistory(){
@@ -1616,7 +1737,7 @@ function loadScheduleVersion(effectiveFrom){
   $("setEveningStart").value=s.eveningBreak.s;$("setEveningEnd").value=s.eveningBreak.e;
   $("setNightStart").value=s.nightBreak.s;$("setNightEnd").value=s.nightBreak.e;
   $("setCarryLate").value=s.carryLateDays??14;$("setCarryUse").value=s.carryUseDays??7;
-  document.querySelectorAll(".weekendChk").forEach(c=>c.checked=(s.weekend||[]).includes(Number(c.value)));
+  document.querySelectorAll(".weekendChk").forEach(c=>c.checked=(s.weekend||[]).includes(Number(c.value))); updateWeekendSummary();
   renderBreaksEditor();
   toast("Program yüklendi: "+fmtDateShort(effectiveFrom));
 }
@@ -1633,6 +1754,7 @@ function removeBreak(i){state.settings.breaks.splice(i,1);renderBreaksEditor();}
 $("addBreakBtn").onclick=()=>{state.settings.breaks.push({label:"Mola",s:"16:00",e:"16:10"});renderBreaksEditor();};
 $("setEmploymentStart").addEventListener("change",()=>{updateEmploymentDurationInfo();fillLeaveEntitlement();});
 $("setLeaveYear").addEventListener("change",()=>fillLeaveEntitlement($("setLeaveYear").value));
+document.querySelectorAll(".weekendChk").forEach(c=>c.addEventListener("change",updateWeekendSummary));
 $("saveSettingsBtn").onclick=()=>{
   const wp=activeWorkplace(); if(!wp){toast("Önce bir iş yeri seçin");return;}
   const effectiveFrom=$("setScheduleFrom").value||todayStr();
@@ -2435,8 +2557,23 @@ document.querySelectorAll("[data-arife]").forEach(btn=>btn.onclick=()=>{
 const AUTH_KEY="mesaiTakip_auth_v1";
 const PW_PROMPT_KEY="mesaiTakip_pw_prompt_dismissed";
 let appUnlocked=false; let hiddenAt=0; let postUnlockRan=false;
-function loadAuth(){try{return JSON.parse(localStorage.getItem(AUTH_KEY)||"null");}catch(e){return null;}}
-function saveAuth(a){try{localStorage.setItem(AUTH_KEY,JSON.stringify(a));}catch(e){}}
+function normalizeAuthRecord(a,persist=false){
+  if(!a||typeof a!=="object"||Array.isArray(a))return null;
+  let changed=false;
+  if(a.authVersion!==2){a.authVersion=2;changed=true;}
+  if(a.pinHash){
+    if("salt" in a||"hash" in a){delete a.salt;delete a.hash;changed=true;}
+    if(a.needsPinSetup){delete a.needsPinSetup;changed=true;}
+  }else if(a.hash){
+    delete a.salt;delete a.hash;a.needsPinSetup=true;changed=true;
+  }
+  ["failedAttempts","lockoutLevel","lockedUntil"].forEach(key=>{const value=Math.max(0,Number(a[key]||0)||0);if(a[key]!==value){a[key]=value;changed=true;}});
+  if(persist&&changed){try{localStorage.setItem(AUTH_KEY,JSON.stringify(a));}catch(e){}}
+  return a;
+}
+function loadAuth(){try{return normalizeAuthRecord(JSON.parse(localStorage.getItem(AUTH_KEY)||"null"),true);}catch(e){return null;}}
+function saveAuth(a){const normalized=normalizeAuthRecord(a,false);try{localStorage.setItem(AUTH_KEY,JSON.stringify(normalized));}catch(e){}}
+function hasPinAuth(a){a=a||loadAuth();return !!(a&&a.pinSalt&&a.pinHash);}
 function clearAuth(){try{localStorage.removeItem(AUTH_KEY);}catch(e){}}
 function sessionUnlocked(){try{return sessionStorage.getItem("mesaiUnlocked")==="1";}catch(e){return appUnlocked;}}
 function setSessionUnlocked(v){appUnlocked=v;try{v?sessionStorage.setItem("mesaiUnlocked","1"):sessionStorage.removeItem("mesaiUnlocked");}catch(e){}}
@@ -2451,7 +2588,81 @@ async function hashPassword(password,salt){
   return "fallback-"+(h1>>>0).toString(16)+"-"+(h2>>>0).toString(16);
 }
 function makeSalt(){try{return [...crypto.getRandomValues(new Uint8Array(16))].map(b=>b.toString(16).padStart(2,"0")).join("");}catch(e){return Date.now()+"-"+Math.random();}}
-let pendingAppCodeMethod=null; let recoveryUsedNext=false;
+let pendingAppCodeMethod=null;
+const AUTH_MAX_ATTEMPTS=3;
+const AUTH_BASE_LOCKOUT_SECONDS=60;
+const AUTH_MAX_LOCKOUT_SECONDS=1800;
+let authLockoutTimer=null;
+const authVerifyBusy={lock:false,salary:false};
+let forgotPasswordScope="lock";
+let forgotRecoveryVerified=false;
+const AUTH_LOCKOUT_UI={
+  lock:{input:"lockPassword",submit:"lockSubmitBtn",biometric:"lockBiometricBtn",error:"lockError",box:"lockLockout",countdown:"lockCountdown",unit:"lockCountdownUnit"},
+  salary:{input:"salaryUnlockCode",submit:"salaryUnlockSubmitBtn",biometric:"salaryBiometricBtn",error:"salaryLockError",box:"salaryLockout",countdown:"salaryCountdown",unit:"salaryCountdownUnit"}
+};
+function nextAuthLockoutSeconds(level){return Math.min(AUTH_MAX_LOCKOUT_SECONDS,AUTH_BASE_LOCKOUT_SECONDS*Math.pow(2,Math.max(0,Number(level||0)||0)));}
+function formatAuthLockoutDuration(seconds){
+  seconds=Math.max(0,Math.ceil(Number(seconds||0)||0));
+  if(seconds<=60)return seconds+" saniye";
+  const minutes=Math.floor(seconds/60), rest=seconds%60;
+  return minutes+" dakika"+(rest?" "+rest+" saniye":"");
+}
+function getAuthLockState(a){
+  a=a||loadAuth();
+  if(!a)return {locked:false,remainingSeconds:0,lockedUntil:0};
+  const until=Math.max(0,Number(a.lockedUntil||0)||0);
+  const remainingMs=Math.max(0,until-Date.now());
+  if(until&&remainingMs<=0){a.lockedUntil=0;a.failedAttempts=0;saveAuth(a);return {locked:false,remainingSeconds:0,lockedUntil:0};}
+  return {locked:remainingMs>0,remainingSeconds:Math.ceil(remainingMs/1000),lockedUntil:until};
+}
+function updateAuthLockoutUI(){
+  const a=loadAuth(); const state=getAuthLockState(a);
+  Object.entries(AUTH_LOCKOUT_UI).forEach(([scope,cfg])=>{
+    const input=$(cfg.input), submit=$(cfg.submit), biometric=$(cfg.biometric), error=$(cfg.error), box=$(cfg.box), countdown=$(cfg.countdown), unit=$(cfg.unit);
+    if(!input)return;
+    const wasLocked=input.dataset.lockout==="1";
+    const busy=!!authVerifyBusy[scope];
+    if(box)box.classList.toggle("hide",!state.locked);
+    if(state.locked&&countdown){
+      if(state.remainingSeconds<=60){countdown.textContent=String(state.remainingSeconds);if(unit)unit.textContent="saniye sonra tekrar deneyebilirsiniz";}
+      else{const m=Math.floor(state.remainingSeconds/60),s=state.remainingSeconds%60;countdown.textContent=String(m).padStart(2,"0")+":"+String(s).padStart(2,"0");if(unit)unit.textContent="dakika:saniye sonra tekrar deneyebilirsiniz";}
+      if(!wasLocked&&error&&!error.textContent){error.style.color="var(--red)";error.textContent="Çok fazla yanlış deneme yapıldı.";}
+    }else if(!state.locked&&wasLocked&&error){
+      error.style.color="var(--green)";error.textContent="Kilit süresi doldu. PIN’inizi tekrar girebilirsiniz.";
+    }
+    input.disabled=state.locked||busy;
+    if(submit)submit.disabled=state.locked||busy;
+    if(biometric)biometric.disabled=state.locked||busy;
+    input.dataset.lockout=state.locked?"1":"0";
+  });
+  return state;
+}
+function startAuthLockoutTimer(){
+  updateAuthLockoutUI();
+  if(authLockoutTimer)return;
+  authLockoutTimer=setInterval(updateAuthLockoutUI,250);
+}
+function recordAuthFailure(){
+  const a=loadAuth(); if(!hasPinAuth(a))return {locked:false,remainingAttempts:AUTH_MAX_ATTEMPTS,remainingSeconds:0,durationSeconds:0};
+  const current=getAuthLockState(a);
+  if(current.locked){updateAuthLockoutUI();return {locked:true,remainingAttempts:0,remainingSeconds:current.remainingSeconds,durationSeconds:current.remainingSeconds};}
+  a.failedAttempts=Math.max(0,Number(a.failedAttempts||0)||0)+1;
+  if(a.failedAttempts>=AUTH_MAX_ATTEMPTS){
+    const durationSeconds=nextAuthLockoutSeconds(a.lockoutLevel);
+    a.failedAttempts=0;
+    a.lockoutLevel=Math.max(0,Number(a.lockoutLevel||0)||0)+1;
+    a.lockedUntil=Date.now()+durationSeconds*1000;
+    saveAuth(a);updateAuthLockoutUI();
+    return {locked:true,remainingAttempts:0,remainingSeconds:durationSeconds,durationSeconds};
+  }
+  saveAuth(a);updateAuthLockoutUI();
+  return {locked:false,remainingAttempts:AUTH_MAX_ATTEMPTS-a.failedAttempts,remainingSeconds:0,durationSeconds:0};
+}
+function recordAuthSuccess(){
+  const a=loadAuth(); if(!a)return;
+  if(a.failedAttempts||a.lockoutLevel||a.lockedUntil){a.failedAttempts=0;a.lockoutLevel=0;a.lockedUntil=0;saveAuth(a);}
+  updateAuthLockoutUI();
+}
 function bytesToHex(bytes){return [...new Uint8Array(bytes)].map(b=>b.toString(16).padStart(2,"0")).join("");}
 function bytesToB64Url(bytes){let s="";new Uint8Array(bytes).forEach(b=>s+=String.fromCharCode(b));return btoa(s).replace(/\+/g,"-").replace(/\//g,"_").replace(/=+$/,"");}
 function b64UrlToBytes(value){const s=String(value||"").replace(/-/g,"+").replace(/_/g,"/");const padded=s+"=".repeat((4-s.length%4)%4);const bin=atob(padded);const out=new Uint8Array(bin.length);for(let i=0;i<bin.length;i++)out[i]=bin.charCodeAt(i);return out.buffer;}
@@ -2467,18 +2678,19 @@ async function verifyStoredSecret(secret,salt,stored){
   if(String(stored).startsWith("pbkdf2-")){const iterations=Number(String(stored).split("-")[1]||210000);return await deriveSecretHash(secret,salt,iterations)===stored;}
   return await hashPassword(secret,salt)===stored;
 }
-async function verifyAnySecurityCode(code){
-  const a=loadAuth(); if(!a||!code)return null;
-  if(await verifyStoredSecret(code,a.recoverySalt,a.recoveryHash))return "recovery";
-  if(await verifyStoredSecret(code,a.pinSalt,a.pinHash))return "pin";
-  if(await verifyStoredSecret(code,a.salt,a.hash))return "password";
-  return null;
+async function verifyPinCode(code){
+  const a=loadAuth(); if(!hasPinAuth(a)||!/^\d{4,6}$/.test(String(code||"")))return false;
+  return verifyStoredSecret(String(code),a.pinSalt,a.pinHash);
 }
-function authMethods(a){if(!a)return [];const out=["Şifre"];if(a.pinHash)out.push("Yedek PIN");if(a.recoveryHash)out.push("Kurtarma şifresi");if(a.biometric&&a.biometric.credentialId)out.push("Parmak izi");if(a.twoFactor&&a.biometric&&a.biometric.credentialId)out.push("İki aşamalı");return out;}
+async function verifyRecoveryCode(code){
+  const a=loadAuth(); if(!a||!a.recoveryHash||!code)return false;
+  return verifyStoredSecret(String(code),a.recoverySalt,a.recoveryHash);
+}
+function authMethods(a){if(!a)return [];const out=[];if(a.pinHash)out.push("PIN");if(a.recoveryHash)out.push("Kurtarma şifresi");if(a.biometric&&a.biometric.credentialId)out.push("Parmak izi");if(a.twoFactor&&a.biometric&&a.biometric.credentialId)out.push("İki aşamalı");return out;}
 function biometricAvailable(){return !!(window.isSecureContext&&window.PublicKeyCredential&&navigator.credentials&&navigator.credentials.create&&navigator.credentials.get);}
 async function platformBiometricAvailable(){try{return biometricAvailable()&&await PublicKeyCredential.isUserVerifyingPlatformAuthenticatorAvailable();}catch(e){return false;}}
 async function registerBiometric(){
-  const a=loadAuth(); if(!a){toast("Önce güvenlik bilgilerini belirleyin");openPasswordSetup();return;}
+  const a=loadAuth(); if(!hasPinAuth(a)){toast("Önce PIN belirleyin");openPasswordSetup();return;}
   if(!biometricAvailable()){alert("Parmak izi bu tarayıcıda kullanılamıyor. Uygulamayı HTTPS adresinde/PWA olarak açıp tekrar deneyin.");return;}
   if(!await platformBiometricAvailable()){alert("Bu cihazda parmak izi/cihaz kilidi bulunamadı veya tarayıcı desteklemiyor.");return;}
   try{
@@ -2520,92 +2732,212 @@ async function verifyBiometric(){
   if(!ok)throw new Error("Parmak izi imzası doğrulanamadı");
   return true;
 }
+const AUTH_INPUTS={lock:{input:"lockPassword"},salary:{input:"salaryUnlockCode"}};
+function sanitizePinValue(value){return String(value||"").replace(/\D/g,"").slice(0,6);}
+function configurePinInput(input){
+  if(!input)return;
+  input.dataset.authMode="pin";
+  input.classList.add("pin-mode");
+  input.readOnly=false;
+  input.setAttribute("inputmode","numeric");
+  input.setAttribute("pattern","[0-9]*");
+  input.maxLength=6;
+  input.value=sanitizePinValue(input.value);
+}
+function setupAuthCodeInputs(){
+  Object.values(AUTH_INPUTS).forEach(cfg=>configurePinInput($(cfg.input)));
+  ["lockPassword","salaryUnlockCode","newPin","newPin2","resetPin","resetPin2"].forEach(id=>{
+    const input=$(id); if(!input)return;
+    configurePinInput(input);
+    input.addEventListener("input",()=>{input.value=sanitizePinValue(input.value);});
+  });
+  startAuthLockoutTimer();
+}
+function resetAuthCode(scope){
+  const cfg=AUTH_INPUTS[scope]; if(!cfg)return; const input=$(cfg.input); if(input)input.value="";
+}
+setupAuthCodeInputs();
 function updatePasswordUI(){
-  const a=loadAuth();
-  if($("lockBtn"))$("lockBtn").classList.toggle("hide",!a);
+  const a=loadAuth(); const configured=hasPinAuth(a);
+  if($("lockBtn"))$("lockBtn").classList.toggle("hide",!configured);
   if($("removePasswordBtn"))$("removePasswordBtn").classList.toggle("hide",!a);
-  if($("lockNowBtn"))$("lockNowBtn").classList.toggle("hide",!a);
+  if($("lockNowBtn"))$("lockNowBtn").classList.toggle("hide",!configured);
   if($("removeBiometricBtn"))$("removeBiometricBtn").classList.toggle("hide",!(a&&a.biometric&&a.biometric.credentialId));
   if($("registerBiometricBtn"))$("registerBiometricBtn").textContent=a&&a.biometric&&a.biometric.credentialId?"👆 Parmak izini yenile":"👆 Parmak izini kaydet";
-  if($("twoFactorToggle")){$("twoFactorToggle").checked=!!(a&&a.twoFactor);$("twoFactorToggle").disabled=!a;}
+  if($("twoFactorToggle")){$("twoFactorToggle").checked=!!(a&&a.twoFactor);$("twoFactorToggle").disabled=!configured;}
   if($("securityMethods"))$("securityMethods").innerHTML=authMethods(a).map(x=>"<span>"+esc(x)+"</span>").join("");
-  if($("lockBiometricBtn"))$("lockBiometricBtn").classList.toggle("hide",!(a&&a.biometric&&a.biometric.credentialId));
-  if($("passwordStatus"))$("passwordStatus").textContent=a?"Güvenlik kullanılıyor. Uygulama açılışında ve Maaş menüsünde doğrulama istenir.":"Güvenlik kullanılmıyor. Maaş bölümünü açmak için güvenlik bilgilerini belirleyin.";
+  if($("lockBiometricBtn"))$("lockBiometricBtn").classList.toggle("hide",!(configured&&a.biometric&&a.biometric.credentialId));
+  Object.values(AUTH_INPUTS).forEach(cfg=>configurePinInput($(cfg.input)));
+  if($("passwordStatus"))$("passwordStatus").textContent=configured?"Güvenlik kullanılıyor. Uygulama açılışında ve Maaş menüsünde aynı PIN istenir.":(a?"Güvenlik eksik. Uygulama ve Maaş için PIN belirleyin.":"Güvenlik kullanılmıyor. Maaş bölümünü açmak için PIN ve kurtarma şifresi belirleyin.");
+  updateAuthLockoutUI();
 }
 function lockApp(){
-  if(!loadAuth())return;
+  if(!hasPinAuth())return;
   setSessionUnlocked(false); pendingAppCodeMethod=null; lockSalary();
+  if(typeof closeForgotPassword==="function")closeForgotPassword();
   updatePasswordUI();
   document.body.classList.add("locked"); $("lockScreen").classList.remove("hide");
-  $("lockPassword").value=""; $("lockError").textContent="";
+  $("lockPassword").value=""; if(!getAuthLockState().locked)$("lockError").textContent="";
+  configurePinInput($("lockPassword")); updateAuthLockoutUI();
   closeArifePrompt();
-  setTimeout(()=>$("lockPassword").focus(),80);
 }
 function completeUnlock(method){
-  pendingAppCodeMethod=null; setSessionUnlocked(true);
+  if(method&&method!=="none")recordAuthSuccess();
+  pendingAppCodeMethod=null; if($("lockPassword"))$("lockPassword").value=""; setSessionUnlocked(true);
   document.body.classList.remove("locked"); $("lockScreen").classList.add("hide");
   if(!postUnlockRan){postUnlockRan=true; setTimeout(()=>{checkArifePrompt(); maybeAutoPull();},350);}
-  if(method==="recovery"||recoveryUsedNext){recoveryUsedNext=false;setTimeout(()=>{showView("settings");toast("Kurtarma şifresiyle giriş yaptınız. Güvenlik bilgilerinizi yenileyin.");},450);}
 }
-function unlockApp(){completeUnlock("password");}
+function unlockApp(){completeUnlock("pin");}
 $("lockForm").addEventListener("submit",async e=>{
-  e.preventDefault(); const a=loadAuth(); if(!a){completeUnlock("none");return;}
-  const method=await verifyAnySecurityCode($("lockPassword").value);
-  if(!method){$("lockError").style.color="var(--red)";$("lockError").textContent="Bilgi yanlış, tekrar deneyin.";$("lockPassword").select();return;}
-  if(method==="recovery"){completeUnlock(method);toast("Kurtarma şifresiyle giriş yapıldı");return;}
-  if(a.twoFactor&&a.biometric&&a.biometric.credentialId){
-    pendingAppCodeMethod=method; $("lockError").style.color="var(--green)"; $("lockError").textContent="Kod doğru. Şimdi parmak izinizi doğrulayın.";
-    try{await verifyBiometric();completeUnlock(method);toast("Hoş geldiniz");}catch(err){$("lockError").style.color="var(--red)";$("lockError").textContent=err.message||"Parmak izi doğrulanamadı.";}
-    return;
-  }
-  completeUnlock(method);toast("Hoş geldiniz");
+  e.preventDefault(); if(authVerifyBusy.lock)return;
+  const a=loadAuth(); if(!hasPinAuth(a)){completeUnlock("none");return;}
+  const lockState=getAuthLockState(a); updateAuthLockoutUI();
+  if(lockState.locked){$("lockError").style.color="var(--red)";$("lockError").textContent="Giriş geçici olarak kilitli. Sürenin dolmasını bekleyin.";return;}
+  if(!/^\d{4,6}$/.test($("lockPassword").value)){$("lockError").style.color="var(--red)";$("lockError").textContent="4–6 haneli PIN girin.";return;}
+  authVerifyBusy.lock=true; updateAuthLockoutUI();
+  try{
+    const ok=await verifyPinCode($("lockPassword").value);
+    if(!ok){
+      const fail=recordAuthFailure(); resetAuthCode("lock");
+      $("lockError").style.color="var(--red)";
+      $("lockError").textContent=fail.locked?("3 yanlış PIN nedeniyle giriş "+formatAuthLockoutDuration(fail.durationSeconds)+" kilitlendi."):("PIN yanlış. Kalan deneme: "+fail.remainingAttempts+".");
+      return;
+    }
+    if(a.twoFactor&&a.biometric&&a.biometric.credentialId){
+      pendingAppCodeMethod="pin"; $("lockError").style.color="var(--green)"; $("lockError").textContent="PIN doğru. Şimdi parmak izinizi doğrulayın.";
+      try{await verifyBiometric();completeUnlock("pin");toast("Hoş geldiniz");}catch(err){$("lockError").style.color="var(--red)";$("lockError").textContent=err.message||"Parmak izi doğrulanamadı.";}
+      return;
+    }
+    completeUnlock("pin");toast("Hoş geldiniz");
+  }finally{authVerifyBusy.lock=false;updateAuthLockoutUI();}
 });
 $("lockBiometricBtn").onclick=async()=>{
-  const a=loadAuth(); if(!a)return;
-  if(a.twoFactor&&a.biometric&&a.biometric.credentialId&&!pendingAppCodeMethod){$("lockError").style.color="var(--red)";$("lockError").textContent="İki aşamalı doğrulama açık: önce PIN veya şifrenizi girin.";$("lockPassword").focus();return;}
+  const a=loadAuth(); if(!hasPinAuth(a)||authVerifyBusy.lock)return;
+  const lockState=getAuthLockState(a); updateAuthLockoutUI();
+  if(lockState.locked){$("lockError").style.color="var(--red)";$("lockError").textContent="Giriş geçici olarak kilitli. Sürenin dolmasını bekleyin.";return;}
+  if(a.twoFactor&&a.biometric&&a.biometric.credentialId&&!pendingAppCodeMethod){$("lockError").style.color="var(--red)";$("lockError").textContent="İki aşamalı doğrulama açık: önce PIN’inizi girin.";return;}
+  authVerifyBusy.lock=true; updateAuthLockoutUI();
   try{await verifyBiometric();completeUnlock(pendingAppCodeMethod||"biometric");toast("Hoş geldiniz");}catch(err){$("lockError").style.color="var(--red)";$("lockError").textContent=err.message||"Parmak izi doğrulanamadı.";}
+  finally{authVerifyBusy.lock=false;updateAuthLockoutUI();}
 };
-function openPasswordSetup(){ ["newPassword","newPassword2","newPin","newPin2","newRecovery","newRecovery2"].forEach(id=>$(id).value="");const a=loadAuth();$("newTwoFactor").checked=!!(a&&a.twoFactor);$("passwordSetupError").textContent="";$("passwordSetupBackdrop").classList.add("open");setTimeout(()=>$("newPassword").focus(),80); }
+function setAuthScopeError(scope,text,color="var(--red)"){
+  const el=$(scope==="salary"?"salaryLockError":"lockError"); if(!el)return;
+  el.style.color=color; el.textContent=text;
+}
+function openForgotPassword(scope){
+  forgotPasswordScope=scope==="salary"?"salary":"lock";
+  forgotRecoveryVerified=false;
+  $("forgotRecoveryForm").classList.remove("hide");
+  $("forgotResetForm").classList.add("hide");
+  $("forgotRecoveryCode").value=""; $("resetPin").value=""; $("resetPin2").value="";
+  $("forgotPasswordError").textContent=""; $("resetPinError").textContent="";
+  const a=loadAuth(); const hasRecovery=!!(a&&a.recoveryHash);
+  $("verifyRecoveryBtn").disabled=!hasRecovery;
+  if(!hasRecovery)$("forgotPasswordError").textContent="Kurtarma şifresi tanımlı değil. PIN ile giriş yaptıktan sonra Ayarlar bölümünden kurtarma şifresi belirleyin.";
+  $("forgotPasswordBackdrop").classList.add("open");
+  if(hasRecovery)setTimeout(()=>$("forgotRecoveryCode").focus(),80);
+}
+function closeForgotPassword(){
+  const backdrop=$("forgotPasswordBackdrop"); if(backdrop)backdrop.classList.remove("open");
+  forgotRecoveryVerified=false;
+  if($("forgotRecoveryCode"))$("forgotRecoveryCode").value="";
+  if($("resetPin"))$("resetPin").value="";
+  if($("resetPin2"))$("resetPin2").value="";
+  if($("forgotRecoveryForm"))$("forgotRecoveryForm").classList.remove("hide");
+  if($("forgotResetForm"))$("forgotResetForm").classList.add("hide");
+}
+$("lockForgotBtn").onclick=()=>openForgotPassword("lock");
+$("closeForgotPasswordBtn").onclick=closeForgotPassword;
+$("cancelForgotPasswordBtn").onclick=closeForgotPassword;
+$("cancelResetPinBtn").onclick=closeForgotPassword;
+$("forgotPasswordBackdrop").addEventListener("click",e=>{if(e.target.id==="forgotPasswordBackdrop")closeForgotPassword();});
+$("forgotRecoveryForm").addEventListener("submit",async e=>{
+  e.preventDefault();
+  const code=$("forgotRecoveryCode").value;
+  const error=$("forgotPasswordError");
+  if(!code){error.textContent="Kurtarma şifresini girin.";return;}
+  const wasLocked=getAuthLockState().locked;
+  $("verifyRecoveryBtn").disabled=true;
+  try{
+    const ok=await verifyRecoveryCode(code);
+    if(!ok){
+      if(wasLocked){error.textContent="Kurtarma şifresi yanlış.";return;}
+      const fail=recordAuthFailure();
+      if(fail.locked){
+        closeForgotPassword();
+        setAuthScopeError(forgotPasswordScope,"3 yanlış deneme nedeniyle giriş "+formatAuthLockoutDuration(fail.durationSeconds)+" kilitlendi.");
+      }else{
+        error.textContent="Kurtarma şifresi yanlış. Kalan deneme: "+fail.remainingAttempts+".";
+      }
+      return;
+    }
+    forgotRecoveryVerified=true;
+    $("forgotRecoveryCode").value="";
+    $("forgotRecoveryForm").classList.add("hide");
+    $("forgotResetForm").classList.remove("hide");
+    $("resetPinError").textContent="";
+    setTimeout(()=>$("resetPin").focus(),80);
+  }finally{$("verifyRecoveryBtn").disabled=false;updateAuthLockoutUI();}
+});
+$("forgotResetForm").addEventListener("submit",async e=>{
+  e.preventDefault();
+  const error=$("resetPinError");
+  if(!forgotRecoveryVerified){error.textContent="Önce kurtarma şifresini doğrulayın.";return;}
+  const pin1=sanitizePinValue($("resetPin").value), pin2=sanitizePinValue($("resetPin2").value);
+  $("resetPin").value=pin1; $("resetPin2").value=pin2;
+  if(!/^\d{4,6}$/.test(pin1)){error.textContent="Yeni PIN 4–6 rakam olmalı.";return;}
+  if(pin1!==pin2){error.textContent="Yeni PIN'ler eşleşmiyor.";return;}
+  const a=loadAuth(); if(!a){error.textContent="Güvenlik bilgisi bulunamadı.";return;}
+  $("saveResetPinBtn").disabled=true;
+  try{
+    a.pinSalt=makeSalt(); a.pinHash=await deriveSecretHash(pin1,a.pinSalt,210000);
+    delete a.salt; delete a.hash; delete a.needsPinSetup;
+    a.authVersion=2; a.failedAttempts=0; a.lockoutLevel=0; a.lockedUntil=0; a.updatedAt=new Date().toISOString();
+    saveAuth(a); closeForgotPassword(); updatePasswordUI();
+    if(forgotPasswordScope==="salary"){unlockSalary("pin-reset");toast("Yeni PIN kaydedildi. Maaş bölümü açıldı.");}
+    else{completeUnlock("pin-reset");toast("Yeni PIN kaydedildi.");}
+  }finally{$("saveResetPinBtn").disabled=false;updateAuthLockoutUI();}
+});
+function openPasswordSetup(){ ["newPin","newPin2","newRecovery","newRecovery2"].forEach(id=>$(id).value="");const a=loadAuth();$("newTwoFactor").checked=!!(a&&a.twoFactor);$("passwordSetupError").textContent="";$("passwordSetupBackdrop").classList.add("open"); }
 function closePasswordSetup(){ $("passwordSetupBackdrop").classList.remove("open"); }
 $("setPasswordBtn").onclick=openPasswordSetup;
 $("closePasswordSetupBtn").onclick=()=>{try{localStorage.setItem(PW_PROMPT_KEY,"1");}catch(e){}closePasswordSetup();};
-$("skipPasswordSetupBtn").onclick=()=>{try{localStorage.setItem(PW_PROMPT_KEY,"1");}catch(e){}closePasswordSetup();toast("Şifreyi Ayarlar bölümünden oluşturabilirsiniz");};
+$("skipPasswordSetupBtn").onclick=()=>{try{localStorage.setItem(PW_PROMPT_KEY,"1");}catch(e){}closePasswordSetup();toast("PIN’i Ayarlar bölümünden oluşturabilirsiniz");};
 $("savePasswordSetupBtn").onclick=async()=>{
   const existing=loadAuth()||{};
-  const p1=$("newPassword").value, p2=$("newPassword2").value, pin1=$("newPin").value.trim(), pin2=$("newPin2").value.trim(), r1=$("newRecovery").value, r2=$("newRecovery2").value;
+  const pin1=sanitizePinValue($("newPin").value), pin2=sanitizePinValue($("newPin2").value), r1=$("newRecovery").value, r2=$("newRecovery2").value;
+  $("newPin").value=pin1; $("newPin2").value=pin2;
   const err=t=>{$("passwordSetupError").textContent=t;};
-  if(!existing.hash&&!p1)return err("İlk kurulumda giriş şifresi zorunludur.");
-  if(p1||p2){if(p1.length<4)return err("Giriş şifresi en az 4 karakter olmalı.");if(p1!==p2)return err("Giriş şifreleri eşleşmiyor.");}
-  if(!existing.pinHash&&!pin1)return err("İlk kurulumda yedek PIN zorunludur.");
-  if(pin1||pin2){if(!/^\d{4,6}$/.test(pin1))return err("Yedek PIN 4–6 rakam olmalı.");if(pin1!==pin2)return err("Yedek PIN'ler eşleşmiyor.");}
+  if(!existing.pinHash&&!pin1)return err("İlk kurulumda PIN zorunludur.");
+  if(pin1||pin2){if(!/^\d{4,6}$/.test(pin1))return err("PIN 4–6 rakam olmalı.");if(pin1!==pin2)return err("PIN'ler eşleşmiyor.");}
   if(!existing.recoveryHash&&!r1)return err("İlk kurulumda kurtarma şifresi zorunludur.");
   if(r1||r2){if(r1.length<8)return err("Kurtarma şifresi en az 8 karakter olmalı.");if(r1!==r2)return err("Kurtarma şifreleri eşleşmiyor.");}
-  const next={...existing,createdAt:existing.createdAt||new Date().toISOString(),updatedAt:new Date().toISOString(),twoFactor:$("newTwoFactor").checked};
+  const next={...existing,authVersion:2,createdAt:existing.createdAt||new Date().toISOString(),updatedAt:new Date().toISOString(),twoFactor:$("newTwoFactor").checked};
+  delete next.salt; delete next.hash; delete next.needsPinSetup;
   if(next.twoFactor&&!(next.biometric&&next.biometric.credentialId)){toast("İki aşamalı doğrulama parmak izi kaydedilince etkin olur");}
-  if(p1){next.salt=makeSalt();next.hash=await deriveSecretHash(p1,next.salt,210000);}
-  if(pin1){next.pinSalt=makeSalt();next.pinHash=await deriveSecretHash(pin1,next.pinSalt,210000);}
+  if(pin1){next.pinSalt=makeSalt();next.pinHash=await deriveSecretHash(pin1,next.pinSalt,210000);next.failedAttempts=0;next.lockoutLevel=0;next.lockedUntil=0;}
   if(r1){next.recoverySalt=makeSalt();next.recoveryHash=await deriveSecretHash(r1,next.recoverySalt,210000);}
   saveAuth(next);
   closePasswordSetup(); updatePasswordUI(); completeUnlock("setup"); toast("Güvenlik bilgileri kaydedildi");
 };
-$("removePasswordBtn").onclick=()=>{if(!confirm("Şifre, PIN, kurtarma şifresi ve parmak izi kaldırılsın mı? Maaş bölümü de kilitlenemeden kullanılamaz."))return;clearAuth();lockSalary();setSessionUnlocked(true);updatePasswordUI();toast("Güvenlik kaldırıldı");};
+$("removePasswordBtn").onclick=()=>{if(!confirm("PIN, kurtarma şifresi ve parmak izi kaldırılsın mı? Maaş bölümü de kilitlenemeden kullanılamaz."))return;clearAuth();lockSalary();setSessionUnlocked(true);updatePasswordUI();toast("Güvenlik kaldırıldı");};
 $("registerBiometricBtn").onclick=registerBiometric;
 $("removeBiometricBtn").onclick=()=>{const a=loadAuth();if(!a)return;if(!confirm("Kayıtlı parmak izi kaldırılsın mı?"))return;delete a.biometric;a.twoFactor=false;saveAuth(a);updatePasswordUI();toast("Parmak izi kaldırıldı");};
-$("twoFactorToggle").addEventListener("change",e=>{const a=loadAuth();if(!a){e.target.checked=false;return;}if(e.target.checked&&!(a.biometric&&a.biometric.credentialId)){toast("Önce parmak izinizi kaydedin");}a.twoFactor=e.target.checked;saveAuth(a);updatePasswordUI();});
+$("twoFactorToggle").addEventListener("change",e=>{const a=loadAuth();if(!hasPinAuth(a)){e.target.checked=false;toast("Önce PIN belirleyin");return;}if(e.target.checked&&!(a.biometric&&a.biometric.credentialId)){toast("Önce parmak izinizi kaydedin");}a.twoFactor=e.target.checked;saveAuth(a);updatePasswordUI();});
 $("lockBtn").onclick=lockApp; $("lockNowBtn").onclick=lockApp;
 document.addEventListener("visibilitychange",()=>{
   if(document.hidden){hiddenAt=Date.now();}
-  else if(loadAuth()&&hiddenAt&&Date.now()-hiddenAt>120000){lockApp();}
+  else if(hasPinAuth()&&hiddenAt&&Date.now()-hiddenAt>120000){lockApp();}
 });
 function initLock(){
   updatePasswordUI();
-  const a=loadAuth();
-  if(a&&!sessionUnlocked()){lockApp();}
+  const a=loadAuth(); const configured=hasPinAuth(a);
+  if(configured&&!sessionUnlocked()){lockApp();}
   else{
     appUnlocked=true;
     if(!postUnlockRan){postUnlockRan=true; setTimeout(()=>{checkArifePrompt(); maybeAutoPull();},500);}
     let dismissed=false; try{dismissed=localStorage.getItem(PW_PROMPT_KEY)==="1";}catch(e){}
-    if(!a&&!dismissed) setTimeout(openPasswordSetup,700);
+    if(!configured&&!dismissed) setTimeout(openPasswordSetup,700);
   }
 }
 
@@ -2623,31 +2955,55 @@ function saveSalaryData(render=true){try{localStorage.setItem(SALARY_KEY,JSON.st
 function clearSalaryData(){salaryData=defaultSalaryData();try{localStorage.removeItem(SALARY_KEY);}catch(e){}lockSalary(false);}
 function deleteSalaryWorkplaceData(workplaceId){if(!workplaceId)return;salaryData.records=salaryData.records.filter(r=>r.workplaceId!==workplaceId);salaryData.futureRights=salaryData.futureRights.filter(r=>r.workplaceId!==workplaceId);delete salaryData.compensation[workplaceId];saveSalaryData(false);}
 function salaryIsUnlocked(){return Date.now()<salaryUnlockedUntil;}
-function lockSalary(updateView=true){salaryUnlockedUntil=0;pendingSalaryCodeMethod=null;if(salaryLockTimer){clearTimeout(salaryLockTimer);salaryLockTimer=null;}if($("salaryRecordBackdrop"))$("salaryRecordBackdrop").classList.remove("open");if($("futureRightBackdrop"))$("futureRightBackdrop").classList.remove("open");if($("salaryContent"))$("salaryContent").classList.add("hide");if($("salaryLockCard"))$("salaryLockCard").classList.remove("hide");if($("salaryRecordsList"))$("salaryRecordsList").innerHTML="";if($("futureRightsList"))$("futureRightsList").innerHTML="";if($("salaryTotals"))$("salaryTotals").innerHTML="";if($("compensationResults"))$("compensationResults").innerHTML="";if(updateView&&$("view-salary")&&$("view-salary").classList.contains("active"))renderSalaryLockState();}
+function lockSalary(updateView=true){salaryUnlockedUntil=0;pendingSalaryCodeMethod=null;if(salaryLockTimer){clearTimeout(salaryLockTimer);salaryLockTimer=null;}if($("salaryUnlockCode"))$("salaryUnlockCode").value="";if(typeof configurePinInput==="function")configurePinInput($("salaryUnlockCode"));if(typeof closeForgotPassword==="function"&&forgotPasswordScope==="salary")closeForgotPassword();if(typeof updateAuthLockoutUI==="function")updateAuthLockoutUI();if($("salaryRecordBackdrop"))$("salaryRecordBackdrop").classList.remove("open");if($("futureRightBackdrop"))$("futureRightBackdrop").classList.remove("open");if($("salaryContent"))$("salaryContent").classList.add("hide");if($("salaryLockCard"))$("salaryLockCard").classList.remove("hide");if($("salaryRecordsList"))$("salaryRecordsList").innerHTML="";if($("futureRightsList"))$("futureRightsList").innerHTML="";if($("salaryTotals"))$("salaryTotals").innerHTML="";if($("compensationResults"))$("compensationResults").innerHTML="";if(updateView&&$("view-salary")&&$("view-salary").classList.contains("active"))renderSalaryLockState();}
 function renderSalaryLockState(){
-  const a=loadAuth(); updatePasswordUI();
+  const a=loadAuth(); const configured=hasPinAuth(a); updatePasswordUI();
   $("salaryContent").classList.toggle("hide",!salaryIsUnlocked()); $("salaryLockCard").classList.toggle("hide",salaryIsUnlocked());
-  $("salaryBiometricBtn").classList.toggle("hide",!(a&&a.biometric&&a.biometric.credentialId));
-  $("salarySecuritySetupBtn").textContent=a?"Güvenlik Bilgilerini Güncelle":"Güvenlik Bilgilerini Belirle";
-  if(!a){$("salaryLockError").style.color="var(--red)";$("salaryLockError").textContent="Maaş bölümünü kullanmak için önce şifre, yedek PIN ve kurtarma şifresi belirleyin.";}
-  else if(!a.pinHash||!a.recoveryHash){$("salaryLockError").style.color="#f59e0b";$("salaryLockError").textContent="Güvenliğiniz eksik: yedek PIN ve kurtarma şifrenizi de belirleyin.";}
+  $("salaryBiometricBtn").classList.toggle("hide",!(configured&&a.biometric&&a.biometric.credentialId));
+  $("salaryForgotBtn").classList.toggle("hide",!a);
+  $("salarySecuritySetupBtn").classList.toggle("hide",!!a);
+  $("salarySecuritySetupBtn").textContent="Güvenlik Bilgilerini Belirle";
+  if(!a){$("salaryLockError").style.color="var(--red)";$("salaryLockError").textContent="Maaş bölümünü kullanmak için önce PIN ve kurtarma şifresi belirleyin.";}
+  else if(!configured){$("salaryLockError").style.color="#f59e0b";$("salaryLockError").textContent="Güvenliğiniz eksik: PIN belirleyin.";}
+  else if(!a.recoveryHash){$("salaryLockError").style.color="#f59e0b";$("salaryLockError").textContent="Kurtarma şifresi tanımlı değil. PIN ile açtıktan sonra Ayarlar bölümünden belirleyin.";}
+  updateAuthLockoutUI();
 }
-function handleSalaryView(){renderSalaryLockState();if(salaryIsUnlocked())renderSalary();else setTimeout(()=>$("salaryUnlockCode").focus(),80);}
-function unlockSalary(method){salaryUnlockedUntil=Date.now()+5*60*1000;pendingSalaryCodeMethod=null;$("salaryUnlockCode").value="";$("salaryLockError").textContent="";if(salaryLockTimer)clearTimeout(salaryLockTimer);salaryLockTimer=setTimeout(()=>{lockSalary();if($("view-salary").classList.contains("active"))toast("Maaş bölümü güvenlik için kilitlendi");},5*60*1000);renderSalaryLockState();renderSalary();if(method==="recovery")toast("Kurtarma şifresiyle açıldı. Güvenlik bilgilerinizi yenileyin.");}
+function handleSalaryView(){renderSalaryLockState();if(salaryIsUnlocked())renderSalary();}
+function unlockSalary(method){recordAuthSuccess();salaryUnlockedUntil=Date.now()+5*60*1000;pendingSalaryCodeMethod=null;$("salaryUnlockCode").value="";$("salaryLockError").textContent="";if(salaryLockTimer)clearTimeout(salaryLockTimer);salaryLockTimer=setTimeout(()=>{lockSalary();if($("view-salary").classList.contains("active"))toast("Maaş bölümü güvenlik için kilitlendi");},5*60*1000);renderSalaryLockState();renderSalary();}
 $("salaryUnlockForm").addEventListener("submit",async e=>{
-  e.preventDefault(); const a=loadAuth();
-  if(!a){$("salaryLockError").textContent="Önce güvenlik bilgilerini belirleyin.";openPasswordSetup();return;}
-  const method=await verifyAnySecurityCode($("salaryUnlockCode").value);
-  if(!method){$("salaryLockError").style.color="var(--red)";$("salaryLockError").textContent="Bilgi yanlış, tekrar deneyin.";$("salaryUnlockCode").select();return;}
-  if(method==="recovery"){unlockSalary(method);return;}
-  if(a.twoFactor&&a.biometric&&a.biometric.credentialId){pendingSalaryCodeMethod=method;$("salaryLockError").style.color="var(--green)";$("salaryLockError").textContent="Kod doğru. Şimdi parmak izinizi doğrulayın.";try{await verifyBiometric();unlockSalary(method);}catch(err){$("salaryLockError").style.color="var(--red)";$("salaryLockError").textContent=err.message||"Parmak izi doğrulanamadı.";}return;}
-  unlockSalary(method);
+  e.preventDefault(); if(authVerifyBusy.salary)return;
+  const a=loadAuth();
+  if(!hasPinAuth(a)){$("salaryLockError").style.color="var(--red)";$("salaryLockError").textContent="Önce PIN belirleyin.";if(!a)openPasswordSetup();return;}
+  const lockState=getAuthLockState(a); updateAuthLockoutUI();
+  if(lockState.locked){$("salaryLockError").style.color="var(--red)";$("salaryLockError").textContent="Giriş geçici olarak kilitli. Sürenin dolmasını bekleyin.";return;}
+  if(!/^\d{4,6}$/.test($("salaryUnlockCode").value)){$("salaryLockError").style.color="var(--red)";$("salaryLockError").textContent="4–6 haneli PIN girin.";return;}
+  authVerifyBusy.salary=true; updateAuthLockoutUI();
+  try{
+    const ok=await verifyPinCode($("salaryUnlockCode").value);
+    if(!ok){
+      const fail=recordAuthFailure(); resetAuthCode("salary");
+      $("salaryLockError").style.color="var(--red)";
+      $("salaryLockError").textContent=fail.locked?("3 yanlış PIN nedeniyle giriş "+formatAuthLockoutDuration(fail.durationSeconds)+" kilitlendi."):("PIN yanlış. Kalan deneme: "+fail.remainingAttempts+".");
+      return;
+    }
+    if(a.twoFactor&&a.biometric&&a.biometric.credentialId){
+      pendingSalaryCodeMethod="pin"; $("salaryLockError").style.color="var(--green)"; $("salaryLockError").textContent="PIN doğru. Şimdi parmak izinizi doğrulayın.";
+      try{await verifyBiometric();unlockSalary("pin");}catch(err){$("salaryLockError").style.color="var(--red)";$("salaryLockError").textContent=err.message||"Parmak izi doğrulanamadı.";}
+      return;
+    }
+    unlockSalary("pin");
+  }finally{authVerifyBusy.salary=false;updateAuthLockoutUI();}
 });
 $("salaryBiometricBtn").onclick=async()=>{
-  const a=loadAuth(); if(!a)return;
-  if(a.twoFactor&&a.biometric&&a.biometric.credentialId&&!pendingSalaryCodeMethod){$("salaryLockError").style.color="var(--red)";$("salaryLockError").textContent="İki aşamalı doğrulama açık: önce PIN veya şifrenizi girin.";$("salaryUnlockCode").focus();return;}
+  const a=loadAuth(); if(!hasPinAuth(a)||authVerifyBusy.salary)return;
+  const lockState=getAuthLockState(a); updateAuthLockoutUI();
+  if(lockState.locked){$("salaryLockError").style.color="var(--red)";$("salaryLockError").textContent="Giriş geçici olarak kilitli. Sürenin dolmasını bekleyin.";return;}
+  if(a.twoFactor&&a.biometric&&a.biometric.credentialId&&!pendingSalaryCodeMethod){$("salaryLockError").style.color="var(--red)";$("salaryLockError").textContent="İki aşamalı doğrulama açık: önce PIN’inizi girin.";return;}
+  authVerifyBusy.salary=true; updateAuthLockoutUI();
   try{await verifyBiometric();unlockSalary(pendingSalaryCodeMethod||"biometric");}catch(err){$("salaryLockError").style.color="var(--red)";$("salaryLockError").textContent=err.message||"Parmak izi doğrulanamadı.";}
+  finally{authVerifyBusy.salary=false;updateAuthLockoutUI();}
 };
+$("salaryForgotBtn").onclick=()=>openForgotPassword("salary");
 $("salarySecuritySetupBtn").onclick=()=>{showView("settings");setTimeout(openPasswordSetup,90);};
 $("lockSalaryBtn").onclick=()=>{lockSalary();toast("Maaş bölümü kilitlendi");};
 const moneyFormatter=new Intl.NumberFormat("tr-TR",{style:"currency",currency:"TRY",minimumFractionDigits:2,maximumFractionDigits:2});
@@ -2708,7 +3064,7 @@ function saveSalaryRecord(){
 function deleteSalaryRecord(id){if(!confirm("Bu maaş kaydı silinsin mi?"))return;salaryData.records=salaryData.records.filter(r=>r.id!==id);saveSalaryData();toast("Maaş kaydı silindi");}
 function openFutureRightEditor(id){
   const wpId=activeWorkplaceId(); const r=id?salaryData.futureRights.find(x=>x.id===id&&x.workplaceId===wpId):null;
-  $("futureRightTitle").textContent=r?"🎁 Gelecek Hakkı Düzenle":"🎁 Gelecek Hak Ekle"; $("futureRightId").value=r?r.id:""; $("futureRightName").value=r?r.title:""; $("futureRightDate").value=r?r.date:""; $("futureRightAmount").value=r?r.amount:""; $("futureRightNote").value=r?(r.note||""):""; $("futureRightError").textContent="";
+  $("futureRightTitle").textContent=r?"🎁 Hakkı Düzenle":"🎁 Gelecek Hak Ekle"; $("futureRightId").value=r?r.id:""; $("futureRightName").value=r?r.title:""; $("futureRightDate").value=r?r.date:""; $("futureRightAmount").value=r?r.amount:""; $("futureRightNote").value=r?(r.note||""):""; $("futureRightError").textContent="";
   $("futureRightBackdrop").classList.add("open"); setTimeout(()=>$("futureRightName").focus(),80);
 }
 function closeFutureRightEditor(){$("futureRightBackdrop").classList.remove("open");}

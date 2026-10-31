@@ -47,9 +47,13 @@ Her iş yeri için işe başlama tarihi girilebilir. Uygulama firmada kaç günd
 
 Uygulama tek bir firmaya bağlı değildir. Birden çok iş yeri eklenebilir. Her iş yerinin kayıtları, çalışma saatleri, yıllık izni ve fazla/eksik mesai toplamı ayrı tutulur.
 
+## Mobil görünüm
+
+Hafta tatili ayarında gün adı ve seçim işareti aynı kutu içinde, aynı satırda gösterilir. Form alanları, hızlı işlem düğmeleri, takvim özeti ve rapor tabloları dar telefon ekranlarında taşmayacak şekilde hizalanır.
+
 ## Güvenlik ve Maaş
 
-Alt menüdeki **Maaş** bölümü uygulama girişinden ayrı olarak yeniden kilitlenir. Güvenlik için giriş şifresi, yedek PIN ve kendi belirlediğiniz kurtarma şifresi kullanılır. Destekleyen cihaz/tarayıcıda parmak izi kaydedilebilir; iki aşamalı doğrulama açılırsa önce PIN/şifre, sonra parmak izi istenir.
+Alt menüdeki **Maaş** bölümü uygulama girişinden ayrı olarak yeniden kilitlenir. Uygulama ve Maaş için aynı 4–6 haneli PIN kullanılır; yedek PIN yoktur. PIN alanına dokunulduğunda sayı klavyesi açılır. Üç yanlış denemede giriş önce 60 saniye kilitlenir ve ekranda geri sayım gösterilir; sonraki üç yanlış deneme gruplarında süre 120, 240 saniye şeklinde artar (en fazla 30 dakika). **Şifreyi Unuttum** bölümünde kurtarma şifresi doğrulanırsa yeni PIN belirlenebilir. Destekleyen cihaz/tarayıcıda parmak izi kaydedilebilir; iki aşamalı doğrulama açılırsa önce PIN, sonra parmak izi istenir. Önceki sürümden yükseltmede eski yedek PIN, tek giriş PIN’i olarak kullanılmaya devam eder.
 
 Maaş bölümünde yıl/ay bazında net maaş, brüt maaş, vergi iadesi, yan hak ve diğer ödemeler manuel eklenebilir. Ekranın altında toplam kazanç ve aylık ortalama gibi istatistikler gösterilir. Gelecek haklar bölümüne örneğin “0,5 Maaş İkramiyesi” yazıp tarihi eklenirse kalan gün sayısı gösterilir.
 
@@ -72,7 +76,7 @@ Fotoğraf ve belge dosyalarının kendisi JSON yedeğine eklenmez; GitHub eşitl
 
 Kayıtlar telefonunuzda tutulur. GitHub eşitlemesinde yalnızca depo adı ve erişim anahtarı girilir; veriler kendi özel GitHub deponuza kaydedilir. GitHub erişim anahtarınız yalnızca cihazınızda saklanır; anahtarınızı kimseyle veya sohbetle paylaşmayın.
 
-Şifre/PIN/parmak izi kilidi, uygulamanın ve Maaş bölümünün başka kişiler tarafından açılmasını zorlaştırır ancak cihaz depolamasını şifrelemez. Kurtarma şifrenizi güvenli bir yerde saklayın.
+PIN/parmak izi kilidi, uygulamanın ve Maaş bölümünün başka kişiler tarafından açılmasını zorlaştırır ancak cihaz depolamasını şifrelemez. Kurtarma şifrenizi güvenli bir yerde saklayın.
 
 ## Telefona kurulum
 
