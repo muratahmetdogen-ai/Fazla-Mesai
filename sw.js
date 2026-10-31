@@ -1,4 +1,4 @@
-const CACHE_NAME = "mesai-takip-v5";
+const CACHE_NAME = "mesai-takip-v6";
 const ASSETS = [
   "./",
   "./index.html",

@@ -121,6 +121,55 @@ body.locked .app,body.locked .bottomnav,body.locked .fab{visibility:hidden}
 .attachitem .aname{font-size:10px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:5px}
 .scheduleitem{display:flex;gap:8px;align-items:center;background:var(--input);border:1px solid var(--line);border-radius:13px;padding:9px;margin-bottom:7px}
 @media(max-width:680px){.kpi-grid{grid-template-columns:1fr 1fr}.timer{font-size:47px}.cal-day{min-height:63px;padding:6px}.timeline{flex-wrap:wrap}.tseg{min-width:46%}.form-grid3{grid-template-columns:1fr 1fr}.topbar .sub{max-width:42vw}}
+/* Kompakt ve sade görünüm */
+body{font-size:15px}
+.app{padding:12px 12px 104px}
+.topbar{gap:10px;padding:7px 2px 11px}
+.logo{width:46px;height:46px;border-radius:14px;font-size:23px}
+.topbar h1{font-size:20px}.topbar .sub{font-size:12px}
+.icon-btn{padding:8px 10px;font-size:13px}
+.card{border-radius:20px;padding:15px;margin-bottom:12px}
+.card h2{font-size:16px;margin-bottom:10px}.card h3{font-size:14px}
+.small{font-size:12.5px}.tiny{font-size:11.5px}
+.chip{padding:5px 8px;font-size:11px}
+.timer{font-size:44px;margin:10px 0 5px}
+.progress{height:11px}
+.kpi{border-radius:15px;padding:11px;min-height:76px}
+.kpi .label{font-size:11px}.kpi .value{font-size:18px}.kpi .hint{font-size:10.5px}
+.btn{border-radius:13px;padding:10px 13px;min-height:44px;font-size:14px}
+.btn.smallbtn{min-height:37px;padding:7px 10px;border-radius:10px;font-size:12px}
+.item{border-radius:15px;padding:10px}
+.item .datebox{width:47px;height:51px;border-radius:13px}.item .datebox b{font-size:17px}
+.bottomnav{border-radius:20px;padding:5px}.bottomnav button{border-radius:14px;padding:7px 3px;font-size:10.5px}.bottomnav button .ic{font-size:19px}
+.bank-big{font-size:34px}
+.field{margin-bottom:10px}.field label{font-size:11.5px;margin-bottom:5px}
+.field input,.field select,.field textarea{border-radius:12px;padding:10px 11px;font-size:14px}
+.modal{padding:16px 15px calc(16px + env(safe-area-inset-bottom))}
+.previewbox{border-radius:13px;padding:10px;font-size:13px}
+.fab{width:54px;height:54px;font-size:26px;bottom:calc(88px + env(safe-area-inset-bottom))}
+.table{font-size:12px}.table th,.table td{padding:7px 6px}
+.breakrow{grid-template-columns:minmax(96px,1.15fr) minmax(78px,.85fr) minmax(78px,.85fr) 34px;gap:6px}
+.breakrow input{min-width:0;border-radius:10px;padding:9px 7px;font-size:12.5px}
+.breakrow input[data-br="label"]{text-transform:capitalize}
+.breakrow .btn{min-height:38px;padding:0;border-radius:10px}
+.wpbar{border-radius:15px;padding:7px}.wpbar select{padding:9px;border-radius:10px;font-size:13px}
+.scheduleitem{border-radius:11px;padding:8px;font-size:13px}
+.workplace-manage-row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px;align-items:end}
+.workplace-manage-row .field{margin:0;min-width:0}
+.workplace-manage-row .btn{white-space:nowrap;min-height:42px}
+.workplace-list{display:flex;flex-direction:column;gap:8px;margin-top:12px}
+.workplace-item{display:flex;gap:10px;align-items:center;background:var(--input);border:1px solid var(--line);border-radius:13px;padding:10px}
+.workplace-item-main{flex:1;min-width:0}.workplace-item-main b{display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.workplace-actions{display:flex;gap:6px;flex-wrap:wrap;justify-content:flex-end}
+.daychoices{display:grid;grid-template-columns:repeat(auto-fit,minmax(96px,1fr));gap:7px}
+.daychoices .chip{justify-content:flex-start;padding:8px 9px}
+.sync-actions{display:grid;grid-template-columns:1.25fr .75fr 1fr;gap:8px;margin-top:12px}
+#view-settings .card{padding:14px}
+#view-settings .btn{font-size:13px;min-height:42px}
+#view-settings .field input,#view-settings .field select{font-size:13.5px;padding:9px 10px}
+#view-settings .notice{font-size:12px;padding:10px}
+#view-settings .breakrow input{font-size:12px;padding:8px 6px}
+@media(max-width:680px){.timer{font-size:38px}.workplace-manage-row{grid-template-columns:minmax(0,1fr) 126px}.workplace-manage-row .btn{font-size:12px;padding:8px}.workplace-item{align-items:flex-start}.workplace-actions{max-width:150px}.sync-actions{grid-template-columns:1fr}.daychoices{grid-template-columns:repeat(2,1fr)}}
 #printArea{display:none;background:white;color:#111}
 @media print{body{background:white}.app,.bottomnav,.fab,.toast,.modal-backdrop{display:none!important}#printArea{display:block!important;padding:20px} #printArea table{width:100%;border-collapse:collapse;font-size:12px}#printArea th,#printArea td{border:1px solid #999;padding:6px}#printArea h1{font-size:20px}}
 </style>
@@ -202,7 +251,7 @@ body.locked .app,body.locked .bottomnav,body.locked .fab{visibility:hidden}
     <div id="emptyCta" class="card hide">
       <h2>Hoş geldiniz</h2>
       <p class="muted" style="line-height:1.6">Bu iş yerinde henüz kayıt yok. Bugünü işaretleyebilir veya geçmiş kayıtlarınızı ekleyebilirsiniz.</p>
-      <div class="row wrap"><button class="btn primary" id="demoBtn">Örnek Kayıtlarla Dene</button><button class="btn soft" onclick="showView('settings')">Ayarları Aç</button></div>
+      <button class="btn primary" onclick="showView('settings')">Ayarları Aç</button>
     </div>
 
     <div class="card">
@@ -314,27 +363,21 @@ body.locked .app,body.locked .bottomnav,body.locked .fab{visibility:hidden}
   <section class="view" id="view-settings">
     <div class="card">
       <h2>👨‍💻 İş Yerlerim</h2>
-      <p class="small muted" style="line-height:1.6">Her iş yerinin kayıtları, çalışma saatleri ve yıllık izni ayrı tutulur.</p>
-      <div class="field"><label>Seçili İş Yeri</label><select id="wpManageSelect"></select></div>
-      <div class="form-grid">
-        <div class="field"><label>Yeni İş Yeri Adı</label><input id="newWorkplaceName" placeholder="Örn: ABC Tekstil / Kendi işim"></div>
-        <div class="field"><label>&nbsp;</label><button class="btn primary block" id="addWorkplaceBtn">İş Yeri Ekle</button></div>
+      <div class="workplace-manage-row">
+        <div class="field"><label>Seçili İş Yeri</label><select id="wpManageSelect"></select></div>
+        <button class="btn primary" id="manageWorkplacesBtn" type="button">İş Yeri Ekle / Sil</button>
       </div>
-      <div class="row wrap"><button class="btn smallbtn soft" id="archiveWorkplaceBtn">Arşivle / Arşivden Çıkar</button><button class="btn smallbtn soft" id="deleteWorkplaceBtn">İş yerini sil (kayıtsızsa)</button></div>
+      <p class="tiny muted" style="line-height:1.5;margin:8px 0 0">Her iş yerinin kayıtları, çalışma saatleri ve yıllık izni ayrı tutulur.</p>
     </div>
     <div class="card">
       <h2>Çalışma Ayarları</h2>
-      <div class="form-grid">
-        <div class="field"><label>Ad Soyad</label><input id="setName" placeholder="Örn: Ahmet Yılmaz"></div>
-        <div class="field"><label>İş Yeri Adı</label><input id="setCompany" placeholder="Örn: ABC Sanayi - Üretim"></div>
-      </div>
+      <div class="field"><label>İş Yeri Adı</label><input id="setCompany" placeholder="İş yerinin tam adı"></div>
       <div class="form-grid">
         <div class="field"><label>Mesai Başlangıcı</label><input type="time" id="setStart"></div>
         <div class="field"><label>Mesai Bitişi</label><input type="time" id="setEnd"></div>
       </div>
-      <div class="field"><label>Molalar</label><div id="breaksEditor"></div><button class="btn smallbtn soft" id="addBreakBtn">+ Mola ekle</button></div>
-      <div class="previewbox" id="settingsCalc">—</div>
-      <div class="field"><label>Bu ayarlar hangi tarihten itibaren geçerli olsun?</label><input type="date" id="setScheduleFrom"><div class="tiny muted" style="margin-top:5px">Bu tarihten önceki günler eski programla hesaplanır.</div></div>
+      <div class="field"><label>Molalar</label><div id="breaksEditor"></div><button class="btn smallbtn soft" id="addBreakBtn">+ Mola Ekle</button></div>
+      <div class="field"><label>Bu ayarlar hangi tarihten itibaren geçerli olsun?</label><input type="date" id="setScheduleFrom"><div class="tiny muted" style="margin-top:5px">Bu tarihten önceki günler eski programla hesaplanır; eski kayıtlarınız bozulmaz.</div></div>
       <div class="field"><label>Program Geçmişi</label><div id="scheduleHistory"></div></div>
       <div class="form-grid">
         <div class="field"><label>Akşam Yemek Molası Başlangıcı</label><input type="time" id="setEveningStart"></div>
@@ -354,33 +397,18 @@ body.locked .app,body.locked .bottomnav,body.locked .fab{visibility:hidden}
         <div class="field"><label>Ayın son kaç günündeki fazla mesai sonraki aya aktarılsın?</label><input type="number" id="setCarryLate" min="0" max="31" step="1"></div>
         <div class="field"><label>Aktarılan fazla mesai sonraki ayın kaçıncı gününe kadar kullanılsın?</label><input type="number" id="setCarryUse" min="0" max="28" step="1"></div>
       </div>
-      <div class="field"><label>Önceden Biriken Mesainin Tarihi</label><input type="date" id="setBankOpenDate"><div class="tiny muted" style="margin-top:5px">Bu süre o tarihte yapılmış fazla mesai sayılır.</div></div>
-      <div class="field"><label>Hafta tatili günleri</label>
-        <div class="row wrap">
+      <div class="field"><label>Hafta Tatili Günleri</label>
+        <div class="daychoices">
+          <label class="chip"><input type="checkbox" class="weekendChk" value="1"> Pazartesi</label>
+          <label class="chip"><input type="checkbox" class="weekendChk" value="2"> Salı</label>
+          <label class="chip"><input type="checkbox" class="weekendChk" value="3"> Çarşamba</label>
+          <label class="chip"><input type="checkbox" class="weekendChk" value="4"> Perşembe</label>
+          <label class="chip"><input type="checkbox" class="weekendChk" value="5"> Cuma</label>
           <label class="chip"><input type="checkbox" class="weekendChk" value="6"> Cumartesi</label>
           <label class="chip"><input type="checkbox" class="weekendChk" value="0"> Pazar</label>
-          <label class="chip"><input type="checkbox" class="weekendChk" value="5"> Cuma</label>
         </div>
       </div>
-      <div class="field"><label>Önceden Biriken Fazla/Eksik Mesai</label>
-        <div class="form-grid">
-          <input type="number" id="setBankOpenH" step="1" placeholder="Saat (örn: 50)">
-          <input type="number" id="setBankOpenM" min="0" max="59" step="1" placeholder="Dakika (0-59)">
-        </div>
-        <div class="tiny muted" style="margin-top:5px">Eksikle başlıyorsanız saat alanına eksi değer yazın.</div>
-      </div>
-      <div class="field"><label>Tema</label><select id="setTheme"><option value="dark">🌙 Koyu (önerilen)</option><option value="light">☀️ Açık</option></select></div>
       <button class="btn primary block" id="saveSettingsBtn">Ayarları Kaydet</button>
-    </div>
-
-    <div class="card">
-      <h2>Telefona Kurulum</h2>
-      <div class="small" style="line-height:1.75">
-        <b>Android (Chrome):</b> Sağ üst ⋮ → <b>Uygulamayı yükle / Ana ekrana ekle</b><br>
-        <b>iPhone (Safari):</b> Paylaş ⬆️ → <b>Ana Ekrana Ekle</b><br>
-        Kurulumdan sonra uygulama internet olmadan da çalışır.
-      </div>
-      <button class="btn primary block" id="installBtn2" style="margin-top:12px">Uygulamayı Kur</button>
     </div>
 
     <div class="card">
@@ -392,44 +420,23 @@ body.locked .app,body.locked .bottomnav,body.locked .fab{visibility:hidden}
 
     <div class="card">
       <h2>GitHub ile Eşitleme</h2>
-      <p class="small muted" style="line-height:1.65">Verilerinizi özel bir GitHub deposunda saklamak için depo bilgilerini girin. Erişim anahtarı yalnızca bu cihazda tutulur.</p>
-      <div class="field"><label>Yöntem</label><select id="syncMode"><option value="github">GitHub deposu (çek + kaydet)</option><option value="url">İnternet adresinden sadece çek</option></select></div>
-      <div id="syncGithubFields">
-        <div class="form-grid">
-          <div class="field"><label>GitHub Kullanıcı Adı</label><input id="syncOwner" placeholder="örn: kullaniciadi" autocomplete="off"></div>
-          <div class="field"><label>Depo Adı</label><input id="syncRepo" placeholder="örn: mesai-verilerim" autocomplete="off"></div>
-          <div class="field"><label>Dal (branch)</label><input id="syncBranch" placeholder="main"></div>
-          <div class="field"><label>Dosya yolu</label><input id="syncPath" placeholder="mesai-takip.json"></div>
-        </div>
-        <div class="field"><label>Erişim Anahtarı (yalnızca bu cihazda saklanır)</label><input type="password" id="syncToken" placeholder="github_pat_..." autocomplete="off"></div>
+      <div class="field"><label>Depo Adı</label><input id="syncRepo" placeholder="örn: mesai-verilerim" autocomplete="off"></div>
+      <div class="field"><label>Erişim Anahtarı</label><input type="password" id="syncToken" placeholder="github_pat_..." autocomplete="off"><div class="tiny muted" style="margin-top:5px">Anahtar yalnızca bu telefonda saklanır.</div></div>
+      <div class="sync-actions">
+        <button class="btn primary" id="connectSyncBtn" type="button">Bağlan ve Eşitle</button>
+        <button class="btn success" id="syncNowBtn" type="button">Eşitle</button>
+        <button class="btn soft" id="disconnectSyncBtn" type="button">Bağlantıyı Kaldır</button>
       </div>
-      <div class="field hide" id="syncUrlField"><label>Verinin Çekileceği İnternet Adresi</label><input id="syncUrl" placeholder="https://raw.githubusercontent.com/.../mesai-takip.json"></div>
-      <div class="form-grid">
-        <div class="field"><label>Bu cihazın adı</label><input id="syncDevice" placeholder="Telefonum"></div>
-        <div class="field"><label>Seçenek</label><label class="chip" style="width:100%;justify-content:flex-start"><input type="checkbox" id="syncAutoPull"> Açılışta daha yeni veri varsa sorarak çek</label></div>
-      </div>
-      <div class="row wrap">
-        <button class="btn primary" id="syncSaveBtn">Bağlantıyı Kaydet</button>
-        <button class="btn soft" id="syncTestBtn">Bağlantıyı Test Et</button>
-        <button class="btn soft" id="syncPullBtn">Verileri Çek</button>
-        <button class="btn success" id="syncPushBtn">GitHub’a Kaydet</button>
-        <button class="btn primary" id="syncNowBtn">Şimdi Eşitle</button>
-        <button class="btn soft" id="syncAttachmentsBtn">Fotoğraf ve Belgeleri Eşitle</button>
-      </div>
-      <div class="previewbox syncstatus" id="syncStatus">Eşitleme durumu: ayar girilmedi.</div>
-      <p class="tiny muted">Çekme işleminden önce mevcut veriler bu cihazda yedeklenir.</p>
+      <div class="previewbox syncstatus" id="syncStatus">Eşitleme durumu: bağlantı yok.</div>
     </div>
 
     <div class="card">
       <h2>Veri Yönetimi</h2>
-      <div class="action-grid">
-        <button class="btn soft" id="demoBtn2">Örnek Veri Yükle</button>
-        <button class="btn soft" id="exportJsonBtn2">Yedek İndir</button>
+      <div class="action-grid" style="margin-top:0">
+        <button class="btn soft" id="exportJsonBtn2">Veri İndir</button>
+        <button class="btn danger" id="clearAllBtn">Tümünü Sil</button>
       </div>
-      <button class="btn danger block" id="clearAllBtn" style="margin-top:10px">Tüm Verileri Sil</button>
-      <p class="tiny muted">Silmeden önce yedek alın.</p>
     </div>
-    <div class="card"><h3>Hakkında</h3><p class="small muted" style="line-height:1.65">Mesai Takip — geçmiş kayıtları düzenleme, birden çok iş yeri, fotoğraf ve belgeler, GitHub eşitlemesi ve aylık/toplam istatistikler.</p></div>
   </section>
 </div>
 
@@ -511,6 +518,20 @@ body.locked .app,body.locked .bottomnav,body.locked .fab{visibility:hidden}
       <button class="btn soft" id="cancelEditorBtn">Vazgeç</button>
     </div>
     <button class="btn danger block hide" id="deleteEntryBtn" style="margin-top:10px">Kaydı Sil</button>
+  </div>
+</div>
+
+<!-- İŞ YERİ EKLE / SİL -->
+<div class="modal-backdrop" id="workplaceBackdrop">
+  <div class="modal">
+    <div class="row"><h2 style="margin:0">İş Yerleri</h2><span class="spacer"></span><button class="icon-btn" id="closeWorkplaceBtn" type="button">✕</button></div>
+    <p class="small muted" style="line-height:1.55">Yeni iş yerini buradan ekleyebilirsiniz. Kayıdı olmayan iş yeri silinebilir.</p>
+    <div class="workplace-manage-row">
+      <div class="field"><label>Yeni İş Yeri Adı</label><input id="newWorkplaceName" placeholder="İş yerinin adı" autocomplete="off"></div>
+      <button class="btn primary" id="confirmAddWorkplaceBtn" type="button">Ekle</button>
+    </div>
+    <div class="workplace-list" id="workplaceList"></div>
+    <div class="notice" style="margin-top:12px"><b>Arşiv ne işe yarar?</b><br>Arşivlenen iş yerinin kayıtları silinmez; artık kullanmadığınız iş yeri günlük seçim listesinde gösterilmez. İstediğinizde arşivden çıkarabilirsiniz.</div>
   </div>
 </div>
 
@@ -1026,7 +1047,7 @@ function showView(name){
 }
 document.querySelectorAll(".bottomnav button").forEach(b=>b.addEventListener("click",()=>showView(b.dataset.view)));
 function workplaceOptionsHtml(selectedId){
-  return (state.workplaces||[]).map(w=>'<option value="'+esc(w.id)+'"'+(w.id===selectedId?" selected":"")+'>👨‍💻 '+esc(w.name)+(w.archived?" (arşiv)":"")+'</option>').join("");
+  return (state.workplaces||[]).filter(w=>!w.archived||w.id===selectedId).map(w=>'<option value="'+esc(w.id)+'"'+(w.id===selectedId?" selected":"")+'>'+esc(w.name)+(w.archived?" (Arşivde)":"")+'</option>').join("");
 }
 function renderWorkplaceSelector(){
   const current=activeWorkplaceId(); const html=workplaceOptionsHtml(current);
@@ -1059,7 +1080,7 @@ function renderHome(){
   const t=todayStr(); const info=getDayInfo(t); const e=info.entry; const sched=info.schedule;
   document.documentElement.dataset.theme=state.settings.theme||"dark";
   $("themeBtn").textContent=(state.settings.theme==="light")?"☀️":"🌙";
-  const person=[state.settings.name,workplaceName()].filter(Boolean).join(" • ");
+  const person=workplaceName();
   $("headerSub").textContent=person+" • "+sched.start+" – "+sched.end+" • Günlük Hedef "+fmtMin(schedTarget(sched));
   $("kpiInHint").textContent="Başlangıç "+sched.start; $("kpiOutHint").textContent="Bitiş "+sched.end;
   $("todayLong").textContent=fmtDateTR(t)+" • "+workplaceName();
@@ -1394,19 +1415,16 @@ function fillSettings(){
   // Ayar formu aktif iş yerinin bugün geçerli programını taslak olarak kullanır.
   state.settings.start=sched.start;state.settings.end=sched.end;state.settings.breaks=cloneSchedule(sched).breaks;state.settings.weekend=[...(sched.weekend||[6,0])];
   state.settings.eveningBreak={...sched.eveningBreak};state.settings.nightBreak={...sched.nightBreak};
-  $("setName").value=state.settings.name||""; $("setCompany").value=wp?wp.name:(state.settings.company||"");
-  $("setStart").value=sched.start; $("setEnd").value=sched.end; $("setTheme").value=state.settings.theme||"dark";
+  $("setCompany").value=wp?wp.name:(state.settings.company||"");
+  $("setStart").value=sched.start; $("setEnd").value=sched.end;
   $("setScheduleFrom").value=todayStr();
-  const opening=Number(wp?wp.bankOpeningMin:state.settings.bankOpeningMin||0); const sgn=opening<0?-1:1;
-  $("setBankOpenH").value=opening?(sgn*Math.floor(Math.abs(opening)/60)):""; $("setBankOpenM").value=opening?(Math.abs(opening)%60):"";
-  $("setBankOpenDate").value=(wp&&wp.bankOpeningDate)||state.settings.bankOpeningDate||todayStr();
   $("setEveningStart").value=sched.eveningBreak.s; $("setEveningEnd").value=sched.eveningBreak.e;
   $("setNightStart").value=sched.nightBreak.s; $("setNightEnd").value=sched.nightBreak.e;
   $("setCarryLate").value=sched.carryLateDays??14; $("setCarryUse").value=sched.carryUseDays??7;
   fillLeaveEntitlement(new Date().getFullYear());
   fillSyncSettings(); updatePasswordUI();
   document.querySelectorAll(".weekendChk").forEach(c=>c.checked=(sched.weekend||[]).includes(Number(c.value)));
-  renderBreaksEditor(); updateSettingsCalc(); renderScheduleHistory();
+  renderBreaksEditor(); renderScheduleHistory();
 }
 function renderScheduleHistory(){
   const wp=activeWorkplace(); if(!wp)return;
@@ -1421,7 +1439,7 @@ function loadScheduleVersion(effectiveFrom){
   $("setNightStart").value=s.nightBreak.s;$("setNightEnd").value=s.nightBreak.e;
   $("setCarryLate").value=s.carryLateDays??14;$("setCarryUse").value=s.carryUseDays??7;
   document.querySelectorAll(".weekendChk").forEach(c=>c.checked=(s.weekend||[]).includes(Number(c.value)));
-  renderBreaksEditor();updateSettingsCalc();
+  renderBreaksEditor();
   toast("Program yüklendi: "+fmtDateShort(effectiveFrom));
 }
 function deleteScheduleVersion(effectiveFrom){
@@ -1431,15 +1449,10 @@ function deleteScheduleVersion(effectiveFrom){
 }
 function renderBreaksEditor(){
   $("breaksEditor").innerHTML=state.settings.breaks.map((b,i)=>'<div class="breakrow"><input data-br="label" data-i="'+i+'" value="'+esc(b.label)+'" placeholder="Mola adı"><input type="time" data-br="s" data-i="'+i+'" value="'+b.s+'"><input type="time" data-br="e" data-i="'+i+'" value="'+b.e+'"><button class="btn smallbtn soft" onclick="removeBreak('+i+')">✕</button></div>').join("");
-  document.querySelectorAll("[data-br]").forEach(inp=>inp.addEventListener("change",()=>{state.settings.breaks[Number(inp.dataset.i)][inp.dataset.br]=inp.value;updateSettingsCalc();}));
+  document.querySelectorAll("[data-br]").forEach(inp=>inp.addEventListener("change",()=>{state.settings.breaks[Number(inp.dataset.i)][inp.dataset.br]=inp.value;}));
 }
-function removeBreak(i){state.settings.breaks.splice(i,1);renderBreaksEditor();updateSettingsCalc();}
-$("addBreakBtn").onclick=()=>{state.settings.breaks.push({label:"Mola",s:"16:00",e:"16:10"});renderBreaksEditor();updateSettingsCalc();};
-function updateSettingsCalc(){
-  const draft={start:$("setStart").value||"07:45",end:$("setEnd").value||"17:45",breaks:state.settings.breaks};
-  $("settingsCalc").innerHTML="Mesai süresi <b>"+fmtMin(schedGross(draft))+"</b> − Mola <b>"+fmtMin(schedBreakTotal(draft))+"</b> = Günlük Hedef <b>"+fmtMin(schedTarget(draft))+"</b>";
-}
-["setStart","setEnd"].forEach(id=>$(id).addEventListener("change",updateSettingsCalc));
+function removeBreak(i){state.settings.breaks.splice(i,1);renderBreaksEditor();}
+$("addBreakBtn").onclick=()=>{state.settings.breaks.push({label:"Mola",s:"16:00",e:"16:10"});renderBreaksEditor();};
 $("setLeaveYear").addEventListener("change",()=>fillLeaveEntitlement(Number($("setLeaveYear").value||new Date().getFullYear())));
 $("saveSettingsBtn").onclick=()=>{
   const wp=activeWorkplace(); if(!wp){toast("Önce bir iş yeri seçin");return;}
@@ -1457,18 +1470,14 @@ $("saveSettingsBtn").onclick=()=>{
   const current=currentSchedule(wp.id);
   const scheduleChanged=JSON.stringify({...newSchedule,effectiveFrom:current.effectiveFrom})!==JSON.stringify(current);
   if(scheduleChanged&&effectiveFrom<todayStr()&&!confirm("Geçmiş tarih seçtiniz: "+fmtDateShort(effectiveFrom)+"\nKaydedilmiş günler değişmez; kayıtsız geçmiş günler yeni programla hesaplanır. Devam edilsin mi?"))return;
-  state.settings.name=$("setName").value.trim();
   wp.name=$("setCompany").value.trim()||wp.name;
   state.settings.company=wp.name;
-  state.settings.theme=$("setTheme").value;
   // Küresel alanlar yalnızca uyumluluk aynası; esas kayıt aktif iş yeri sürümündedir.
   state.settings.start=newSchedule.start;state.settings.end=newSchedule.end;state.settings.breaks=newSchedule.breaks;state.settings.weekend=newSchedule.weekend;
   state.settings.eveningBreak=newSchedule.eveningBreak;state.settings.nightBreak=newSchedule.nightBreak;
   state.settings.carryLateDays=newSchedule.carryLateDays;state.settings.carryUseDays=newSchedule.carryUseDays;
-  const bh=Number($("setBankOpenH").value||0), bm=Math.abs(Number($("setBankOpenM").value||0));
-  wp.bankOpeningMin=(bh<0?-((Math.abs(bh)*60)+bm):(bh*60+bm));
-  wp.bankOpeningDate=$("setBankOpenDate").value||todayStr();
-  state.settings.bankOpeningMin=wp.bankOpeningMin;state.settings.bankOpeningDate=wp.bankOpeningDate;
+  // Önceden girilmiş açılış değeri varsa eski kayıtlar bozulmasın diye korunur.
+  state.settings.bankOpeningMin=Number(wp.bankOpeningMin||0);state.settings.bankOpeningDate=wp.bankOpeningDate||"";
   const ly=String(Number($("setLeaveYear").value||new Date().getFullYear()));
   if(!wp.leaveEntitlements)wp.leaveEntitlements={};
   wp.leaveEntitlements[ly]={total:Number($("setLeaveTotal").value||14),priorUsed:Number($("setLeavePrior").value||0)};
@@ -1477,22 +1486,70 @@ $("saveSettingsBtn").onclick=()=>{
   saveState(); fillSettings();
   toast("Ayarlar kaydedildi • "+fmtDateShort(effectiveFrom)+" itibarıyla geçerli");
 };
-$("addWorkplaceBtn").onclick=()=>{
-  const name=$("newWorkplaceName").value.trim(); if(!name){toast("İş yeri adı yazın");$("newWorkplaceName").focus();return;}
+function refreshWorkplaceManager(){
+  const box=$("workplaceList"); if(!box)return;
+  const current=activeWorkplaceId();
+  box.innerHTML=(state.workplaces||[]).map(w=>{
+    const count=entryValues(w.id).length;
+    const isCurrent=w.id===current;
+    const status=w.archived?"Arşivde":(isCurrent?"Seçili iş yeri":"İş yeri");
+    return '<div class="workplace-item"><div class="workplace-item-main"><b>'+esc(w.name)+'</b><span class="tiny muted">'+status+' • '+count+' kayıt</span></div><div class="workplace-actions">'
+      +(!isCurrent&&!w.archived?'<button class="btn smallbtn soft" type="button" onclick="selectWorkplaceFromManager(\''+esc(w.id)+'\')">Seç</button>':"")
+      +'<button class="btn smallbtn soft" type="button" onclick="toggleWorkplaceArchive(\''+esc(w.id)+'\')">'+(w.archived?"Arşivden Çıkar":"Arşivle")+'</button>'
+      +'<button class="btn smallbtn danger" type="button" onclick="deleteWorkplaceById(\''+esc(w.id)+'\')">Sil</button>'
+      +'</div></div>';
+  }).join("");
+}
+function openWorkplaceManager(){
+  refreshWorkplaceManager();
+  $("workplaceBackdrop").classList.add("open");
+  setTimeout(()=>$("newWorkplaceName").focus(),60);
+}
+function closeWorkplaceManager(){$("workplaceBackdrop").classList.remove("open");}
+function selectWorkplaceFromManager(id){
+  const wp=workplaceById(id); if(!wp)return;
+  if(wp.archived){toast("Önce iş yerini arşivden çıkarın");return;}
+  switchWorkplace(id); refreshWorkplaceManager();
+}
+function toggleWorkplaceArchive(id){
+  const wp=workplaceById(id); if(!wp)return;
+  if(!wp.archived){
+    const others=(state.workplaces||[]).filter(w=>w.id!==id&&!w.archived);
+    if(!others.length){toast("Kullanılabilir tek iş yeri arşivlenemez");return;}
+    wp.archived=true;
+    if(activeWorkplaceId()===id) state.activeWorkplaceId=others[0].id;
+    toast("İş yeri arşivlendi; kayıtları korunur");
+  }else{
+    wp.archived=false;
+    toast("İş yeri arşivden çıkarıldı");
+  }
+  saveState(); fillSettings(); refreshWorkplaceManager();
+}
+function deleteWorkplaceById(id){
+  const wp=workplaceById(id); if(!wp)return;
+  const count=entryValues(id).length;
+  if(count){alert("Bu iş yerinde "+count+" kayıt var. Kayıtlar silinmemesi için iş yeri silinemez; kullanmıyorsanız arşivleyebilirsiniz.");return;}
+  if((state.workplaces||[]).length<=1){alert("Son iş yeri silinemez.");return;}
+  if(!confirm(wp.name+" silinsin mi?"))return;
+  const wasActive=activeWorkplaceId()===id;
+  state.workplaces=state.workplaces.filter(w=>w.id!==id);
+  if(wasActive){const next=state.workplaces.find(w=>!w.archived)||state.workplaces[0];state.activeWorkplaceId=next.id;}
+  saveState(); fillSettings(); refreshWorkplaceManager(); toast("İş yeri silindi");
+}
+function addWorkplaceFromManager(){
+  const name=$("newWorkplaceName").value.trim();
+  if(!name){toast("İş yeri adı yazın");$("newWorkplaceName").focus();return;}
   const base=activeWorkplace(); const sched=base?currentSchedule(base.id):scheduleFromGlobalSettings(todayStr());
   const id="wp_"+Date.now().toString(36)+Math.random().toString(36).slice(2,6);
   state.workplaces.push({id,name,archived:false,createdAt:new Date().toISOString(),bankOpeningMin:0,bankOpeningDate:"",leaveEntitlements:{},schedules:[{...cloneSchedule(sched),effectiveFrom:todayStr()}]});
   state.activeWorkplaceId=id; $("newWorkplaceName").value="";
-  saveState(); fillSettings(); toast("İş Yeri kaydedildi: "+name);
-};
-$("archiveWorkplaceBtn").onclick=()=>{const wp=activeWorkplace();if(!wp)return;wp.archived=!wp.archived;saveState();fillSettings();toast(wp.archived?"İş yeri arşivlendi (kayıtlar korunur)":"İş yeri arşivden çıkarıldı");};
-$("deleteWorkplaceBtn").onclick=()=>{
-  const wp=activeWorkplace(); if(!wp)return;
-  if(entryValues(wp.id).length){alert("Bu iş yerinde kayıtlar var. Silmek yerine arşivleyin.");return;}
-  if(state.workplaces.length<=1){alert("Son iş yeri silinemez.");return;}
-  if(!confirm(wp.name+" silinsin mi?"))return;
-  state.workplaces=state.workplaces.filter(w=>w.id!==wp.id);state.activeWorkplaceId=state.workplaces[0].id;saveState();fillSettings();
-};
+  saveState(); fillSettings(); refreshWorkplaceManager(); toast("İş yeri eklendi: "+name);
+}
+$("manageWorkplacesBtn").onclick=openWorkplaceManager;
+$("closeWorkplaceBtn").onclick=closeWorkplaceManager;
+$("workplaceBackdrop").addEventListener("click",e=>{if(e.target.id==="workplaceBackdrop")closeWorkplaceManager();});
+$("confirmAddWorkplaceBtn").onclick=addWorkplaceFromManager;
+$("newWorkplaceName").addEventListener("keydown",e=>{if(e.key==="Enter"){e.preventDefault();addWorkplaceFromManager();}});
 $("themeBtn").onclick=()=>{state.settings.theme=state.settings.theme==="light"?"dark":"light";saveState();};
 
 /* ========== FOTOĞRAF / BELGE EKLERİ (IndexedDB) ========== */
@@ -1799,7 +1856,7 @@ function buildMonthlyMarkdown(ym,workplaceId){
   const wpId=workplaceId||activeWorkplaceId(); const st=monthStats(ym,wpId); const bank=allTimeBank(null,todayStr(),wpId); const al=annualLeaveStats(Number(ym.slice(0,4)),wpId);
   const[y,m]=ym.split("-").map(Number);
   let md="# Mesai Raporu — "+MONTHS_TR[m-1]+" "+y+"\\n\\n";
-  md+="- İş yeri: **"+workplaceName(wpId)+"**\n- Kişi: "+(state.settings.name||"-")+"\n- Toplam çalışma: **"+fmtMin(st.netAll)+"** ("+st.workedDays+" gün)\n- Ay hedefi: **"+fmtMin(st.targetAll)+"**\n- Fazla mesai: **"+fmtMin(st.fazla,true)+"**\n- Eksik mesai: **"+fmtMin(-st.eksik,true)+"**\n- Ay farkı (bugüne kadar): **"+fmtMin(st.balance,true)+"**\n- Kullanılabilir fazla mesai: **"+fmtMin(bank.balance,true)+"**\n- Kalan yıllık izin ("+y+"): **"+al.remaining+" gün**\n\n";
+  md+="- İş yeri: **"+workplaceName(wpId)+"**\n- Toplam çalışma: **"+fmtMin(st.netAll)+"** ("+st.workedDays+" gün)\n- Ay hedefi: **"+fmtMin(st.targetAll)+"**\n- Fazla mesai: **"+fmtMin(st.fazla,true)+"**\n- Eksik mesai: **"+fmtMin(-st.eksik,true)+"**\n- Ay farkı (bugüne kadar): **"+fmtMin(st.balance,true)+"**\n- Kullanılabilir fazla mesai: **"+fmtMin(bank.balance,true)+"**\n- Kalan yıllık izin ("+y+"): **"+al.remaining+" gün**\n\n";
   md+="| Tarih | Giriş | Çıkış | Çalışma | Hedef | Fark | Kayıt Türü | Dosya | Not |\\n|---|---|---|---:|---:|---:|---|---:|---|\\n";
   st.days.forEach(info=>{const e=info.entry||{};md+="| "+fmtDateShort(info.date)+" | "+(e.start||"")+" | "+(e.end||"")+" | "+(info.net===null?"":fmtMin(info.net))+" | "+fmtMin(info.target)+" | "+(info.diff===null?"":fmtMin(info.diff,true))+" | "+(e.type?TYPES[e.type].label:"")+" | "+(e.attachments?.length||0)+" | "+String(e.note||"").replace(/\\|/g,"/").replace(/\\r?\\n/g," ")+" |\\n";});
   return md;
@@ -1811,7 +1868,7 @@ function buildPrint(){
   const st=monthStats(viewMonth); const[y,m]=viewMonth.split("-").map(Number);
   const bankAll=allTimeBank();
   const rows=st.days.map(i=>{const e=i.entry||{};return "<tr><td>"+fmtDateShort(i.date)+" "+DAYS_TR[parseDateStr(i.date).getDay()]+"</td><td>"+(e.start||"—")+"</td><td>"+(e.end||"—")+"</td><td>"+(e.breakMin??"")+"</td><td>"+(i.net!==null?fmtMin(i.net):"—")+"</td><td>"+(i.bankUsed?fmtMin(i.bankUsed):"")+"</td><td>"+fmtMin(i.target)+"</td><td>"+(i.diff===null?"—":fmtMin(i.diff,true))+"</td><td>"+(e.type?TYPES[e.type].label:(i.holiday?"Resmi Tatil":i.isWeekend?"Hafta Tatili":"—"))+"</td><td>"+esc(e.note||"")+"</td></tr>";}).join("");
-  $("printArea").innerHTML="<h1>Mesai Raporu — "+MONTHS_TR[m-1]+" "+y+"</h1><p>"+esc(state.settings.name||"")+(" • "+esc(workplaceName()))+"<br>Toplam çalışma: <b>"+fmtMin(st.netAll)+"</b> • Ay hedefi: <b>"+fmtMin(st.targetAll)+"</b> • Ay farkı (bugüne kadar): <b>"+fmtMin(st.balance,true)+"</b> • Fazla mesai: <b>"+fmtMin(st.fazla,true)+"</b> • Eksik mesai: <b>"+fmtMin(-st.eksik,true)+"</b><br>Bu ay fazla mesai: <b>"+fmtMin(st.bankEarnedMonth,true)+"</b> • Bu ay saatlik izin: <b>"+fmtMin(-st.bankUsedMonth,true)+"</b> • <b>Kullanılabilir fazla mesai: "+fmtMin(bankAll.balance,true)+"</b> • Kalan yıllık izin: <b>"+annualLeaveStats(y).remaining+" gün</b></p><table><thead><tr><th>Tarih</th><th>Giriş</th><th>Çıkış</th><th>Mola (dk)</th><th>Çalışma</th><th>Saatlik İzin</th><th>Hedef</th><th>Fark</th><th>Kayıt Türü</th><th>Not</th></tr></thead><tbody>"+rows+"</tbody></table>";
+  $("printArea").innerHTML="<h1>Mesai Raporu — "+MONTHS_TR[m-1]+" "+y+"</h1><p>"+esc(workplaceName())+"<br>Toplam çalışma: <b>"+fmtMin(st.netAll)+"</b> • Ay hedefi: <b>"+fmtMin(st.targetAll)+"</b> • Ay farkı (bugüne kadar): <b>"+fmtMin(st.balance,true)+"</b> • Fazla mesai: <b>"+fmtMin(st.fazla,true)+"</b> • Eksik mesai: <b>"+fmtMin(-st.eksik,true)+"</b><br>Bu ay fazla mesai: <b>"+fmtMin(st.bankEarnedMonth,true)+"</b> • Bu ay saatlik izin: <b>"+fmtMin(-st.bankUsedMonth,true)+"</b> • <b>Kullanılabilir fazla mesai: "+fmtMin(bankAll.balance,true)+"</b> • Kalan yıllık izin: <b>"+annualLeaveStats(y).remaining+" gün</b></p><table><thead><tr><th>Tarih</th><th>Giriş</th><th>Çıkış</th><th>Mola (dk)</th><th>Çalışma</th><th>Saatlik İzin</th><th>Hedef</th><th>Fark</th><th>Kayıt Türü</th><th>Not</th></tr></thead><tbody>"+rows+"</tbody></table>";
 }
 $("printBtn").onclick=()=>{buildPrint();window.print();};
 $("uploadReportBtn").onclick=uploadReportToGithub;
@@ -1913,23 +1970,62 @@ function loadSyncConfig(){
   try{return JSON.parse(localStorage.getItem(SYNC_KEY)||"null")||{};}catch(e){return {};}
 }
 function saveSyncConfig(cfg){ try{localStorage.setItem(SYNC_KEY,JSON.stringify(cfg));}catch(e){} }
+const SYNC_DATA_PATH="mesai-takip.json";
+function parseRepoInput(raw,old={}){
+  let value=String(raw||"").trim().replace(/^https?:\/\/github\.com\//i,"").replace(/\.git$/i,"").replace(/^\/+|\/+$/g,"");
+  let owner="", repo=value;
+  if(value.includes("/")){
+    const parts=value.split("/").filter(Boolean); owner=parts[0]||""; repo=parts[1]||"";
+  }else if(old.owner&&old.repo===value&&(!$("syncToken")||$("syncToken").value.trim()===(old.token||""))){
+    owner=old.owner;
+  }
+  return {owner,repo};
+}
 function syncConfigFromUI(old={}){
+  const repoEl=$("syncRepo"), tokenEl=$("syncToken");
+  const parsed=parseRepoInput(repoEl?repoEl.value:(old.repo||""),old);
   return {
-    mode:$("syncMode").value, owner:$("syncOwner").value.trim(), repo:$("syncRepo").value.trim(),
-    branch:$("syncBranch").value.trim()||"main", path:$("syncPath").value.trim()||"mesai-takip.json",
-    token:$("syncToken").value.trim(), url:$("syncUrl").value.trim(), device:$("syncDevice").value.trim()||"Bu cihaz",
-    autoPull:$("syncAutoPull").checked, lastSyncAt:old.lastSyncAt||"", lastSha:old.lastSha||"", lastDirection:old.lastDirection||""
+    mode:"github", owner:parsed.owner||"", repo:parsed.repo||"",
+    branch:old.branch||"main", path:old.path||SYNC_DATA_PATH,
+    token:tokenEl?tokenEl.value.trim():(old.token||""), url:"", device:old.device||"Telefon",
+    autoPull:!!old.autoPull, lastSyncAt:old.lastSyncAt||"", lastSha:old.lastSha||"", lastDirection:old.lastDirection||""
   };
 }
 function fillSyncSettings(){
   const c=loadSyncConfig();
-  $("syncMode").value=c.mode||"github"; $("syncOwner").value=c.owner||""; $("syncRepo").value=c.repo||"";
-  $("syncBranch").value=c.branch||"main"; $("syncPath").value=c.path||"mesai-takip.json"; $("syncToken").value=c.token||"";
-  $("syncUrl").value=c.url||""; $("syncDevice").value=c.device||""; $("syncAutoPull").checked=!!c.autoPull;
-  syncModeUI(); setSyncStatus(c.lastSyncAt?("Son eşitleme: "+new Date(c.lastSyncAt).toLocaleString("tr-TR")+" • "+(c.lastDirection||"")):"Henüz eşitleme yapılmadı.");
+  if($("syncRepo"))$("syncRepo").value=c.repo||"";
+  if($("syncToken"))$("syncToken").value=c.token||"";
+  if(!$("syncStatus"))return;
+  if(c.owner&&c.repo){
+    setSyncStatus(c.lastSyncAt?("Bağlı depo: "+c.owner+"/"+c.repo+" • Son eşitleme: "+new Date(c.lastSyncAt).toLocaleString("tr-TR")):("Bağlı depo: "+c.owner+"/"+c.repo));
+  }else if(c.repo||c.token){
+    setSyncStatus("Bağlantı bilgileri girildi. Bağlan ve Eşitle düğmesini kullanın.");
+  }else{
+    setSyncStatus("Bağlantı yok.");
+  }
 }
-function syncModeUI(){const gh=$("syncMode").value==="github";$("syncGithubFields").classList.toggle("hide",!gh);$("syncUrlField").classList.toggle("hide",gh);$("syncPushBtn").disabled=!gh;if(!gh)$("syncPushBtn").title="Bu seçenek yalnız veri çekmek içindir";}
-$("syncMode").addEventListener("change",syncModeUI);
+function setSyncBusy(busy){
+  ["connectSyncBtn","syncNowBtn","disconnectSyncBtn"].forEach(id=>{const el=$(id);if(el)el.disabled=!!busy;});
+}
+async function resolveGithubConfig(cfg,allowNoToken=false){
+  if(!cfg.repo) throw new Error("Depo adı girin");
+  if(!cfg.token&&!allowNoToken) throw new Error("Erişim anahtarı girin");
+  if(!cfg.owner){
+    if(!cfg.token) throw new Error("Depo sahibini bulmak için erişim anahtarı gerekli");
+    const ur=await fetch("https://api.github.com/user",{headers:ghHeaders(cfg),cache:"no-store"});
+    if(!ur.ok) throw new Error("GitHub hesabı bulunamadı ("+ur.status+"). Depo adını kullanıcıadı/depo biçiminde yazabilirsiniz.");
+    const uj=await ur.json(); cfg.owner=uj.login||"";
+    if(!cfg.owner) throw new Error("GitHub hesabı bulunamadı");
+  }
+  const rr=await fetch("https://api.github.com/repos/"+encodeURIComponent(cfg.owner)+"/"+encodeURIComponent(cfg.repo),{headers:ghHeaders(cfg),cache:"no-store"});
+  if(!rr.ok) throw new Error("Depo bulunamadı: "+cfg.owner+"/"+cfg.repo+" ("+rr.status+")");
+  const rj=await rr.json();
+  cfg.branch=rj.default_branch||cfg.branch||"main";
+  cfg.path=cfg.path||SYNC_DATA_PATH;
+  cfg.mode="github";
+  saveSyncConfig(cfg);
+  return cfg;
+}
 function setSyncStatus(msg){$("syncStatus").textContent="Eşitleme durumu: "+msg;}
 function purifiedState(){
   const clone=JSON.parse(JSON.stringify(state));
@@ -1977,26 +2073,12 @@ async function blobToB64(blob){
 }
 function b64ToBytes(b64){const bin=atob((b64||"").replace(/\s/g,""));return new Uint8Array([...bin].map(c=>c.charCodeAt(0)));}
 async function fetchRemotePayload(cfg){
-  if(cfg.mode==="url"){
-    if(!cfg.url) throw new Error("İnternet adresi girin");
-    const r=await fetch(cfg.url,{cache:"no-store"}); if(!r.ok)throw new Error("URL "+r.status);
-    return {remote:parseRemotePayload(JSON.parse(await r.text())),sha:""};
-  }
-  if(!cfg.owner||!cfg.repo) throw new Error("GitHub kullanıcı adı ve depo adı girin");
-  const f=await ghGetFile(cfg); if(!f) throw new Error("GitHub’da veri dosyası bulunamadı. Önce GitHub’a kaydet işlemi yapın.");
+  if(!cfg.owner||!cfg.repo) throw new Error("Önce GitHub bağlantısını kurun");
+  const f=await ghGetFile(cfg); if(!f) throw new Error("GitHub’da veri dosyası bulunamadı. Önce Bağlan ve Eşitle düğmesini kullanın.");
   return {remote:parseRemotePayload(JSON.parse(f.text)),sha:f.sha};
 }
-$("syncSaveBtn").onclick=()=>{const old=loadSyncConfig();const cfg=syncConfigFromUI(old);saveSyncConfig(cfg);setSyncStatus("bağlantı ayarları bu cihaza kaydedildi.");toast("Bağlantı ayarları kaydedildi");};
-$("syncTestBtn").onclick=async()=>{
-  const cfg=syncConfigFromUI(loadSyncConfig()); saveSyncConfig(cfg); setSyncStatus("test ediliyor...");
-  try{
-    if(cfg.mode==="url"){const r=await fetch(cfg.url,{cache:"no-store"}); if(!r.ok)throw new Error(r.status); setSyncStatus("Bağlantı çalışıyor.");}
-    else{const r=await fetch("https://api.github.com/repos/"+encodeURIComponent(cfg.owner)+"/"+encodeURIComponent(cfg.repo),{headers:ghHeaders(cfg),cache:"no-store"}); if(!r.ok)throw new Error(r.status+": "+(await r.text()).slice(0,180)); const j=await r.json(); setSyncStatus("Depo bulundu: "+j.full_name+" • "+(j.private?"özel":"herkese açık"));}
-  }catch(e){setSyncStatus("Bağlantı testi başarısız: "+e.message);}
-};
-$("syncPullBtn").onclick=()=>pullFromRemote(false);
 async function pullFromRemote(auto=false){
-  const cfg=loadSyncConfig(); if(!cfg.mode){if(!auto)toast("Önce bağlantıyı kaydedin");return false;}
+  const cfg=loadSyncConfig(); if(!cfg.owner||!cfg.repo){if(!auto)toast("Önce GitHub bağlantısını kurun");return false;}
   setSyncStatus("veriler çekiliyor...");
   try{
     const {remote,sha}=await fetchRemotePayload(cfg);
@@ -2008,11 +2090,10 @@ async function pullFromRemote(auto=false){
     toast("Veriler telefona çekildi"); return true;
   }catch(e){setSyncStatus("Veri çekme hatası: "+e.message); if(!auto)alert("Veriler çekilemedi: "+e.message); return false;}
 }
-$("syncPushBtn").onclick=()=>pushToGithub(false);
 async function pushToGithub(fromSmart=false){
-  const cfg=syncConfigFromUI(loadSyncConfig()); saveSyncConfig(cfg);
-  if(cfg.mode!=="github"){if(!fromSmart)alert("Bu seçenek yalnız veri çekmek içindir.");return false;}
+  let cfg=syncConfigFromUI(loadSyncConfig()); saveSyncConfig(cfg);
   if(!cfg.token){if(!fromSmart)alert("GitHub’a kaydetmek için erişim anahtarı gerekli.");setSyncStatus("Erişim anahtarı gerekli.");return false;}
+  try{cfg=await resolveGithubConfig(cfg);}catch(e){setSyncStatus("GitHub bağlantısı kurulamadı: "+e.message);if(!fromSmart)alert(e.message);return false;}
   setSyncStatus("GitHub’a kaydediliyor...");
   try{
     const existing=await ghGetFile(cfg);
@@ -2026,17 +2107,17 @@ async function pushToGithub(fromSmart=false){
     toast("GitHub’a kaydedildi"); return true;
   }catch(e){setSyncStatus("GitHub’a kaydetme hatası: "+e.message);if(!fromSmart)alert("GitHub’a kaydedilemedi: "+e.message);return false;}
 }
-function requireGithubCfg(forWrite=true){
+async function requireGithubCfg(forWrite=true){
   const old=loadSyncConfig();
-  if((!$("syncOwner").value&&old.owner)||(!$("syncUrl").value&&old.url)) fillSyncSettings();
-  const cfg=syncConfigFromUI(old);saveSyncConfig(cfg);
-  if(cfg.mode!=="github"||!cfg.owner||!cfg.repo)throw new Error("Önce Ayarlar bölümünde GitHub kullanıcı adı ve depo adı girin");
+  if((!$("syncRepo").value&&old.repo)||(!$("syncToken").value&&old.token)) fillSyncSettings();
+  const cfg=syncConfigFromUI(old); saveSyncConfig(cfg);
+  if(!cfg.repo)throw new Error("Önce Ayarlar bölümünde depo adı girin");
   if(forWrite&&!cfg.token)throw new Error("GitHub’a yüklemek için erişim anahtarı gerekli");
-  return cfg;
+  return resolveGithubConfig(cfg,!forWrite);
 }
 async function uploadReportToGithub(){
   try{
-    const cfg=requireGithubCfg(true); const wpSlug=slugifyWorkplace(workplaceName());
+    const cfg=await requireGithubCfg(true); const wpSlug=slugifyWorkplace(workplaceName());
     const baseDir="reports/"+wpSlug;
     const csvPath=baseDir+"/Mesai_Rapor_"+viewMonth+".csv";
     const mdPath=baseDir+"/Mesai_Rapor_"+viewMonth+".md";
@@ -2051,8 +2132,8 @@ function attachmentRemotePath(entry,att){
   const safe=String(att.name||"ek").replace(/[\\/:*?"<>|#%{}~]/g,"-");
   return "attachments/"+(entry.workplaceId||"is-yeri")+"/"+entry.date+"/"+att.id+"-"+safe;
 }
-async function syncAttachmentsWithGithub(){
-  const cfg=requireGithubCfg(false);
+async function syncAttachmentsWithGithub(providedCfg=null){
+  const cfg=providedCfg||await requireGithubCfg(false);
   let uploaded=0,downloaded=0,skipped=0,changed=false;
   const all=entryValues();
   for(const entry of all){
@@ -2087,54 +2168,49 @@ async function syncAttachmentsWithGithub(){
   if(changed){suppressUpdatedAt=false;saveState();}
   return {uploaded,downloaded,skipped};
 }
-$("syncAttachmentsBtn").onclick=async()=>{
-  try{setSyncStatus("Fotoğraf ve belgeler eşitleniyor...");const r=await syncAttachmentsWithGithub();setSyncStatus("Dosyalar eşitlendi: "+r.uploaded+" yüklendi, "+r.downloaded+" indirildi.");toast("Fotoğraf ve belgeler eşitlendi");}catch(e){setSyncStatus("Dosya eşitleme hatası: "+e.message);alert(e.message);}
-};
-$("syncNowBtn").onclick=async()=>{
-  saveSyncConfig(syncConfigFromUI(loadSyncConfig()));
-  const cfg=loadSyncConfig();
-  if(!cfg.mode){alert("Önce GitHub bağlantı ayarlarını kaydedin.");showView("settings");return;}
-  setSyncStatus("Veriler karşılaştırılıyor...");
+async function runSmartSync(connectFirst=false){
+  const old=loadSyncConfig();
+  let cfg=syncConfigFromUI(old); saveSyncConfig(cfg);
+  if(!cfg.repo||!cfg.token){alert("Depo adı ve erişim anahtarı girin.");showView("settings");return;}
+  setSyncBusy(true);
+  setSyncStatus(connectFirst?"GitHub bağlantısı kuruluyor...":"Veriler karşılaştırılıyor...");
   try{
+    cfg=await resolveGithubConfig(cfg);
+    if(connectFirst) setSyncStatus("Bağlantı kuruldu: "+cfg.owner+"/"+cfg.repo+". Veriler karşılaştırılıyor...");
     let remoteInfo=null;
-    try{remoteInfo=await fetchRemotePayload(cfg);}catch(e){if(cfg.mode==="url")throw e;}
+    try{remoteInfo=await fetchRemotePayload(cfg);}catch(e){remoteInfo=null;}
     const localUpdated=state.meta?.updatedAt||"";
     const remoteUpdated=remoteInfo?.remote.exportedAt||remoteInfo?.remote.state?.meta?.updatedAt||"";
-    let action="none";
-    if(!remoteInfo) action="push";
-    else if(remoteUpdated&&localUpdated&&remoteUpdated>localUpdated) action="pull";
-    else if(remoteUpdated&&localUpdated&&localUpdated>remoteUpdated) action="push";
-    else if(remoteInfo.sha&&cfg.lastSha&&remoteInfo.sha!==cfg.lastSha&&(!cfg.lastSyncAt||localUpdated>cfg.lastSyncAt)) action=confirm("Hem telefonda hem GitHub’da değişiklik var.\n\nTamam: Telefondaki veriyi GitHub’a kaydet\nİptal: GitHub’daki veriyi telefona çek")?"push":"pull";
-    else action="push"; // zamanlar eşit/bilinmiyorsa güncel yedek için gönder
+    let action="push";
+    if(remoteInfo&&remoteUpdated&&localUpdated&&remoteUpdated>localUpdated) action="pull";
+    else if(remoteInfo&&remoteUpdated&&localUpdated&&localUpdated>remoteUpdated) action="push";
+    else if(remoteInfo&&remoteInfo.sha&&cfg.lastSha&&remoteInfo.sha!==cfg.lastSha&&(!cfg.lastSyncAt||localUpdated>cfg.lastSyncAt)) action=confirm("Hem telefonda hem GitHub’da değişiklik var.\\n\\nTamam: Telefondaki veriyi GitHub’a kaydet\\nİptal: GitHub’daki veriyi telefona çek")?"push":"pull";
     let ok=false;
     if(action==="pull") ok=await pullFromRemote(false);
-    else if(action==="push") ok=await pushToGithub(true);
-    if(cfg.mode==="github"){
-      try{const r=await syncAttachmentsWithGithub();setSyncStatus("Eşitleme tamamlandı. Dosyalar: "+r.uploaded+" yüklendi, "+r.downloaded+" indirildi.");}catch(e){setSyncStatus("Veriler eşitlendi; dosyalarda hata: "+e.message);}
-    }
+    else ok=await pushToGithub(true);
+    cfg=loadSyncConfig();
+    try{
+      const r=await syncAttachmentsWithGithub(cfg);
+      setSyncStatus("Eşitleme tamamlandı. Dosyalar: "+r.uploaded+" yüklendi, "+r.downloaded+" indirildi.");
+    }catch(e){setSyncStatus("Veriler eşitlendi; dosyalarda hata: "+e.message);}
     if(ok)toast("Eşitleme tamamlandı");
   }catch(e){setSyncStatus("Eşitleme yapılamadı: "+e.message);alert("Eşitleme yapılamadı: "+e.message);}
-};
-async function maybeAutoPull(){const cfg=loadSyncConfig(); if(cfg.autoPull&&(cfg.url||(cfg.owner&&cfg.repo))) pullFromRemote(true);}
-
-/* ========== DEMO / TEMİZLE ========== */
-function loadDemo(){
-  if(entryValues(activeWorkplaceId()).length&&!confirm("Örnek kayıtlar bu ay için eklensin mi? Aynı tarihteki mevcut kayıtlar değişebilir."))return;
-  const ym=monthOf(todayStr()); const todayD=parseDateStr(todayStr()).getDate();
-  for(let day=1;day<=Math.min(todayD,28);day++){
-    const ds=ym+"-"+pad(day); const info=getDayInfo(ds); const s=info.schedule;
-    if(info.isWeekend||(info.holiday&&!info.holiday.half)) continue;
-    let end=s.end, note="Örnek", bankU=0;
-    if(day%6===0) end="20:45",note="Örnek — üstüne mesai";
-    else if(day%8===0) end="16:30",note="Örnek — erken çıkış, eksik fazla mesaiden",bankU=75;
-    else if(day%11===0){setEntry(ds,{type:"yillik_izin",leaveDays:annualLeaveAmountFor(ds,{type:"yillik_izin",workplaceId:activeWorkplaceId()}),note:"Örnek izin"});continue;}
-    else if(day%13===0){setEntry(ds,{type:"saat_izni",bankUsedMin:schedTarget(s),note:"Örnek — fazladan tam gün saatlik izin"});continue;}
-    const demoEntry={type:"calisma",start:s.start,end,breakMin:autoBreakOverlap(ds,s.start,end),note}; if(bankU)demoEntry.bankUsedMin=bankU;
-    setEntry(ds,demoEntry);
-  }
-  saveState(); setMonth(ym); showView("report"); toast("Örnek kayıtlar yüklendi");
+  finally{setSyncBusy(false);}
 }
-$("demoBtn").onclick=loadDemo; $("demoBtn2").onclick=loadDemo;
+$("connectSyncBtn").onclick=()=>runSmartSync(true);
+$("syncNowBtn").onclick=()=>runSmartSync(false);
+$("disconnectSyncBtn").onclick=()=>{
+  const c=loadSyncConfig();
+  if(!c.repo&&!c.token&&!$("syncToken").value){setSyncStatus("Bağlantı yok.");return;}
+  if(!confirm("GitHub bağlantısı bu telefondan kaldırılsın mı?\\nTelefondaki ve GitHub’daki veriler silinmez."))return;
+  try{localStorage.removeItem(SYNC_KEY);}catch(e){}
+  $("syncRepo").value=""; $("syncToken").value="";
+  setSyncStatus("Bağlantı kaldırıldı.");
+  toast("GitHub bağlantısı kaldırıldı");
+};
+async function maybeAutoPull(){const cfg=loadSyncConfig(); if(cfg.autoPull&&cfg.owner&&cfg.repo) pullFromRemote(true);}
+
+/* ========== VERİLERİ TEMİZLE ========== */
 $("clearAllBtn").onclick=async()=>{
   if(!confirm("Tüm iş yerlerindeki tüm kayıtlar silinsin mi?\nBu işlem geri alınamaz."))return;
   if(!confirm("Emin misiniz?"))return;
@@ -2256,7 +2332,7 @@ async function tryInstall(){
   if(deferredPrompt){deferredPrompt.prompt();await deferredPrompt.userChoice;deferredPrompt=null;$("installBtn").classList.add("hide");}
   else alert("Kurulum için:\n\nAndroid Chrome: ⋮ → Uygulamayı yükle / Ana ekrana ekle\n\niPhone Safari: Paylaş → Ana Ekrana Ekle");
 }
-$("installBtn").onclick=tryInstall; $("installBtn2").onclick=tryInstall;
+$("installBtn").onclick=tryInstall;
 if("serviceWorker" in navigator && location.protocol.startsWith("http")){
   window.addEventListener("load",()=>{navigator.serviceWorker.register("sw.js").catch(()=>{});});
 }

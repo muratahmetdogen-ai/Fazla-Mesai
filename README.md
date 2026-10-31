@@ -60,7 +60,7 @@ Fotoğraf ve belge dosyalarının kendisi JSON yedeğine eklenmez; GitHub eşitl
 
 ## Veri ve gizlilik
 
-Kayıtlar telefonunuzda tutulur. GitHub eşitlemesini kullanırsanız veriler kendi özel GitHub deponuza kaydedilir. GitHub erişim anahtarınız yalnızca cihazınızda saklanır; anahtarınızı kimseyle veya sohbetle paylaşmayın.
+Kayıtlar telefonunuzda tutulur. GitHub eşitlemesinde yalnızca depo adı ve erişim anahtarı girilir; veriler kendi özel GitHub deponuza kaydedilir. GitHub erişim anahtarınız yalnızca cihazınızda saklanır; anahtarınızı kimseyle veya sohbetle paylaşmayın.
 
 Şifre kilidi, uygulamanın başka kişiler tarafından açılmasını zorlaştırır ancak verileri şifrelemez.
 
