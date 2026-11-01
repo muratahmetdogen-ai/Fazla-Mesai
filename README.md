@@ -49,7 +49,7 @@ Uygulama tek bir firmaya bağlı değildir. Birden çok iş yeri eklenebilir. He
 
 ## Mobil görünüm
 
-Hafta tatili ayarında gün adı ve seçim işareti aynı kutu içinde, aynı satırda gösterilir. Form alanları, hızlı işlem düğmeleri, takvim özeti ve rapor tabloları dar telefon ekranlarında taşmayacak şekilde hizalanır.
+Hafta tatili ayarında gün adı ve seçim işareti aynı kutu içinde, aynı satırda gösterilir. Form alanları, takvim özeti ve rapor tabloları dar telefon ekranlarında taşmayacak şekilde hizalanır. Gün kaydı ekranı sade tutulmuştur: Tarih, kayıt türü ve giriş/çıkış saatleri girilir; mola ile fazla/eksik süre otomatik hesaplanır. Hazır saat ekleme düğmeleri kullanılmaz.
 
 ## Güvenlik ve Maaş
 

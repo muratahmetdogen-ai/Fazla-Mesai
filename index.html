@@ -204,8 +204,7 @@ input[type="checkbox"]{width:20px;height:20px;flex:0 0 20px;margin:0;accent-colo
 .workplace-item-main .tiny{display:block;margin-top:3px;line-height:1.35}.workplace-actions{align-items:center}.workplace-actions .btn{height:37px}
 .calendar-summary{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:start;gap:10px;margin-bottom:10px}.calendar-summary b{min-width:0;line-height:1.4}.calendar-summary .btn{justify-self:end;min-width:72px}
 .records-actions{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin-top:10px}.records-actions .btn{width:100%;height:100%;white-space:normal;line-height:1.2}
-.quick-leave-grid,.editor-quick-grid{display:grid;gap:8px;margin-top:10px}.quick-leave-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.quick-leave-grid .btn,.editor-quick-grid .btn{width:100%;height:100%;white-space:normal;line-height:1.2}
-.editor-quick-main,.editor-quick-bank{grid-template-columns:repeat(2,minmax(0,1fr))}.editor-quick-overtime{grid-template-columns:repeat(4,minmax(0,1fr))}
+.quick-leave-grid{display:grid;gap:8px;margin-top:10px;grid-template-columns:repeat(2,minmax(0,1fr))}.quick-leave-grid .btn{width:100%;height:100%;white-space:normal;line-height:1.2}
 .cal-day{min-width:0}.cal-day .tag{overflow-wrap:anywhere;word-break:break-word}
 .card-title-row{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:start;gap:10px}.card-title-row .chip{justify-self:end;max-width:46vw;text-align:center;white-space:normal}
 .summary-action-row{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:end;gap:12px;margin-top:14px}.summary-action-row>div{min-width:0}
@@ -248,7 +247,6 @@ input[type="checkbox"]{width:20px;height:20px;flex:0 0 20px;margin:0;accent-colo
   .workplace-manage-row{grid-template-columns:minmax(0,1fr) 118px}.workplace-manage-row>.btn{white-space:normal;line-height:1.15;padding:7px}
   .kpi .value{font-size:17px}.salary-breakdown{grid-template-columns:1fr}
   .records-actions{grid-template-columns:repeat(2,minmax(0,1fr))}.records-actions .btn.primary{grid-column:span 2}
-  .editor-quick-overtime{grid-template-columns:repeat(2,minmax(0,1fr))}
   .cal-grid{gap:5px}.cal-day{padding:5px;border-radius:12px}.cal-day .tag{font-size:8.5px;letter-spacing:-.01em}
   .summary-action-row{grid-template-columns:1fr}.summary-action-row>.btn{width:100%}
   .daily-detail-table{table-layout:fixed;font-size:10.5px}.daily-detail-table th{font-size:8.5px;line-height:1.2}.daily-detail-table th,.daily-detail-table td{padding:6px 4px;overflow-wrap:break-word}
@@ -633,33 +631,15 @@ input[type="checkbox"]{width:20px;height:20px;flex:0 0 20px;margin:0;accent-colo
         <div class="field"><label>Çıkış</label><input type="time" id="fEnd"></div>
         <div class="field"><label>Mola (dk)</label><input type="number" id="fBreak" min="0" step="5" inputmode="numeric"></div>
       </div>
-      <div class="editor-quick-grid editor-quick-main">
-        <button class="btn smallbtn primary" id="presetNormalBtn">Normal Saatleri Doldur</button>
-        <button class="btn smallbtn soft" id="autoBreakBtn">Molayı Otomatik Hesapla</button>
-        <button class="btn smallbtn soft" id="nowStartBtn">Giriş: Şimdi</button>
-        <button class="btn smallbtn soft" id="nowEndBtn">Çıkış: Şimdi</button>
-      </div>
-      <div class="editor-quick-grid editor-quick-overtime">
-        <button class="btn smallbtn primary" data-overtime-min="60">+1 Saat</button>
-        <button class="btn smallbtn primary" data-overtime-min="120">+2 Saat</button>
-        <button class="btn smallbtn primary" data-overtime-min="180">+3 Saat</button>
-        <button class="btn smallbtn primary" data-overtime-min="270">+4,5 Saat</button>
-      </div>
       <div class="previewbox" id="editorPreview">—</div>
-      <p class="tiny muted">Çıkış saati gece yarısını geçerse ertesi gün sayılır; akşam ve gece molaları otomatik düşülür.</p>
+      <p class="tiny muted">Giriş ve çıkış saatini girmeniz yeterli; mola ile fazla/eksik süre otomatik hesaplanır.</p>
       <label class="check-row"><input type="checkbox" id="fAllNighter"><span>Sabahlama<small>Ertesi sabah biten çalışma</small></span></label>
     </div>
     <div id="leaveFields" class="hide">
       <div class="field"><label id="fLeaveLabel">Yıllık İzinden Kaç Gün Düşsün?</label><select id="fLeaveDays"><option value="auto">Otomatik (hafta içi 1, arife 0,5, tatil 0)</option><option value="1">1 gün</option><option value="0.5">0,5 gün</option><option value="0">0 — düşme</option></select></div>
     </div>
     <div id="bankFields">
-      <div class="field"><label>Fazla Mesaiden Kullanılacak Saatlik İzin (dakika)</label><input type="number" id="fBankUsed" min="0" step="5" inputmode="numeric" placeholder="0"></div>
-      <div class="editor-quick-grid editor-quick-bank">
-        <button class="btn smallbtn soft" id="bankFullBtn">Tam Gün</button>
-        <button class="btn smallbtn soft" id="bankHalfBtn">Yarım Gün</button>
-        <button class="btn smallbtn primary" id="bankCoverBtn">Eksik Kısmı Tamamla</button>
-        <button class="btn smallbtn soft" id="bankZeroBtn">Sıfırla</button>
-      </div>
+      <div class="field"><label>Saatlik İzin (dakika)</label><input type="number" id="fBankUsed" min="0" step="5" inputmode="numeric" placeholder="0"></div>
       <p class="tiny muted" id="bankHelp">Kullanılacak süreyi dakika olarak yazın.</p>
     </div>
     <div class="field">
@@ -1949,7 +1929,7 @@ async function deleteAttachmentsByMeta(list){for(const a of (list||[])){try{awai
 /* ========== EDİTÖR ========== */
 function editorPreviewUpdate(){
   const type=$("fType").value; $("workFields").style.display=type==="calisma"?"block":"none";
-  $("bankFields").style.display=(type==="calisma"||type==="saat_izni")?"block":"none";
+  $("bankFields").style.display=type==="saat_izni"?"block":"none";
   $("leaveFields").classList.toggle("hide",!["yillik_izin","sirket_izni"].includes(type));
   $("fLeaveLabel").textContent="Yıllık İzinden Kaç Gün Düşsün?";
   const noteLabels={calisma:["Günlük Not","Bu gün yapılanları yazın..."],saat_izni:["Saatlik İzin Notu","Saatlik izin nedeninizi yazın..."],yillik_izin:["Yıllık İzin Notu","İzin gününüzü yazın..."],sirket_izni:["Şirket İzni Notu","İzin nedenini yazın..."],rapor:["Sağlık Raporu Notu","Sağlık raporu notunuzu yazın..."],sabahlama_izni:["Dinlenme Günü Notu","Dinlenme günü notunuzu yazın..."]};
@@ -1984,6 +1964,8 @@ function editorPreviewUpdate(){
   if(!tmp.end){$("editorPreview").innerHTML="<b>Çıkış saati girilmelidir.</b>";return;}
   tmp.workplaceId=editorWp;
   const net=entryNetMin(tmp); const target=targetFor(date,tmp,editorWp);
+  // Saatlik İzin alanını yalnızca eksik çalışma varsa (ya da önceden girilmişse) göster.
+  $("bankFields").style.display=(bankUsed>0||net<target)?"block":"none";
   const earned=Math.max(0,net-target); const uncovered=Math.max(0,target-net-bankUsed);
   const after=bankExcl.balance+earned-bankUsed;
   const ovn=crossesMidnight(tmp); const eb=sched.eveningBreak; const eveningApplied=hmToMin(tmp.start)<=hmToMin(eb.s)&&(intervalGrossMin(tmp)||0)>(hmToMin(eb.s)-hmToMin(tmp.start));
@@ -2032,27 +2014,6 @@ $("fWorkplace").addEventListener("change",()=>{
   editorPreviewUpdate();
 });
 $("fAttachments").addEventListener("change",async e=>{await addAttachmentFiles(e.target.files,$("fDate").value,$("fWorkplace").value);e.target.value="";});
-$("presetNormalBtn").onclick=()=>{editorBreakAuto=true;const wp=$("fWorkplace").value;const s=scheduleForDate($("fDate").value,wp);$("fStart").value=s.start;$("fEnd").value=s.end;$("fBreak").value=autoBreakOverlap($("fDate").value,$("fStart").value,$("fEnd").value,wp);editorPreviewUpdate();};
-$("autoBreakBtn").onclick=()=>{editorBreakAuto=true;const wp=$("fWorkplace").value;$("fBreak").value=autoBreakOverlap($("fDate").value,$("fStart").value,$("fEnd").value||nowHM(),wp);editorPreviewUpdate();toast("Mola hesaplandı: "+$("fBreak").value+" dk");};
-document.querySelectorAll("[data-overtime-min]").forEach(b=>b.onclick=()=>{
-  const wp=$("fWorkplace").value;const s=scheduleForDate($("fDate").value,wp);
-  editorBreakAuto=true; if(!$("fStart").value)$("fStart").value=s.start;
-  let end=hmToMin(s.eveningBreak.e)+Number(b.dataset.overtimeMin); if(end>=1440)end-=1440;
-  $("fEnd").value=pad(Math.floor(end/60))+":"+pad(end%60);$("fBreak").value=autoBreakOverlap($("fDate").value,$("fStart").value,$("fEnd").value,wp);editorPreviewUpdate();
-  toast(fmtMin(Number(b.dataset.overtimeMin))+" fazla mesai eklendi • Çıkış: "+$("fEnd").value);
-});
-$("nowStartBtn").onclick=()=>{$("fStart").value=nowHM();editorPreviewUpdate();};
-$("nowEndBtn").onclick=()=>{$("fEnd").value=nowHM();editorPreviewUpdate();};
-function editorTargetForNow(){const date=$("fDate").value;const type=$("fType").value;const wp=$("fWorkplace").value;return targetFor(date,{type:type==="saat_izni"?"saat_izni":"calisma",workplaceId:wp},wp)||dailyTargetMin(date,wp);}
-$("bankFullBtn").onclick=()=>{$("fBankUsed").value=editorTargetForNow();editorPreviewUpdate();};
-$("bankHalfBtn").onclick=()=>{$("fBankUsed").value=Math.round(editorTargetForNow()/2);editorPreviewUpdate();};
-$("bankCoverBtn").onclick=()=>{
-  const date=$("fDate").value; const type=$("fType").value;
-  if(type==="saat_izni"){$("fBankUsed").value=editorTargetForNow();}
-  else{const wp=$("fWorkplace").value;const tmp={type:"calisma",workplaceId:wp,start:$("fStart").value,end:$("fEnd").value,breakMin:Number($("fBreak").value||0)};const net=entryNetMin(tmp)||0;const tgt=targetFor(date,tmp,wp);$("fBankUsed").value=Math.max(0,tgt-net);}
-  editorPreviewUpdate(); toast("Eksik süre saatlik izne yazıldı");
-};
-$("bankZeroBtn").onclick=()=>{$("fBankUsed").value=0;editorPreviewUpdate();};
 $("saveEntryBtn").onclick=async()=>{
   const date=$("fDate").value; if(!date){toast("Tarih seçin");return;}
   const wpId=$("fWorkplace").value||activeWorkplaceId();
@@ -2135,7 +2096,7 @@ $("overtimeTodayBtn").onclick=()=>{
   openEditor(t);
   const s=scheduleForDate(t);
   $("fStart").value=s.start;
-  toast("Çıkış saatini değiştirin veya +1/+2 Saat düğmelerini kullanın.");
+  toast("Fazla mesai için çıkış saatini girin.");
 };
 $("quickBankBtn").onclick=()=>openEditor(todayStr(),"saat_izni");
 $("bankUseTodayBtn").onclick=()=>openEditor(todayStr(),"saat_izni");
