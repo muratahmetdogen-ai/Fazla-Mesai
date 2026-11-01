@@ -517,12 +517,25 @@ input[type="checkbox"]{width:20px;height:20px;flex:0 0 20px;margin:0;accent-colo
     <div class="card">
       <h2>Çalışma Ayarları</h2>
       <div class="field"><label>İş Yeri Adı</label><input id="setCompany" placeholder="İş yerinin tam adı"></div>
+      <h3>Hafta İçi Programı</h3>
       <div class="form-grid time-pair">
         <div class="field"><label>Mesai Başlangıcı</label><input type="time" id="setStart"></div>
         <div class="field"><label>Mesai Bitişi</label><input type="time" id="setEnd"></div>
       </div>
       <div class="field"><label>İşe Başlama Tarihi</label><input type="date" id="setEmploymentStart"><div class="previewbox" id="employmentDurationInfo" style="margin-top:7px">İşe başlama tarihi girilmedi.</div></div>
-      <div class="field"><label>Molalar</label><div class="break-head" aria-hidden="true"><span>Mola adı</span><span>Başlangıç</span><span>Bitiş</span><span></span></div><div id="breaksEditor"></div><button class="btn smallbtn soft" id="addBreakBtn">+ Mola Ekle</button></div>
+      <div class="field"><label>Hafta İçi Molaları</label><div class="break-head" aria-hidden="true"><span>Mola adı</span><span>Başlangıç</span><span>Bitiş</span><span></span></div><div id="breaksEditor"></div><button class="btn smallbtn soft" id="addBreakBtn">+ Mola Ekle</button></div>
+      <div class="hr"></div>
+      <h3>Hafta Sonu Çalışma Programı</h3>
+      <p class="tiny muted" style="line-height:1.5">Hafta tatili seçili günlerde çalışılırsa bu saatler uygulanır; net çalışmanın tamamı fazla mesai sayılır.</p>
+      <div class="form-grid time-pair">
+        <div class="field"><label>Hafta Sonu Başlangıcı</label><input type="time" id="setWeekendStart"></div>
+        <div class="field"><label>Hafta Sonu Bitişi</label><input type="time" id="setWeekendEnd"></div>
+      </div>
+      <div class="field"><label>Hafta Sonu Molaları</label><div class="break-head" aria-hidden="true"><span>Mola adı</span><span>Başlangıç</span><span>Bitiş</span><span></span></div><div id="weekendBreaksEditor"></div><button class="btn smallbtn soft" id="addWeekendBreakBtn" type="button">+ Mola Ekle</button></div>
+      <div class="form-grid time-pair">
+        <div class="field"><label>Hafta Sonu Akşam Yemek Molası Başlangıcı</label><input type="time" id="setWeekendEveningStart"></div>
+        <div class="field"><label>Hafta Sonu Akşam Molası Bitişi</label><input type="time" id="setWeekendEveningEnd"></div>
+      </div>
       <div class="field"><label>Bu ayarlar hangi tarihten itibaren geçerli olsun?</label><input type="date" id="setScheduleFrom"><div class="tiny muted" style="margin-top:5px">Bu tarihten önceki günler eski programla hesaplanır; eski kayıtlarınız bozulmaz.</div></div>
       <div class="field"><label>Program Geçmişi</label><div id="scheduleHistory"></div></div>
       <div class="form-grid time-pair">
@@ -825,6 +838,15 @@ const defaultState={
     ],
     weekend:[6,0], theme:"dark", bankOpeningMin:0, bankOpeningDate:"",
     eveningBreak:{label:"Akşam yemeği",s:"17:45",e:"18:15"},
+    weekendSchedule:{
+      start:"08:00", end:"16:30",
+      breaks:[
+        {label:"Çay molası", s:"10:00", e:"10:10"},
+        {label:"Yemek molası", s:"12:30", e:"13:10"},
+        {label:"Çay molası", s:"15:00", e:"15:10"}
+      ],
+      eveningBreak:{label:"Akşam yemeği",s:"16:30",e:"17:00"}
+    },
     nightBreak:{label:"Gece molası",s:"02:00",e:"02:40"},
     carryLateDays:14, carryUseDays:7,
     leaveEntitlements:{}
@@ -832,6 +854,21 @@ const defaultState={
   entries:{}, meta:{}, workplaces:[], activeWorkplaceId:""
 };
 let state=loadState()||JSON.parse(JSON.stringify(defaultState));
+function normalizeWeekendSchedule(raw){
+  const d=defaultState.settings.weekendSchedule;
+  const src=raw&&typeof raw==="object"&&!Array.isArray(raw)?raw:{};
+  const cleanBreaks=Array.isArray(src.breaks)?src.breaks.filter(b=>b&&b.s&&b.e).map(b=>({label:String(b.label||"Mola"),s:String(b.s),e:String(b.e)})):[];
+  return {
+    start:src.start||d.start,
+    end:src.end||d.end,
+    breaks:Array.isArray(src.breaks)?cleanBreaks:JSON.parse(JSON.stringify(d.breaks)),
+    eveningBreak:{
+      label:(src.eveningBreak&&src.eveningBreak.label)||d.eveningBreak.label,
+      s:(src.eveningBreak&&src.eveningBreak.s)||d.eveningBreak.s,
+      e:(src.eveningBreak&&src.eveningBreak.e)||d.eveningBreak.e
+    }
+  };
+}
 function scheduleFromGlobalSettings(effectiveFrom="2000-01-01"){
   const s=state.settings||defaultState.settings;
   return {
@@ -839,6 +876,7 @@ function scheduleFromGlobalSettings(effectiveFrom="2000-01-01"){
     start:s.start||"07:45", end:s.end||"17:45",
     breaks:JSON.parse(JSON.stringify(s.breaks||defaultState.settings.breaks)),
     eveningBreak:{...(s.eveningBreak||defaultState.settings.eveningBreak)},
+    weekendSchedule:normalizeWeekendSchedule(s.weekendSchedule),
     nightBreak:{...(s.nightBreak||defaultState.settings.nightBreak)},
     weekend:[...(s.weekend||[6,0])],
     carryLateDays:Number(s.carryLateDays??14), carryUseDays:Number(s.carryUseDays??7)
@@ -852,6 +890,7 @@ function isDefaultCurrentSchedule(s){
   const d=defaultState.settings; if(!s)return false;
   return s.start===d.start&&s.end===d.end&&JSON.stringify(s.breaks||[])===JSON.stringify(d.breaks)
     &&JSON.stringify(s.eveningBreak||{})===JSON.stringify(d.eveningBreak)
+    &&JSON.stringify(normalizeWeekendSchedule(s.weekendSchedule))===JSON.stringify(d.weekendSchedule)
     &&JSON.stringify(s.nightBreak||{})===JSON.stringify(d.nightBreak)
     &&JSON.stringify(s.weekend||[])===JSON.stringify(d.weekend)
     &&Number(s.carryLateDays)===Number(d.carryLateDays)&&Number(s.carryUseDays)===Number(d.carryUseDays);
@@ -870,6 +909,7 @@ function normalizeState(){
   if(state.settings.bankOpeningMin===undefined) state.settings.bankOpeningMin=0;
   if(state.settings.bankOpeningDate===undefined) state.settings.bankOpeningDate=state.settings.bankOpeningMin?new Date().toISOString().slice(0,10):"";
   if(!state.settings.eveningBreak) state.settings.eveningBreak={...ds.eveningBreak};
+  state.settings.weekendSchedule=normalizeWeekendSchedule(state.settings.weekendSchedule);
   if(!state.settings.nightBreak) state.settings.nightBreak={...ds.nightBreak};
   if(state.settings.carryLateDays===undefined) state.settings.carryLateDays=14;
   if(state.settings.carryUseDays===undefined) state.settings.carryUseDays=7;
@@ -901,6 +941,7 @@ function normalizeState(){
     if(!wp.leavePeriods||typeof wp.leavePeriods!=="object") wp.leavePeriods={};
     if(wp.employmentStartDate===undefined) wp.employmentStartDate="";
     if(!Array.isArray(wp.schedules)||!wp.schedules.length) wp.schedules=[scheduleFromGlobalSettings("2000-01-01")];
+    wp.schedules.forEach(s=>{s.weekendSchedule=normalizeWeekendSchedule(s.weekendSchedule);});
     wp.schedules.sort((a,b)=>a.effectiveFrom<b.effectiveFrom?-1:1);
   });
   if(!state.meta.defaultBreakHistoryAdded){
@@ -966,15 +1007,39 @@ function activeWorkplaceId(){return state.activeWorkplaceId||(state.workplaces&&
 function activeWorkplace(){return workplaceById(activeWorkplaceId())||(state.workplaces||[])[0]||null;}
 function workplaceName(id){const w=workplaceById(id||activeWorkplaceId());return w?w.name:"İş yeri";}
 function cloneSchedule(s){return JSON.parse(JSON.stringify(s));}
-function scheduleForDate(dateStr,workplaceId){
+function scheduleVersionForDate(dateStr,workplaceId){
   const wp=workplaceById(workplaceId||activeWorkplaceId());
   if(!wp||!wp.schedules||!wp.schedules.length) return scheduleFromGlobalSettings("2000-01-01");
   const sorted=[...wp.schedules].sort((a,b)=>a.effectiveFrom<b.effectiveFrom?-1:1);
   let chosen=sorted[0];
   sorted.forEach(s=>{if(s.effectiveFrom<=(dateStr||todayStr())) chosen=s;});
-  return cloneSchedule(chosen);
+  const result=cloneSchedule(chosen);
+  result.weekendSchedule=normalizeWeekendSchedule(result.weekendSchedule);
+  return result;
+}
+function scheduleForDate(dateStr,workplaceId){
+  const base=scheduleVersionForDate(dateStr,workplaceId);
+  const result=cloneSchedule(base);
+  const safeDate=/^\d{4}-\d{2}-\d{2}$/.test(String(dateStr||""))?dateStr:todayStr();
+  let day=null;
+  try{day=parseDateStr(safeDate).getDay();}catch(e){}
+  result.weekdaySchedule={
+    start:base.start,end:base.end,
+    breaks:JSON.parse(JSON.stringify(base.breaks||[])),
+    eveningBreak:{...(base.eveningBreak||defaultState.settings.eveningBreak)}
+  };
+  result.isWeekendSchedule=day!==null&&(base.weekend||[]).includes(day);
+  if(result.isWeekendSchedule){
+    const ws=normalizeWeekendSchedule(base.weekendSchedule);
+    result.start=ws.start;
+    result.end=ws.end;
+    result.breaks=JSON.parse(JSON.stringify(ws.breaks));
+    result.eveningBreak={...ws.eveningBreak};
+  }
+  return result;
 }
 function currentSchedule(workplaceId){return scheduleForDate(todayStr(),workplaceId);}
+function currentScheduleVersion(workplaceId){return scheduleVersionForDate(todayStr(),workplaceId);}
 function schedBreakTotal(s){return (s.breaks||[]).reduce((sum,b)=>{const d=(hmToMin(b.e)??0)-(hmToMin(b.s)??0);return sum+(d>0?d:0);},0);}
 function schedGross(s){let d=(hmToMin(s.end)??0)-(hmToMin(s.start)??0);if(d<=0)d+=1440;return d;}
 function schedTarget(s){return Math.max(0,schedGross(s)-schedBreakTotal(s));}
@@ -1347,7 +1412,7 @@ function renderHome(){
   document.documentElement.dataset.theme=state.settings.theme||"dark";
   $("themeBtn").textContent=(state.settings.theme==="light")?"☀️":"🌙";
   const person=workplaceName();
-  $("headerSub").textContent=sched.start+" – "+sched.end+" • Günlük Hedef "+fmtMin(schedTarget(sched));
+  $("headerSub").textContent=sched.start+" – "+sched.end+" • "+(info.isWeekend?"Hafta sonu çalışması (tamamı fazla mesai)":"Günlük Hedef "+fmtMin(schedTarget(sched)));
   $("kpiInHint").textContent="Başlangıç "+sched.start; $("kpiOutHint").textContent="Bitiş "+sched.end;
   $("todayLong").textContent=fmtDateTR(t)+" • "+workplaceName();
   $("kpiIn").textContent=e&&e.start?e.start:"—";
@@ -1411,7 +1476,7 @@ function renderHome(){
   const brs=sched.breaks;
   let tl='<div class="tseg"><b>🟢 '+sched.start+'</b><span>Giriş</span></div>';
   brs.forEach(b=>{tl+='<div class="tseg"><b>'+(b.label.toLowerCase().includes("yemek")?"🍽️":"☕")+" "+b.s+"–"+b.e+'</b><span>'+esc(b.label)+'</span></div>';});
-  tl+='<div class="tseg"><b>🔴 '+sched.end+'</b><span>Çıkış • Günlük Hedef '+fmtMin(schedTarget(sched))+'</span></div>';
+  tl+='<div class="tseg"><b>🔴 '+sched.end+'</b><span>Çıkış • '+(info.isWeekend?'Tamamı fazla mesai':'Günlük Hedef '+fmtMin(schedTarget(sched)))+'</span></div>';
   $("programTimeline").innerHTML=tl;
   renderWeek(); renderRecent();
 }
@@ -1703,14 +1768,17 @@ function updateWeekendSummary(){
 }
 function fillSettings(){
   renderWorkplaceSelector();
-  const wp=activeWorkplace(); const sched=currentSchedule();
-  // Ayar formu aktif iş yerinin bugün geçerli programını taslak olarak kullanır.
+  const wp=activeWorkplace(); const sched=currentScheduleVersion();
+  // Ayar formu aktif iş yerinin bugün geçerli program sürümünü taslak olarak kullanır.
   state.settings.start=sched.start;state.settings.end=sched.end;state.settings.breaks=cloneSchedule(sched).breaks;state.settings.weekend=[...(sched.weekend||[6,0])];
-  state.settings.eveningBreak={...sched.eveningBreak};state.settings.nightBreak={...sched.nightBreak};
+  state.settings.eveningBreak={...sched.eveningBreak};state.settings.weekendSchedule=normalizeWeekendSchedule(sched.weekendSchedule);state.settings.nightBreak={...sched.nightBreak};
   $("setCompany").value=wp?wp.name:(state.settings.company||"");
   $("setEmploymentStart").value=wp?wp.employmentStartDate||"":""; updateEmploymentDurationInfo();
   $("setStart").value=sched.start; $("setEnd").value=sched.end;
   $("setScheduleFrom").value=todayStr();
+  const weekendSched=normalizeWeekendSchedule(sched.weekendSchedule);
+  $("setWeekendStart").value=weekendSched.start; $("setWeekendEnd").value=weekendSched.end;
+  $("setWeekendEveningStart").value=weekendSched.eveningBreak.s; $("setWeekendEveningEnd").value=weekendSched.eveningBreak.e;
   $("setEveningStart").value=sched.eveningBreak.s; $("setEveningEnd").value=sched.eveningBreak.e;
   $("setNightStart").value=sched.nightBreak.s; $("setNightEnd").value=sched.nightBreak.e;
   $("setCarryLate").value=sched.carryLateDays??14; $("setCarryUse").value=sched.carryUseDays??7;
@@ -1722,12 +1790,16 @@ function fillSettings(){
 function renderScheduleHistory(){
   const wp=activeWorkplace(); if(!wp)return;
   const list=[...(wp.schedules||[])].sort((a,b)=>a.effectiveFrom<b.effectiveFrom?-1:1);
-  $("scheduleHistory").innerHTML=list.map((s,i)=>'<div class="scheduleitem"><div style="flex:1"><b>'+fmtDateShort(s.effectiveFrom)+'</b> <span class="muted">tarihinden itibaren</span><br><span class="small">'+s.start+'–'+s.end+' • Günlük Hedef '+fmtMin(schedTarget(s))+' • Mola '+fmtMin(schedBreakTotal(s))+'</span></div><button class="btn smallbtn soft" onclick="loadScheduleVersion(\''+s.effectiveFrom+'\')">Gör</button>'+(list.length>1?'<button class="btn smallbtn soft" onclick="deleteScheduleVersion(\''+s.effectiveFrom+'\')">Sil</button>':"")+'</div>').join("");
+  $("scheduleHistory").innerHTML=list.map((s,i)=>{const ws=normalizeWeekendSchedule(s.weekendSchedule);return '<div class="scheduleitem"><div style="flex:1"><b>'+fmtDateShort(s.effectiveFrom)+'</b> <span class="muted">tarihinden itibaren</span><br><span class="small">Hafta içi '+s.start+'–'+s.end+' • Günlük Hedef '+fmtMin(schedTarget(s))+' • Mola '+fmtMin(schedBreakTotal(s))+'<br>Hafta sonu '+ws.start+'–'+ws.end+' • Mola '+fmtMin(schedBreakTotal(ws))+'</span></div><button class="btn smallbtn soft" onclick="loadScheduleVersion(\''+s.effectiveFrom+'\')">Gör</button>'+(list.length>1?'<button class="btn smallbtn soft" onclick="deleteScheduleVersion(\''+s.effectiveFrom+'\')">Sil</button>':"")+'</div>';}).join("");
 }
 function loadScheduleVersion(effectiveFrom){
   const wp=activeWorkplace(); const s=wp&&wp.schedules.find(x=>x.effectiveFrom===effectiveFrom); if(!s)return;
   state.settings.breaks=cloneSchedule(s).breaks;
+  state.settings.weekendSchedule=normalizeWeekendSchedule(s.weekendSchedule);
   $("setStart").value=s.start;$("setEnd").value=s.end;$("setScheduleFrom").value=s.effectiveFrom;
+  const weekendSched=normalizeWeekendSchedule(s.weekendSchedule);
+  $("setWeekendStart").value=weekendSched.start;$("setWeekendEnd").value=weekendSched.end;
+  $("setWeekendEveningStart").value=weekendSched.eveningBreak.s;$("setWeekendEveningEnd").value=weekendSched.eveningBreak.e;
   $("setEveningStart").value=s.eveningBreak.s;$("setEveningEnd").value=s.eveningBreak.e;
   $("setNightStart").value=s.nightBreak.s;$("setNightEnd").value=s.nightBreak.e;
   $("setCarryLate").value=s.carryLateDays??14;$("setCarryUse").value=s.carryUseDays??7;
@@ -1740,12 +1812,29 @@ function deleteScheduleVersion(effectiveFrom){
   if(!confirm(fmtDateShort(effectiveFrom)+" tarihli program silinsin mi? Kaydedilmiş günler değişmez."))return;
   wp.schedules=wp.schedules.filter(s=>s.effectiveFrom!==effectiveFrom);saveState();fillSettings();
 }
-function renderBreaksEditor(){
-  $("breaksEditor").innerHTML=state.settings.breaks.map((b,i)=>'<div class="breakrow"><input data-br="label" data-i="'+i+'" value="'+esc(b.label)+'" placeholder="Mola adı"><input type="time" data-br="s" data-i="'+i+'" value="'+b.s+'"><input type="time" data-br="e" data-i="'+i+'" value="'+b.e+'"><button class="btn smallbtn soft" onclick="removeBreak('+i+')">✕</button></div>').join("");
-  document.querySelectorAll("[data-br]").forEach(inp=>inp.addEventListener("change",()=>{state.settings.breaks[Number(inp.dataset.i)][inp.dataset.br]=inp.value;}));
+function breakListForScope(scope){
+  if(scope==="weekend"){
+    state.settings.weekendSchedule=normalizeWeekendSchedule(state.settings.weekendSchedule);
+    return state.settings.weekendSchedule.breaks;
+  }
+  if(!Array.isArray(state.settings.breaks))state.settings.breaks=[];
+  return state.settings.breaks;
 }
-function removeBreak(i){state.settings.breaks.splice(i,1);renderBreaksEditor();}
-$("addBreakBtn").onclick=()=>{state.settings.breaks.push({label:"Mola",s:"16:00",e:"16:10"});renderBreaksEditor();};
+function renderBreaksEditor(scope){
+  if(!scope){renderBreaksEditor("weekday");renderBreaksEditor("weekend");return;}
+  const isWeekend=scope==="weekend";
+  const box=$(isWeekend?"weekendBreaksEditor":"breaksEditor"); if(!box)return;
+  const list=breakListForScope(scope);
+  box.innerHTML=list.map((b,i)=>'<div class="breakrow"><input data-br="label" data-i="'+i+'" value="'+esc(b.label)+'" placeholder="Mola adı"><input type="time" data-br="s" data-i="'+i+'" value="'+b.s+'"><input type="time" data-br="e" data-i="'+i+'" value="'+b.e+'"><button class="btn smallbtn soft" type="button" onclick="removeBreak(\''+scope+'\','+i+')">✕</button></div>').join("");
+  box.querySelectorAll("[data-br]").forEach(inp=>inp.addEventListener("change",()=>{breakListForScope(scope)[Number(inp.dataset.i)][inp.dataset.br]=inp.value;}));
+}
+function removeBreak(scope,i){
+  if(typeof scope==="number"){i=scope;scope="weekday";}
+  breakListForScope(scope).splice(Number(i),1);
+  renderBreaksEditor(scope);
+}
+$("addBreakBtn").onclick=()=>{breakListForScope("weekday").push({label:"Mola",s:"16:00",e:"16:10"});renderBreaksEditor("weekday");};
+$("addWeekendBreakBtn").onclick=()=>{breakListForScope("weekend").push({label:"Mola",s:"14:00",e:"14:10"});renderBreaksEditor("weekend");};
 $("setEmploymentStart").addEventListener("change",()=>{updateEmploymentDurationInfo();fillLeaveEntitlement();});
 $("setLeaveYear").addEventListener("change",()=>fillLeaveEntitlement($("setLeaveYear").value));
 document.querySelectorAll(".weekendChk").forEach(c=>c.addEventListener("change",updateWeekendSummary));
@@ -1757,19 +1846,25 @@ $("saveSettingsBtn").onclick=()=>{
     start:$("setStart").value||"07:45", end:$("setEnd").value||"17:45",
     breaks:JSON.parse(JSON.stringify(state.settings.breaks||[])),
     eveningBreak:{label:"Akşam yemeği",s:$("setEveningStart").value||"17:45",e:$("setEveningEnd").value||"18:15"},
+    weekendSchedule:normalizeWeekendSchedule({
+      start:$("setWeekendStart").value||"08:00",
+      end:$("setWeekendEnd").value||"16:30",
+      breaks:breakListForScope("weekend"),
+      eveningBreak:{label:"Akşam yemeği",s:$("setWeekendEveningStart").value||"16:30",e:$("setWeekendEveningEnd").value||"17:00"}
+    }),
     nightBreak:{label:"Gece molası",s:$("setNightStart").value||"02:00",e:$("setNightEnd").value||"02:40"},
     weekend:[...document.querySelectorAll(".weekendChk:checked")].map(x=>Number(x.value)),
     carryLateDays:Math.max(0,Number($("setCarryLate").value||14)),
     carryUseDays:Math.max(0,Number($("setCarryUse").value||7))
   };
-  const current=currentSchedule(wp.id);
+  const current=currentScheduleVersion(wp.id);
   const scheduleChanged=JSON.stringify({...newSchedule,effectiveFrom:current.effectiveFrom})!==JSON.stringify(current);
   if(scheduleChanged&&effectiveFrom<todayStr()&&!confirm("Geçmiş tarih seçtiniz: "+fmtDateShort(effectiveFrom)+"\nKaydedilmiş günler değişmez; kayıtsız geçmiş günler yeni programla hesaplanır. Devam edilsin mi?"))return;
   wp.name=$("setCompany").value.trim()||wp.name;
   state.settings.company=wp.name;
   // Küresel alanlar yalnızca uyumluluk aynası; esas kayıt aktif iş yeri sürümündedir.
   state.settings.start=newSchedule.start;state.settings.end=newSchedule.end;state.settings.breaks=newSchedule.breaks;state.settings.weekend=newSchedule.weekend;
-  state.settings.eveningBreak=newSchedule.eveningBreak;state.settings.nightBreak=newSchedule.nightBreak;
+  state.settings.eveningBreak=newSchedule.eveningBreak;state.settings.weekendSchedule=normalizeWeekendSchedule(newSchedule.weekendSchedule);state.settings.nightBreak=newSchedule.nightBreak;
   state.settings.carryLateDays=newSchedule.carryLateDays;state.settings.carryUseDays=newSchedule.carryUseDays;
   // Önceden girilmiş açılış değeri varsa eski kayıtlar bozulmasın diye korunur.
   state.settings.bankOpeningMin=Number(wp.bankOpeningMin||0);state.settings.bankOpeningDate=wp.bankOpeningDate||"";
@@ -1838,7 +1933,7 @@ function deleteWorkplaceById(id){
 function addWorkplaceFromManager(){
   const name=$("newWorkplaceName").value.trim();
   if(!name){toast("İş yeri adı yazın");$("newWorkplaceName").focus();return;}
-  const base=activeWorkplace(); const sched=base?currentSchedule(base.id):scheduleFromGlobalSettings(todayStr());
+  const base=activeWorkplace(); const sched=base?currentScheduleVersion(base.id):scheduleFromGlobalSettings(todayStr());
   const id="wp_"+Date.now().toString(36)+Math.random().toString(36).slice(2,6);
   state.workplaces.push({id,name,archived:false,createdAt:new Date().toISOString(),bankOpeningMin:0,bankOpeningDate:"",leaveEntitlements:{},leavePeriods:{},employmentStartDate:"",schedules:[{...cloneSchedule(sched),effectiveFrom:todayStr()}]});
   state.activeWorkplaceId=id; $("newWorkplaceName").value="";
@@ -1940,7 +2035,7 @@ function editorPreviewUpdate(){
   const date=$("fDate").value; if(!date)return;
   const sched=scheduleForDate(date,editorWp);
   const hol=getHoliday(date); const d=parseDateStr(date);
-  $("editorDayInfo").textContent=fmtDateTR(date)+" • "+workplaceName(editorWp)+" • Çalışma programı "+sched.start+"–"+sched.end+((sched.weekend||[]).includes(d.getDay())?" • Hafta tatili":"")+(hol?" • 🇹🇷 "+hol.name+(hol.half?" (yarım gün — arife)":""):"");
+  $("editorDayInfo").textContent=fmtDateTR(date)+" • "+workplaceName(editorWp)+" • Çalışma programı "+sched.start+"–"+sched.end+(sched.isWeekendSchedule?" • Hafta sonu programı (tamamı fazla mesai)":"")+(hol?" • 🇹🇷 "+hol.name+(hol.half?" (yarım gün — arife)":""):"");
   const bankUsed=Math.max(0,Number($("fBankUsed")?$("fBankUsed").value||0:0));
   const bankExcl=allTimeBank(date,date,editorWp);
   if($("bankHelp")) $("bankHelp").innerHTML="Kullanılabilir fazla mesai: <b>"+fmtMin(bankExcl.balance,true)+"</b>"+(bankExcl.balance<bankUsed&&bankUsed>0?" <b style='color:var(--red)'>Girilen süre kullanılabilir fazla mesaiden fazla.</b>":"");

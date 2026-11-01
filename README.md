@@ -8,12 +8,13 @@ Telefonda kişisel kullanım için hazırlanmış, internet olmadan da çalışa
 - Mesai bitişi: **17:45**
 - Günlük Hedef: **9 saat**
 - Cumartesi ve Pazar hafta tatilidir.
-- 1 Ocak 2025 öncesi molalar: **10:00–10:10** ve **12:15–13:05**
-- 1 Ocak 2025 sonrası molalar: **10:00–10:10**, **12:15–12:55** ve **15:30–15:40**
-- Akşam yemek molası: **17:45–18:15**. Fazla mesai 18:15'ten sonra başlar.
+- Hafta sonu çalışılırsa program **08:00–16:30**; molalar **10:00–10:10**, **12:30–13:10** ve **15:00–15:10** olur. Net çalışmanın tamamı fazla mesai sayılır. Çalışma sürerse **16:30–17:00** akşam yemek molası düşülür ve 17:00 sonrası süre fazla mesaiye eklenir.
+- 1 Ocak 2025 öncesi hafta içi molaları: **10:00–10:10** ve **12:15–13:05**
+- 1 Ocak 2025 sonrası hafta içi molaları: **10:00–10:10**, **12:15–12:55** ve **15:30–15:40**
+- Hafta içi akşam yemek molası: **17:45–18:15**. Fazla mesai 18:15'ten sonra başlar.
 - Sabahlama çalışmasında **02:00–02:40** gece molası düşülür.
 
-Çalışma ve mola saatleri Ayarlar bölümünden değiştirilebilir. Yeni program seçilen tarihten itibaren kullanılır; daha önce kaydedilmiş günler değişmez.
+Hafta içi ve hafta sonu çalışma/mola saatleri Ayarlar bölümünde ayrı ayrı değiştirilebilir. Gün kaydı, tarihe göre ilgili programı otomatik kullanır; ayrı bir hafta sonu kayıt kartı gerekmez. Yeni program seçilen tarihten itibaren kullanılır; daha önce kaydedilmiş günler değişmez.
 
 ## Temel kullanım
 
