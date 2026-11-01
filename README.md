@@ -18,10 +18,8 @@ Hafta içi ve hafta sonu çalışma/mola saatleri Ayarlar bölümünde ayrı ayr
 
 ## Temel kullanım
 
-- **Bugün normal çalışma yapıldı:** Günün normal mesai saatlerini kaydeder.
-- **Fazla mesai yapıldı:** Normal mesainin üzerine ek çalışma yazmak için kayıt ekranını açar.
-- **Bugünü düzenle:** Bugünkü kaydı değiştirir.
-- **Geçmiş Kayıt Ekle:** Geçmiş bir tarih için kayıt oluşturur.
+- **Bugün için kayıt gir:** Bugünün gün kayıt ekranını doğrudan açar.
+- **Geçmiş Kayıt:** Üst bölümden geçmiş bir tarih için kayıt ekranını açar.
 - Takvimden eski bir güne dokunarak o günü düzenleyebilir veya yeni kayıt ekleyebilirsiniz.
 - Her güne not, fotoğraf veya belge eklenebilir.
 
@@ -49,7 +47,6 @@ Varsayılan olarak fazla mesailer ay içinde kullanılmalıdır. Ayın son 14 g�
 
 - Saatlik İzin
 - Yıllık İzin
-- Şirket / Zorunlu İzin
 - Sağlık Raporu
 - Resmi Tatil
 - Sabahlama Sonrası Dinlenme
@@ -81,9 +78,8 @@ Maaş verileri yalnızca cihazda saklanır; GitHub eşitlemesine ve mesai yedeğ
 - Aylık, yıllık ve toplam fazla/eksik mesai istatistikleri
 - Excel (CSV) raporu
 - PDF / yazdırma
-- CSV dosyasıyla geçmiş kayıtları toplu aktarma
-- Yedek indirip geri yükleme
-- Verileri, raporları, fotoğraf ve belgeleri GitHub ile eşitleme
+- Ayarlar → Veri Yönetimi bölümünde **Veri İndir**, **Yedek İndir** ve **Yedek Yükle**
+- Verileri, fotoğraf ve belgeleri GitHub ile eşitleme
 
 Fotoğraf ve belge dosyalarının kendisi JSON yedeğine eklenmez; GitHub eşitlemesiyle saklanabilir.
 

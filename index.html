@@ -71,7 +71,7 @@ input,select,textarea{font:inherit;color:var(--text)}
 .item .datebox b{font-size:19px;line-height:1}.item .datebox span{font-size:10px;color:var(--muted);font-weight:800;margin-top:3px}
 .diff.pos{color:var(--green);font-weight:900}.diff.ok{color:var(--green);font-weight:900}.diff.neg{color:var(--red);font-weight:900}.diff.zero{color:var(--muted);font-weight:800}
 .view{display:none}.view.active{display:block;animation:fade .22s ease}@keyframes fade{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:none}}
-.bottomnav{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(10px + env(safe-area-inset-bottom));width:min(92vw,760px);background:var(--nav);backdrop-filter:blur(16px);border:1px solid var(--line);border-radius:24px;box-shadow:0 18px 42px rgba(0,0,0,.38);display:grid;grid-template-columns:repeat(6,1fr);padding:7px;z-index:50}
+.bottomnav{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(10px + env(safe-area-inset-bottom));width:min(92vw,760px);background:var(--nav);backdrop-filter:blur(16px);border:1px solid var(--line);border-radius:24px;box-shadow:0 18px 42px rgba(0,0,0,.38);display:grid;grid-template-columns:repeat(5,1fr);padding:7px;z-index:50}
 .bottomnav button{border:none;background:transparent;border-radius:17px;padding:9px 4px;cursor:pointer;color:var(--muted);font-weight:850;font-size:11px}
 .bottomnav button .ic{display:block;font-size:21px;margin-bottom:3px}
 .bottomnav button.active{background:linear-gradient(135deg,var(--pri),var(--pri2));color:#fff}
@@ -210,6 +210,8 @@ input[type="checkbox"]{width:20px;height:20px;flex:0 0 20px;margin:0;accent-colo
 .summary-action-row{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:end;gap:12px;margin-top:14px}.summary-action-row>div{min-width:0}
 .security-actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}.security-actions .btn{flex:1 1 150px;white-space:normal;line-height:1.2}.security-actions #setPasswordBtn{flex-basis:100%}
 #importJsonBtn{grid-column:span 2}
+#view-settings #importJsonBtn{grid-column:auto}
+.today-record-btn{width:100%;min-height:66px;margin-bottom:14px;border-radius:20px;font-size:17px}
 .modal>.row:first-child{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:start;gap:10px}.modal>.row:first-child .spacer{display:none}.modal>.row:first-child h2{line-height:1.2}.modal>.row:first-child .icon-btn{justify-self:end}
 .auth-actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:14px}.auth-actions .btn{flex:1 1 150px;white-space:normal;line-height:1.2}
 .check-row{display:flex;align-items:center;gap:10px;width:100%;padding:12px;margin:9px 0;border:1px solid var(--line);border-radius:14px;background:var(--input);font-size:13px;font-weight:780;line-height:1.35;cursor:pointer;color:var(--text)}
@@ -286,50 +288,7 @@ input[type="checkbox"]{width:20px;height:20px;flex:0 0 20px;margin:0;accent-colo
     <div class="card arife-card hide" id="arifeBanner">
       <div class="row wrap"><div style="flex:1;min-width:210px"><b id="arifeBannerTitle">🌙 Bugün arife</b><div class="small muted" id="arifeBannerText" style="margin-top:4px"></div></div><button class="btn smallbtn primary" id="arifeAskBtn">Durumu seç</button></div>
     </div>
-    <div class="card hero">
-      <div class="hero-head">
-        <div class="hero-head-text">
-          <div class="muted small" id="todayLong">Bugün</div>
-          <div style="font-size:18px;font-weight:900" id="todayStatusTitle">Mesai durumu</div>
-        </div>
-        <span class="chip" id="todayChip">—</span>
-      </div>
-      <div class="timer" id="liveTimer">9s</div>
-      <div class="muted" id="liveSub">Henüz kayıt yok</div>
-      <div class="progress"><div id="todayProgress"></div></div>
-      <div class="row small muted" style="margin-top:8px"><span id="progressText">Hedef: 9s 00dk</span><span class="spacer"></span><span id="expectedText"></span></div>
-
-      <div class="kpi-grid" style="margin-top:14px">
-        <div class="kpi"><div class="label">GİRİŞ</div><div class="value" id="kpiIn">—</div><div class="hint" id="kpiInHint">Başlangıç 07:45</div></div>
-        <div class="kpi"><div class="label">ÇIKIŞ</div><div class="value" id="kpiOut">—</div><div class="hint" id="kpiOutHint">Bitiş 17:45</div></div>
-        <div class="kpi"><div class="label">ÇALIŞMA</div><div class="value" id="kpiNet">—</div><div class="hint">Mola düşülmüş</div></div>
-        <div class="kpi"><div class="label">FAZLA / EKSİK</div><div class="value" id="kpiDiff">—</div><div class="hint">Hedefe göre</div></div>
-      </div>
-
-      <div class="action-grid">
-        <button class="btn success" id="fillNormalBtn">Bugün normal çalışma yapıldı</button>
-        <button class="btn primary" id="overtimeTodayBtn">Fazla mesai yapıldı</button>
-        <button class="btn soft" id="editTodayBtn">Bugünü düzenle</button>
-        <button class="btn soft" id="pastAddBtn">Geçmiş Kayıt Ekle</button>
-      </div>
-      <div class="quick-leave-grid">
-        <button class="btn smallbtn soft" id="quickBankBtn">Saatlik İzin</button>
-        <button class="btn smallbtn soft" data-quickleave="yillik_izin">🏖️ Yıllık İzin</button>
-        <button class="btn smallbtn soft" data-quickleave="rapor">🏥 Sağlık Raporu</button>
-        <button class="btn smallbtn soft" data-quickleave="resmi_tatil">🇹🇷 Resmi Tatil</button>
-      </div>
-    </div>
-
-    <div class="card" style="background:linear-gradient(135deg,rgba(124,58,237,.18),rgba(6,182,212,.10)),linear-gradient(180deg,var(--card),var(--card2))">
-      <div class="card-title-row"><h2 style="margin:0">Fazla/Eksik Mesai Saati</h2><span class="chip violet">1 saat fazla mesai = 1 saat izin</span></div>
-      <div class="summary-action-row"><div><div class="label muted small" style="font-weight:800">TOPLAM</div><div class="bank-big" id="bankTotal">0s</div><div class="small muted" id="bankTotalEquiv">—</div><div class="small" id="bankExpiryInfo" style="margin-top:5px"></div></div><button class="btn primary" id="bankUseTodayBtn">Bugün Saatlik İzin Kullan</button></div>
-      <div class="kpi-grid" style="margin-top:14px">
-        <div class="kpi"><div class="label">BU AY FAZLA MESAİ</div><div class="value" style="color:var(--green)" id="bankEarnedMonth">—</div><div class="hint">Yapılan fazla çalışma</div></div>
-        <div class="kpi"><div class="label">BU AY SAATLİK İZİN</div><div class="value" style="color:var(--violet)" id="bankUsedMonth">—</div><div class="hint">Fazla mesaiden kullanılan</div></div>
-        <div class="kpi"><div class="label">BU AY FARK</div><div class="value" id="bankChangeMonth">—</div><div class="hint">Fazla mesai − saatlik izin</div></div>
-        <div class="kpi"><div class="label">EKSİK MESAİ</div><div class="value" style="color:var(--red)" id="bankUncoveredMonth">—</div><div class="hint">Bu ay toplamı</div></div>
-      </div>
-    </div>
+    <button class="btn primary today-record-btn" id="todayRecordBtn" type="button">Bugün için kayıt gir</button>
 
     <div class="card">
       <div class="card-title-row"><h2 style="margin:0">🏖️ Yıllık İzin</h2><span class="chip blue" id="annualYearChip">—</span></div>
@@ -353,20 +312,6 @@ input[type="checkbox"]{width:20px;height:20px;flex:0 0 20px;margin:0;accent-colo
       </div>
     </div>
 
-    <div class="card">
-      <h2>🗓️ Bu Hafta</h2>
-      <div class="weekbars" id="weekBars"></div>
-    </div>
-
-    <div class="card">
-      <h2>Günlük Çalışma Programı</h2>
-      <div class="timeline" id="programTimeline"></div>
-    </div>
-
-    <div class="card">
-      <div class="row"><h2 style="margin:0">🕘 Son 7 gün</h2><span class="spacer"></span><button class="btn smallbtn soft" onclick="showView('records')">Tümünü Gör</button></div>
-      <div class="list" id="recentList" style="margin-top:12px"></div>
-    </div>
   </section>
 
   <!-- TAKVİM -->
@@ -385,25 +330,6 @@ input[type="checkbox"]{width:20px;height:20px;flex:0 0 20px;margin:0;accent-colo
         <span class="chip green">Tamamlandı</span><span class="chip green">Fazla Mesai</span><span class="chip violet">Saatlik İzin</span><span class="chip red">Eksik / Kayıtsız</span><span class="chip blue">İzin / Sağlık Raporu</span><span class="chip">Resmi Tatil</span>
       </div>
       <p class="tiny muted">Kayıt eklemek veya düzenlemek için bir güne dokunun.</p>
-    </div>
-  </section>
-
-  <!-- KAYITLAR -->
-  <section class="view" id="view-records">
-    <div class="card">
-      <h2 style="margin:0">📋 Kayıtlar</h2>
-      <div class="records-actions"><button class="btn smallbtn soft" id="csvImportBtn">CSV’den Aktar</button><button class="btn smallbtn soft" id="csvTemplateBtn">CSV Şablonu</button><button class="btn smallbtn primary" id="addRecordBtn">Geçmiş Kayıt Ekle</button></div>
-      <input type="file" id="csvImportFile" accept=".csv,text/csv,text/plain" class="hide">
-      <p class="tiny muted">Geçmiş kayıtları ekleyebilir, yanlış kaydı dokunarak düzeltebilirsiniz.</p>
-      <div class="form-grid" style="margin-top:14px">
-        <div class="field" style="margin:0"><label>Ay</label><input type="month" id="monthPickerRec"></div>
-        <div class="field" style="margin:0"><label>Filtre</label><select id="recordFilter"><option value="all">Tümü</option><option value="calisma">Çalışma</option><option value="fazla">Fazla mesaili</option><option value="saatizni">Saatlik İzin Kullanılan</option><option value="eksik">Eksik / Kayıtsız</option><option value="izin">İzin / Sağlık Raporu</option></select></div>
-      </div>
-      <div class="field" style="margin-top:12px"><label>Notlarda Ara</label><input id="recordSearch" placeholder="Örn: sevkiyat, bakım, düğün..."></div>
-      <div class="row wrap" style="margin-top:12px">
-        <button class="btn smallbtn soft" id="bulkFillBtn">Boş iş günlerini normal mesaiyle doldur</button>
-      </div>
-      <div class="list" id="recordList" style="margin-top:14px"></div>
     </div>
   </section>
 
@@ -436,16 +362,11 @@ input[type="checkbox"]{width:20px;height:20px;flex:0 0 20px;margin:0;accent-colo
       <div id="statsDetail" style="margin-top:12px"></div>
     </div>
     <div class="card">
-      <h2>Kaydet, Yükle ve Yedekle</h2>
+      <h2>Rapor Dosyaları</h2>
       <div class="action-grid">
         <button class="btn primary" id="exportCsvBtn">Excel (CSV) İndir</button>
-        <button class="btn success" id="uploadReportBtn">Raporu GitHub’a Yükle</button>
         <button class="btn soft" id="printBtn">PDF / Yazdır</button>
-        <button class="btn soft" id="exportJsonBtn">Yedek İndir</button>
-        <button class="btn soft" id="importJsonBtn">Yedeği Geri Yükle</button>
       </div>
-      <input type="file" id="importFile" accept="application/json,.json" class="hide">
-      <p class="small muted" style="line-height:1.6">Fotoğraf ve belgeler yedek dosyasına eklenmez; GitHub eşitlemesiyle yedeklenir.</p>
     </div>
   </section>
 
@@ -601,8 +522,12 @@ input[type="checkbox"]{width:20px;height:20px;flex:0 0 20px;margin:0;accent-colo
       <h2>Veri Yönetimi</h2>
       <div class="action-grid" style="margin-top:0">
         <button class="btn soft" id="exportJsonBtn2">Veri İndir</button>
+        <button class="btn soft" id="exportJsonBtn">Yedek İndir</button>
+        <button class="btn soft" id="importJsonBtn">Yedek Yükle</button>
         <button class="btn danger" id="clearAllBtn">Tümünü Sil</button>
       </div>
+      <input type="file" id="importFile" accept="application/json,.json" class="hide">
+      <p class="small muted" style="line-height:1.6">Fotoğraf ve belgeler yedek dosyasına eklenmez; GitHub eşitlemesiyle yedeklenir.</p>
     </div>
   </section>
 </div>
@@ -612,7 +537,6 @@ input[type="checkbox"]{width:20px;height:20px;flex:0 0 20px;margin:0;accent-colo
 <nav class="bottomnav">
   <button data-view="home" class="active"><span class="ic">🏠</span>Bugün</button>
   <button data-view="calendar"><span class="ic">📅</span>Takvim</button>
-  <button data-view="records"><span class="ic">📋</span>Kayıtlar</button>
   <button data-view="report"><span class="ic">📊</span>Rapor</button>
   <button data-view="salary"><span class="ic">💰</span>Maaş</button><button data-view="settings"><span class="ic">⚙️</span>Ayarlar</button>
 </nav>
@@ -630,7 +554,6 @@ input[type="checkbox"]{width:20px;height:20px;flex:0 0 20px;margin:0;accent-colo
           <option value="calisma">Çalışma</option>
           <option value="saat_izni">Saatlik İzin</option>
           <option value="yillik_izin">Yıllık İzin</option>
-          <option value="sirket_izni">Şirket / Zorunlu İzin</option>
           <option value="rapor">Sağlık Raporu</option>
           <option value="ucretsiz_izin">Ücretsiz İzin</option>
           <option value="sabahlama_izni">Sabahlama Sonrası Dinlenme</option>
@@ -1549,18 +1472,17 @@ function renderWorkplaceSelector(){
   if($("workplaceSelect"))$("workplaceSelect").value=current;
   if($("wpManageSelect"))$("wpManageSelect").value=current;
 }
-function syncMonthPickers(){["monthPickerCal","monthPickerRec","monthPickerRep"].forEach(id=>{if($(id))$(id).value=viewMonth;});}
-function setMonth(ym){if(!ym)return;viewMonth=ym;syncMonthPickers();renderCalendar();renderRecords();renderReport();}
-["monthPickerCal","monthPickerRec","monthPickerRep"].forEach(id=>$(id).addEventListener("change",e=>setMonth(e.target.value)));
+function syncMonthPickers(){["monthPickerCal","monthPickerRep"].forEach(id=>{if($(id))$(id).value=viewMonth;});}
+function setMonth(ym){if(!ym)return;viewMonth=ym;syncMonthPickers();renderCalendar();renderReport();}
+["monthPickerCal","monthPickerRep"].forEach(id=>$(id).addEventListener("change",e=>setMonth(e.target.value)));
 $("prevMonthBtn").onclick=()=>{const[y,m]=viewMonth.split("-").map(Number);const d=new Date(y,m-2,1);setMonth(d.getFullYear()+"-"+pad(d.getMonth()+1));};
 $("nextMonthBtn").onclick=()=>{const[y,m]=viewMonth.split("-").map(Number);const d=new Date(y,m,1);setMonth(d.getFullYear()+"-"+pad(d.getMonth()+1));};
 $("gotoTodayBtn").onclick=()=>setMonth(monthOf(todayStr()));
-$("recordFilter").addEventListener("change",renderRecords);
-$("recordSearch").addEventListener("input",renderRecords);
 function switchWorkplace(id){if(!workplaceById(id))return;state.activeWorkplaceId=id;saveState();fillSettings();toast("İş Yeri: "+workplaceName(id));}
 $("workplaceSelect").addEventListener("change",e=>switchWorkplace(e.target.value));
 $("wpManageSelect").addEventListener("change",e=>switchWorkplace(e.target.value));
 $("pastAddTopBtn").onclick=()=>openEditor(addDays(todayStr(),-1));
+$("todayRecordBtn").onclick=()=>openEditor(todayStr());
 
 /* ========== RENDER: BUGÜN ========== */
 function diffHtml(diff){
@@ -1571,39 +1493,11 @@ function diffHtml(diff){
   return '<span class="diff neg">'+fmtMin(diff,true)+'</span>';
 }
 function renderHome(){
-  const t=todayStr(); const info=getDayInfo(t); const e=info.entry; const sched=info.schedule;
+  const t=todayStr(); const info=getDayInfo(t); const sched=info.schedule;
   document.documentElement.dataset.theme=state.settings.theme||"dark";
   $("themeBtn").textContent=(state.settings.theme==="light")?"☀️":"🌙";
-  const person=workplaceName();
   $("headerSub").textContent=sched.start+" – "+sched.end+" • "+(info.isWeekend?"Hafta sonu çalışması (tamamı fazla mesai)":"Günlük Hedef "+fmtMin(schedTarget(sched)));
-  $("kpiInHint").textContent="Başlangıç "+sched.start; $("kpiOutHint").textContent="Bitiş "+sched.end;
-  $("todayLong").textContent=fmtDateTR(t)+" • "+workplaceName();
-  $("kpiIn").textContent=e&&e.start?e.start:"—";
-  $("kpiOut").textContent=e&&e.end?e.end:"—";
-  $("kpiNet").textContent=info.net!==null?fmtMin(info.net):"—";
-  $("kpiDiff").innerHTML=e?diffHtml(info.diff):"—";
 
-  let chip="—", chipCls="chip", title="Henüz kayıt yok";
-  if(info.incomplete){chip="⚠️ Çıkış eksik";chipCls+=" red";title="Çıkış saati girilmemiş";}
-  else if(e&&e.type==="calisma"&&e.end){chip="✓ Tamamlandı";chipCls+=" green";title=info.earned>0?"Fazla mesai kaydedildi":"Normal çalışma kaydedildi";}
-  else if(e&&e.type!=="calisma"){chip=TYPES[e.type].icon+" "+TYPES[e.type].label;chipCls+=" blue";title=TYPES[e.type].label;}
-  else if(info.holiday){chip="🇹🇷 "+info.holiday.name;chipCls+=" blue";title="Resmi Tatil";}
-  else if(info.isWeekend){chip="Hafta Tatili";chipCls+=" blue";title="Hafta Tatili";}
-  else {chip="○ Kayıt yok";title="Bugün için kayıt girilmedi";}
-  $("todayChip").textContent=chip; $("todayChip").className=chipCls; $("todayStatusTitle").textContent=title;
-
-  const target=info.target;
-  const net=info.net||0;
-  const pct=target>0?Math.min(100,Math.round(net/target*100)):(net>0?100:0);
-  $("todayProgress").style.width=pct+"%";
-  $("progressText").textContent=target>0?("Günlük Hedef "+fmtMin(target)+" • %"+pct):(net>0?"Tatil günü çalışması: "+fmtMin(net):"Bugün hedef yok (tatil)");
-  $("expectedText").textContent=(e&&e.attachments&&e.attachments.length)?("📎 "+e.attachments.length+" dosya"):"";
-  if(e&&e.type==="calisma"&&e.start&&e.end){$("liveTimer").textContent=fmtMin(info.net);$("liveSub").textContent=(normalizedEntrySegments(e).length>1?entrySegmentsSummary(e):(e.start+" – "+e.end+(crossesMidnight(e)?" (+1 gün)":"")))+" • Mola "+Number(e.breakMin||0)+" dk"+(info.earned?" • Fazla mesai +"+fmtMin(info.earned):" • Fark: "+fmtMin(info.diff,true));}
-  else if(info.incomplete){$("liveTimer").textContent="⚠️";$("liveSub").textContent="Çıkış saati eksik. Kaydı düzenleyip tamamlayın.";}
-  else if(e&&e.type!=="calisma"){$("liveTimer").textContent=TYPES[e.type].icon;$("liveSub").textContent=TYPES[e.type].label+(e.note?" • "+e.note:"")+(e.attachments?.length?" • 📎 "+e.attachments.length+" dosya":"");}
-  else if(info.holiday){$("liveTimer").textContent="🇹🇷";$("liveSub").textContent=info.holiday.name+(info.holiday.half?" (yarım gün)":"");}
-  else if(info.isWeekend){$("liveTimer").textContent="🌿";$("liveSub").textContent="Hafta Tatili";}
-  else{$("liveTimer").textContent=fmtMin(target);$("liveSub").textContent="Normal mesai: "+sched.start+" – "+sched.end;}
   // Bu ay
   const ym=monthOf(t); const st=monthStats(ym);
   $("homeMonthChip").textContent=MONTHS_TR[Number(ym.slice(5))-1]+" "+ym.slice(0,4);
@@ -1613,35 +1507,14 @@ function renderHome(){
   $("mBalance").innerHTML=diffHtml(st.balance);
   $("mMissingHint").textContent=st.missingDays.length?("⚠️ "+st.missingDays.length+" kayıtsız iş günü var"):("Eksik mesai: "+fmtMin(-st.eksik,true));
   $("emptyCta").classList.toggle("hide",entryValues(activeWorkplaceId()).length>0);
-  // Fazla/Eksik Mesai Saati (tüm zamanlar, aya göre sıfırlanmaz)
-  const bank=allTimeBank();
-  $("bankTotal").textContent=fmtMin(bank.balance,true);
-  $("bankTotal").style.color=bank.balance<0?"var(--red)":(bank.balance>0?"var(--green)":"var(--text)");
-  $("bankTotalEquiv").textContent=bankEquivText(bank.balance)+(bank.opening?(" • Önceden biriken: "+fmtMin(bank.opening,true)):"");
-  if(bank.lots&&bank.lots.length){
-    const nx=bank.lots[0];
-    $("bankExpiryInfo").innerHTML="En yakında süresi dolacak fazla mesai: <b>"+fmtMin(bank.lots.filter(l=>l.expiry===nx.expiry).reduce((s,l)=>s+l.amount,0))+"</b> — son kullanma "+fmtDateShort(nx.expiry)+(bank.expired?(" <span class='muted'>• Süresi dolan toplam "+fmtMin(bank.expired)+"</span>"):"");
-  } else if(bank.deficit){$("bankExpiryInfo").innerHTML="Eksik mesai: <b>"+fmtMin(-bank.deficit,true)+"</b> — sonraki fazla mesailerle kapatılacak.";}
-  else $("bankExpiryInfo").textContent=bank.expired?("Süresi dolan toplam fazla mesai: "+fmtMin(bank.expired)):"";
+
   const al=leaveBalanceStats(activeWorkplaceId(),todayStr(),{includePlanned:true});
   $("annualYearChip").textContent=al.periodBased?(al.daysToNextLeave===0?"Bugün hak doğuyor":al.daysToNextLeave+" gün kaldı"):al.year;
   $("annualRemaining").textContent=(al.remaining%1?al.remaining.toFixed(1).replace(".",","):al.remaining)+" gün";
   $("annualRemaining").style.color=al.remaining<0?"var(--red)":"var(--green)";
   $("annualDetail").textContent=al.periodBased?("Dönem: "+al.periodLabel+" • Hak "+al.total+" gün • Kullanılan "+(al.used%1?al.used.toFixed(1).replace(".",","):al.used)+" gün • Yeni izin: "+fmtDateShort(al.nextLeaveDate)):("Toplam "+al.total+" gün • Kullanılan "+(al.used%1?al.used.toFixed(1).replace(".",","):al.used)+" gün");
   $("annualProgress").style.width=(al.total>0?Math.max(0,Math.min(100,al.used/al.total*100)):0)+"%";
-  $("bankEarnedMonth").textContent=fmtMin(st.bankEarnedMonth,true);
-  $("bankUsedMonth").textContent=fmtMin(-st.bankUsedMonth,true);
-  $("bankChangeMonth").innerHTML=diffHtml(st.bankChangeMonth);
-  $("bankUncoveredMonth").textContent=fmtMin(-st.eksik,true);
   renderArifeBanner();
-
-  // Program (bugün geçerli sürüm; geçmiş günler kendi tarihindeki sürümü kullanır)
-  const brs=sched.breaks;
-  let tl='<div class="tseg"><b>🟢 '+sched.start+'</b><span>Giriş</span></div>';
-  brs.forEach(b=>{tl+='<div class="tseg"><b>'+(b.label.toLowerCase().includes("yemek")?"🍽️":"☕")+" "+b.s+"–"+b.e+'</b><span>'+esc(b.label)+'</span></div>';});
-  tl+='<div class="tseg"><b>🔴 '+sched.end+'</b><span>Çıkış • '+(info.isWeekend?'Tamamı fazla mesai':'Günlük Hedef '+fmtMin(schedTarget(sched)))+'</span></div>';
-  $("programTimeline").innerHTML=tl;
-  renderWeek(); renderRecent();
 }
 function renderArifeBanner(){
   const t=todayStr(); const hol=getHoliday(t); const banner=$("arifeBanner");
@@ -1664,37 +1537,6 @@ function renderArifeBanner(){
   }
   banner.classList.add("hide");
 }
-function weekStartStr(dateStr){const d=parseDateStr(dateStr);const dow=(d.getDay()+6)%7;d.setDate(d.getDate()-dow);return dateToStr(d);}
-function renderWeek(){
-  const start=weekStartStr(todayStr()); const target=dailyTargetMin()||540;
-  let html="";
-  for(let i=0;i<7;i++){
-    const ds=addDays(start,i); const info=getDayInfo(ds); const d=parseDateStr(ds);
-    const net=info.net||0; const h=Math.min(100,Math.round(net/Math.max(target,net,1)*100));
-    const over=info.diff!==null&&info.diff>15;
-    html+='<div class="wbar '+(over?"over":"")+'"><div class="h">'+(net?fmtMin(net):"—")+'</div><div class="barwrap"><div class="bar" style="height:'+(net?Math.max(6,h):3)+'%"></div></div><div class="d">'+DAYS_SHORT[d.getDay()]+" "+d.getDate()+(ds===todayStr()?" •":"")+'</div></div>';
-  }
-  $("weekBars").innerHTML=html;
-}
-function dayListItem(info){
-  const d=parseDateStr(info.date); const e=info.entry;
-  let mid="", right="";
-  if(info.incomplete){mid='<b>Çıkış saati eksik</b><div class="small muted">Giriş '+e.start+'</div>';right='<span class="chip red">Çıkış eksik</span>';}
-  else if(e&&e.type==="saat_izni"){mid='<b>⏳ Saatlik İzin</b><div class="small muted">Fazla mesaiden '+fmtMin(info.bankUsed)+' kullanıldı'+(info.uncovered>0?(" • Kalan eksik: -"+fmtMin(info.uncovered)):" • Gün tamamlandı")+(e.note?" • "+esc(e.note):"")+'</div>';right='<span class="chip violet">-'+fmtMin(info.bankUsed)+' saatlik izin</span>';}
-  else if(e&&e.type==="calisma"){mid='<b>'+(isAllNighterEntry(e)?"🌙 ":"")+(normalizedEntrySegments(e).length>1?esc(entrySegmentsSummary(e)):(e.start+" – "+(e.end||"—")+(crossesMidnight(e)?" (+1 gün)":"")))+'</b><div class="small muted">'+fmtMin(info.net)+' • Mola '+Number(e.breakMin||0)+' dk'+(info.bankUsed?(" • Saatlik izin "+fmtMin(info.bankUsed)):"")+(e.note?"<br>📝 "+esc(e.note):"")+(e.attachments?.length?("<br>📎 "+e.attachments.length+" dosya"):"")+'</div>';right=info.bankUsed&&info.uncovered<=15?'<span class="chip violet">⏳ Fazla mesaiyle tamam</span>':(info.earned>0?('<span class="diff pos">+'+fmtMin(info.earned)+' fazla mesai</span>'):diffHtml(info.diff));}
-  else if(e){mid='<b>'+TYPES[e.type].icon+" "+TYPES[e.type].label+'</b><div class="small muted">'+(e.note?esc(e.note):"—")+(e.attachments?.length?("<br>📎 "+e.attachments.length+" dosya"):"")+'</div>';right='<span class="chip blue">'+TYPES[e.type].label+'</span>';}
-  else if(info.holiday){mid='<b>🇹🇷 '+esc(info.holiday.name)+'</b><div class="small muted">Resmi Tatil</div>';right='<span class="diff zero">Resmi Tatil</span>';}
-  else if(info.isWeekend){mid='<b>Hafta Tatili</b><div class="small muted">Kayıt yok</div>';right='<span class="diff zero">—</span>';}
-  else if(info.isPast){mid='<b style="color:var(--red)">⚠️ Kayıt yok</b><div class="small muted">Kayıt eklemek için dokunun</div>';right='<span class="diff neg">'+fmtMin(info.diff,true)+'</span>';}
-  else if(info.isToday){mid='<b>Bugün</b><div class="small muted">Henüz kayıt yok</div>';right='<span class="diff zero">—</span>';}
-  else {mid='<b class="muted">Gelecek</b><div class="small muted">—</div>';right='<span class="diff zero">—</span>';}
-  return '<div class="item" onclick="openEditor(\''+info.date+'\')"><div class="datebox"><b>'+d.getDate()+'</b><span>'+DAYS_SHORT[d.getDay()].toUpperCase()+'</span></div><div style="flex:1;min-width:0"><div class="tiny muted">'+fmtDateShort(info.date)+' • '+DAYS_TR[d.getDay()]+'</div>'+mid+'</div><div>'+right+'</div></div>';
-}
-function renderRecent(){
-  let html=""; for(let i=0;i<7;i++){html+=dayListItem(getDayInfo(addDays(todayStr(),-i)));}
-  $("recentList").innerHTML=html;
-}
-
 /* ========== RENDER: TAKVİM ========== */
 function renderCalendar(){
   $("calDow").innerHTML=["Pzt","Sal","Çar","Per","Cum","Cmt","Paz"].map(x=>'<div class="cal-dow">'+x+'</div>').join("");
@@ -1721,26 +1563,6 @@ function renderCalendar(){
   $("calGrid").innerHTML=html;
   const st=monthStats(viewMonth);
   $("calSummary").textContent=MONTHS_TR[m-1]+" "+y+" • Toplam çalışma "+fmtMin(st.netAll)+" • Fazla/eksik "+fmtMin(st.balance,true)+(st.missingDays.length?" • "+st.missingDays.length+" kayıtsız gün":"");
-}
-
-/* ========== RENDER: KAYITLAR ========== */
-function renderRecords(){
-  const st=monthStats(viewMonth); const f=$("recordFilter").value;
-  let days=[...st.days].reverse();
-  if(f==="calisma") days=days.filter(x=>x.entry&&x.entry.type==="calisma");
-  if(f==="fazla") days=days.filter(x=>x.fazla>0);
-  if(f==="saatizni") days=days.filter(x=>(x.bankUsed||0)>0);
-  if(f==="eksik") days=days.filter(x=>x.eksik>0||(x.isPast&&x.target>0&&!x.entry));
-  if(f==="izin") days=days.filter(x=>x.entry&&["yillik_izin","rapor"].includes(x.entry.type));
-  // Varsayılan görünümde gelecek boş günleri gizle
-  if(f==="all") days=days.filter(x=>x.date<=todayStr()||x.entry);
-  const q=($("recordSearch").value||"").trim().toLocaleLowerCase("tr");
-  if(q) days=days.filter(x=>{
-    const e=x.entry; if(!e)return false;
-    const hay=((e.note||"")+" "+(TYPES[e.type]?TYPES[e.type].label:"")+" "+x.date+" "+fmtDateTR(x.date)).toLocaleLowerCase("tr");
-    return hay.includes(q);
-  });
-  $("recordList").innerHTML=days.length?days.map(dayListItem).join(""):'<div class="empty">Bu filtrede kayıt yok.<br><br><button class="btn primary" onclick="openEditor(todayStr())">Bugüne Kayıt Ekle</button></div>';
 }
 
 /* ========== RENDER: RAPOR ========== */
@@ -2362,7 +2184,9 @@ function openEditor(dateStr,presetType=null,workplaceId){
   const e=getEntry(dateStr,wpId);
   $("fWorkplace").innerHTML=workplaceOptionsHtml(wpId); $("fWorkplace").value=wpId;
   $("fDate").value=dateStr;
-  $("fType").value=presetType||(e?e.type:"calisma");
+  let initialType=presetType||(e?e.type:"calisma");
+  if(initialType==="sirket_izni")initialType="yillik_izin"; // eski kayıtlar yeni editörde güvenle açılsın
+  $("fType").value=initialType;
   editorSegments=editorSegmentsFromEntry(e,presetType,dateStr,wpId);
   $("fAllNighter").checked=e?isAllNighterEntry(e):false;
   $("fLeaveDays").value=e&&e.leaveDays!==undefined&&e.leaveDays!==null&&e.leaveDays!==""?String(e.leaveDays):"auto";
@@ -2446,9 +2270,6 @@ $("deleteEntryBtn").onclick=async()=>{
   saveState();stagedAttachments=[];stagedNewAttachmentIds=[];stagedDeletedAttachmentIds=[];$("editorBackdrop").classList.remove("open");toast("Kayıt silindi");
 };
 $("fabBtn").onclick=()=>openEditor(todayStr());
-$("addRecordBtn").onclick=()=>openEditor(addDays(todayStr(),-1));
-$("pastAddBtn").onclick=()=>openEditor(addDays(todayStr(),-1));
-$("editTodayBtn").onclick=()=>openEditor(todayStr());
 
 /* ========== HIZLI İŞLEMLER ========== */
 function writeNormalDay(date,workplaceId){
@@ -2460,37 +2281,6 @@ function writeNormalDay(date,workplaceId){
   if(existingBank>0){entry.bankUsedMin=existingBank;entry.segments.push({kind:"saat_izni",minutes:existingBank});}
   setEntry(date,entry,wpId); return entry;
 }
-$("fillNormalBtn").onclick=()=>{
-  const t=todayStr(); const info=getDayInfo(t);
-  if(info.entry&&info.entry.type==="calisma"&&info.earned>0&&!confirm("Bugün fazla mesai kaydı var. Normal çalışmaya çevirmek fazla mesaiyi silecek. Devam edilsin mi?"))return;
-  if((info.isWeekend||(info.holiday&&!info.holiday.half))&&!confirm("Bugün tatil görünüyor. Normal çalışma kaydedilsin mi? Çalışma fazla mesai sayılır."))return;
-  const s=scheduleForDate(t);
-  writeNormalDay(t);
-  saveState(); toast("Normal çalışma kaydedildi: "+s.start+"–"+s.end);
-};
-$("overtimeTodayBtn").onclick=()=>{
-  const t=todayStr();
-  if(!getEntry(t)){writeNormalDay(t);saveState();}
-  openEditor(t);
-  const s=scheduleForDate(t);
-  setFirstEditorWorkSegment(s.start,"");
-  toast("Fazla mesai için çalışma aralığının bitiş saatini girin.");
-};
-$("quickBankBtn").onclick=()=>openEditor(todayStr(),"saat_izni");
-$("bankUseTodayBtn").onclick=()=>openEditor(todayStr(),"saat_izni");
-document.querySelectorAll("[data-quickleave]").forEach(b=>b.onclick=()=>{
-  const type=b.dataset.quickleave; const t=todayStr();
-  if(getEntry(t)&&!confirm("Bugünkü kayıt "+TYPES[type].label+" olarak değiştirilsin mi?"))return;
-  setEntry(t,{type,note:"",updatedAt:new Date().toISOString()}); saveState(); toast("Kaydedildi: "+TYPES[type].label);
-});
-$("bulkFillBtn").onclick=()=>{
-  const st=monthStats(viewMonth);
-  if(!st.missingDays.length){toast("Bu ay kayıtsız iş günü yok");return;}
-  if(!confirm(st.missingDays.length+" boş iş günü normal mesaiyle doldurulsun mu?\nSonra gerekli günleri tek tek düzenleyebilirsiniz."))return;
-  st.missingDays.forEach(x=>writeNormalDay(x.date));
-  saveState(); toast(st.missingDays.length+" gün normal mesaiyle dolduruldu");
-};
-
 /* v3: Canlı kronometre kaldırıldı. */
 function tick(){}
 
@@ -2529,7 +2319,6 @@ function buildPrint(){
   $("printArea").innerHTML="<h1>Mesai Raporu — "+MONTHS_TR[m-1]+" "+y+"</h1><p>"+esc(workplaceName())+"<br>Toplam çalışma: <b>"+fmtMin(st.netAll)+"</b> • Ay hedefi: <b>"+fmtMin(st.targetAll)+"</b> • Ay farkı (bugüne kadar): <b>"+fmtMin(st.balance,true)+"</b> • Fazla mesai: <b>"+fmtMin(st.fazla,true)+"</b> • Eksik mesai: <b>"+fmtMin(-st.eksik,true)+"</b><br>Bu ay fazla mesai: <b>"+fmtMin(st.bankEarnedMonth,true)+"</b> • Bu ay saatlik izin: <b>"+fmtMin(-st.bankUsedMonth,true)+"</b> • <b>Kullanılabilir fazla mesai: "+fmtMin(bankAll.balance,true)+"</b> • Kalan yıllık izin: <b>"+leaveBalanceStats(activeWorkplaceId(),todayStr(),{includePlanned:true}).remaining+" gün</b></p><table><thead><tr><th>Tarih</th><th>Giriş</th><th>Çıkış</th><th>Mola (dk)</th><th>Çalışma</th><th>Saatlik İzin</th><th>Hedef</th><th>Fark</th><th>Kayıt Türü</th><th>Not</th></tr></thead><tbody>"+rows+"</tbody></table>";
 }
 $("printBtn").onclick=()=>{buildPrint();window.print();};
-$("uploadReportBtn").onclick=uploadReportToGithub;
 function normalizeCsvDate(raw){
   raw=String(raw||"").trim().replace(/^"|"$/g,"");
   let m=raw.match(/^(\d{4})-(\d{1,2})-(\d{1,2})$/); if(m)return m[1]+"-"+pad(m[2])+"-"+pad(m[3]);
@@ -2579,40 +2368,6 @@ function parseCsvImportRows(text){
   }
   return rows;
 }
-$("csvTemplateBtn").onclick=()=>{
-  const wp=workplaceName();
-  const csv="\ufeffTarih;Giriş;Çıkış;Mola (dk);Kayıt Türü;Saatlik İzin (dk);Not\r\n01.09.2026;07:45;17:45;60;Çalışma;0;Örnek çalışma\r\n02.09.2026;07:45;20:45;90;Çalışma;0;Fazla mesaili gün\r\n03.09.2026;;;;Yıllık İzin;0;Örnek izin\r\n";
-  download("Mesai_CSV_Sablonu.csv",csv,"text/csv;charset=utf-8");toast("CSV şablonu indirildi");
-};
-$("csvImportBtn").onclick=()=>$("csvImportFile").click();
-$("csvImportFile").addEventListener("change",e=>{
-  const f=e.target.files[0];if(!f)return;
-  const r=new FileReader();
-  r.onload=()=>{
-    try{
-      const rows=parseCsvImportRows(r.result);
-      if(!rows.length)throw new Error("Aktarılacak kayıt bulunamadı");
-      const wpId=activeWorkplaceId();
-      const conflicts=rows.filter(x=>getEntry(x.date,wpId)).length;
-      if(!confirm(rows.length+" kayıt “"+workplaceName(wpId)+"” iş yerine aktarılsın mı?"+(conflicts?"\n"+conflicts+" mevcut kayıt değiştirilecek.":"")))return;
-      let n=0;
-      rows.forEach(x=>{
-        const sched=scheduleForDate(x.date,wpId);
-        let entry={type:x.type,note:x.note||"",updatedAt:new Date().toISOString()};
-        if(x.type==="calisma"){
-          entry.start=x.start||sched.start;entry.end=x.end||sched.end;
-          entry.breakMin=x.breakMin===null?autoBreakOverlap(x.date,entry.start,entry.end,wpId):x.breakMin;
-          if(x.bankUsed)entry.bankUsedMin=x.bankUsed;
-          if(crossesMidnight(entry))entry.allNighter=true;
-        } else if(x.type==="saat_izni"){entry.bankUsedMin=x.bankUsed||computeTargetForEntry(x.date,entry,wpId);}
-        else if(["yillik_izin","sirket_izni"].includes(x.type)){entry.leaveDays=annualLeaveAmountFor(x.date,{...entry,workplaceId:wpId});}
-        setEntry(x.date,entry,wpId);n++;
-      });
-      saveState();toast(n+" geçmiş kayıt aktarıldı");
-    }catch(err){alert("CSV aktarılamadı: "+err.message);}
-  };
-  r.readAsText(f);e.target.value="";
-});
 function exportJson(){download("MesaiTakip_Yedek_"+todayStr()+".json",JSON.stringify(state,null,2),"application/json");toast("Yedek indirildi");}
 $("exportJsonBtn").onclick=exportJson; $("exportJsonBtn2").onclick=exportJson;
 $("importJsonBtn").onclick=()=>$("importFile").click();
@@ -3899,7 +3654,7 @@ window.addEventListener("resize",()=>{if($("view-report").classList.contains("ac
 function renderAll(){
   renderWorkplaceSelector();
   syncMonthPickers();
-  renderHome(); renderCalendar(); renderRecords(); renderReport();
+  renderHome(); renderCalendar(); renderReport();
   if(salaryIsUnlocked()&&$("view-salary").classList.contains("active"))renderSalary();
 }
 renderAll();
