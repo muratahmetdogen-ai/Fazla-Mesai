@@ -214,6 +214,8 @@ input[type="checkbox"]{width:20px;height:20px;flex:0 0 20px;margin:0;accent-colo
 .auth-actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:14px}.auth-actions .btn{flex:1 1 150px;white-space:normal;line-height:1.2}
 .check-row{display:flex;align-items:center;gap:10px;width:100%;padding:12px;margin:9px 0;border:1px solid var(--line);border-radius:14px;background:var(--input);font-size:13px;font-weight:780;line-height:1.35;cursor:pointer;color:var(--text)}
 .check-row>span{display:block;min-width:0}.check-row small{display:block;color:var(--muted);font-size:11px;font-weight:650;margin-top:2px}
+/* Gün içi çalışma / saatlik izin aralıkları */
+.segment-section{margin:12px 0}.segment-section-title{font-size:13px;font-weight:850;margin-bottom:8px}.segment-list{display:grid;gap:8px}.segment-item{border:1px solid var(--line);border-radius:15px;background:var(--input);padding:10px}.segment-item.leave{border-color:rgba(167,139,250,.45)}.segment-head{display:flex;align-items:center;gap:8px;margin-bottom:8px}.segment-kind{font-size:13px;font-weight:900}.segment-duration{margin-left:auto;color:var(--muted);font-size:11.5px;font-weight:800;text-align:right}.segment-remove{width:34px;height:34px;flex:0 0 34px;padding:0;border-radius:10px}.segment-times{gap:8px}.segment-times>.field>label{min-height:0!important;margin-bottom:5px}.segment-times input{height:42px}.segment-add-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px}.segment-add-grid .btn{width:100%;white-space:normal;line-height:1.2}.segment-empty{border:1px dashed var(--line);border-radius:14px;padding:12px;color:var(--muted);font-size:12.5px;text-align:center}
 /* Hafta tatili: yazı ve seçim aynı kutunun içinde, aynı satırda */
 .daychoices{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;align-items:stretch}
 .field .day-choice{position:relative;display:flex;align-items:center;gap:9px;min-height:48px;margin:0;padding:10px 11px;border:1px solid var(--line);border-radius:14px;background:var(--input);color:var(--text);font-size:13px;font-weight:820;line-height:1.2;cursor:pointer;transition:border-color .15s,background .15s,transform .1s}
@@ -639,21 +641,20 @@ input[type="checkbox"]{width:20px;height:20px;flex:0 0 20px;margin:0;accent-colo
       </div>
     </div>
     <div id="workFields">
-      <div class="form-grid3">
-        <div class="field"><label>Giriş</label><input type="time" id="fStart"></div>
-        <div class="field"><label>Çıkış</label><input type="time" id="fEnd"></div>
-        <div class="field"><label>Mola (dk)</label><input type="number" id="fBreak" min="0" step="5" inputmode="numeric"></div>
+      <div class="segment-section">
+        <div class="segment-section-title">Gün İçindeki İşlemler</div>
+        <div class="segment-list" id="segmentList"></div>
+        <div class="segment-add-grid">
+          <button class="btn soft" id="addWorkSegmentBtn" type="button">+ Çalışma Ekle</button>
+          <button class="btn soft" id="addLeaveSegmentBtn" type="button">+ Saatlik İzin Ekle</button>
+        </div>
+        <p class="tiny muted" style="line-height:1.5">Çalışma ve izin aralıklarını alt alta ekleyin. Sabit molalar otomatik düşülür.</p>
       </div>
-      <div class="previewbox" id="editorPreview">—</div>
-      <p class="tiny muted">Giriş ve çıkış saatini girmeniz yeterli; mola ile fazla/eksik süre otomatik hesaplanır.</p>
       <label class="check-row"><input type="checkbox" id="fAllNighter"><span>Sabahlama<small>Ertesi sabah biten çalışma</small></span></label>
     </div>
+    <div class="previewbox" id="editorPreview">—</div>
     <div id="leaveFields" class="hide">
       <div class="field"><label id="fLeaveLabel">Yıllık İzinden Kaç Gün Düşsün?</label><select id="fLeaveDays"><option value="auto">Otomatik (hafta içi 1, arife 0,5, tatil 0)</option><option value="1">1 gün</option><option value="0.5">0,5 gün</option><option value="0">0 — düşme</option></select></div>
-    </div>
-    <div id="bankFields">
-      <div class="field"><label>Saatlik İzin (dakika)</label><input type="number" id="fBankUsed" min="0" step="5" inputmode="numeric" placeholder="0"></div>
-      <p class="tiny muted" id="bankHelp">Kullanılacak süreyi dakika olarak yazın.</p>
     </div>
     <div class="field">
       <label>Fotoğraf / Belge Ekle</label>
@@ -1122,28 +1123,188 @@ function autoBreakOverlap(dateStr,startHM,endHM,workplaceId){
   }
   return total;
 }
+/* Gün içi birden fazla çalışma / saatlik izin aralığı */
+function normalizedEntrySegments(entry){
+  if(!entry||!Array.isArray(entry.segments))return [];
+  return entry.segments.map((raw,i)=>{
+    if(!raw||typeof raw!=="object")return null;
+    const kind=(raw.kind==="saat_izni"||raw.type==="saat_izni")?"saat_izni":"calisma";
+    const seg={
+      id:raw.id||("seg_"+i),
+      kind,
+      start:raw.start?String(raw.start):"",
+      end:raw.end?String(raw.end):""
+    };
+    const minutes=Number(raw.minutes??raw.bankUsedMin);
+    if(Number.isFinite(minutes)&&minutes>0)seg.minutes=Math.round(minutes);
+    const breakMin=Number(raw.breakMin);
+    if(Number.isFinite(breakMin)&&breakMin>=0)seg.breakMin=Math.round(breakMin);
+    return (seg.start||seg.end||seg.minutes)?seg:null;
+  }).filter(Boolean);
+}
+function hasEntrySegments(entry){return normalizedEntrySegments(entry).length>0;}
+function segmentInterval(seg){
+  if(!seg||!seg.start||!seg.end)return null;
+  const s=hmToMin(seg.start), rawE=hmToMin(seg.end);
+  if(s===null||rawE===null)return null;
+  let e=rawE; if(e<=s)e+=1440;
+  return {s,e,gross:e-s};
+}
+function segmentGrossMin(seg){
+  const interval=segmentInterval(seg);
+  if(interval)return interval.gross;
+  return Math.max(0,Number(seg&&seg.minutes||0)||0);
+}
+function scheduledBreakOverlapAbs(dateStr,absS,absE,workplaceId){
+  let total=0;
+  const lastDayOffset=Math.max(0,Math.floor((absE-1)/1440));
+  for(let off=0;off<=lastDayOffset;off++){
+    allBreakDefs(dateStr,workplaceId).filter(b=>b.kind==="day").forEach(b=>{
+      let bs=hmToMin(b.s), be=hmToMin(b.e); if(bs===null||be===null)return; if(be<=bs)be+=1440;
+      bs+=off*1440; be+=off*1440;
+      total+=Math.max(0,Math.min(absE,be)-Math.max(absS,bs));
+    });
+  }
+  return total;
+}
+function segmentBreakMin(dateStr,seg,workplaceId){
+  const gross=segmentGrossMin(seg);
+  if(seg&&seg.breakMin!==undefined&&seg.breakMin!==null&&Number.isFinite(Number(seg.breakMin)))return Math.min(gross,Math.max(0,Number(seg.breakMin)||0));
+  if(!seg||!seg.start||!seg.end)return 0;
+  return Math.min(gross,autoBreakOverlap(dateStr,seg.start,seg.end,workplaceId));
+}
+function segmentLeaveRawMin(dateStr,seg,workplaceId){
+  if(!seg)return 0;
+  if(!seg.start||!seg.end)return Math.max(0,Number(seg.minutes||0)||0);
+  const interval=segmentInterval(seg); if(!interval)return 0;
+  const sched=scheduleForDate(dateStr,workplaceId);
+  let ss=hmToMin(sched.start), se=hmToMin(sched.end);
+  if(ss===null||se===null)return 0;
+  if(se<=ss)se+=1440;
+  const from=Math.max(interval.s,ss), to=Math.min(interval.e,se);
+  if(to<=from)return 0;
+  return Math.max(0,(to-from)-scheduledBreakOverlapAbs(dateStr,from,to,workplaceId));
+}
+function validateEntrySegments(segments){
+  const list=normalizedEntrySegments({segments});
+  if(!list.length)return "En az bir çalışma veya saatlik izin aralığı ekleyin.";
+  const intervals=[];
+  for(let i=0;i<list.length;i++){
+    const seg=list[i], label=(seg.kind==="saat_izni"?"Saatlik İzin":"Çalışma")+" "+(i+1);
+    if(seg.start||seg.end){
+      if(!seg.start||!seg.end)return label+": başlangıç ve bitiş saatini girin.";
+      if(seg.start===seg.end)return label+": başlangıç ve bitiş aynı olamaz.";
+      const interval=segmentInterval(seg);
+      if(!interval||interval.gross<=0||interval.gross>1440)return label+": saat aralığını kontrol edin.";
+      intervals.push({...interval,label});
+    }else if(!seg.minutes||seg.minutes<=0){
+      return label+": süre girin.";
+    }
+  }
+  intervals.sort((a,b)=>a.s-b.s);
+  for(let i=1;i<intervals.length;i++){
+    if(intervals[i].s<intervals[i-1].e)return intervals[i-1].label+" ile "+intervals[i].label+" çakışıyor. Saatleri kontrol edin.";
+  }
+  return "";
+}
+function entrySegmentTotals(entry){
+  const segments=normalizedEntrySegments(entry);
+  if(!segments.length)return null;
+  const date=(entry&&entry.date)||todayStr();
+  const wpId=(entry&&entry.workplaceId)||activeWorkplaceId();
+  const error=validateEntrySegments(segments);
+  const details={};
+  let workNet=0,breakTotal=0,leaveRaw=0,workCount=0,leaveCount=0,crosses=false;
+  segments.forEach(seg=>{
+    const gross=segmentGrossMin(seg);
+    const interval=segmentInterval(seg);
+    if(seg.kind==="calisma"){
+      workCount++;
+      const br=segmentBreakMin(date,seg,wpId);
+      const net=Math.max(0,gross-br);
+      breakTotal+=br; workNet+=net;
+      if(interval&&interval.e>1440)crosses=true;
+      details[seg.id]={gross,breakMin:br,net,leaveMin:0,leaveRaw:0};
+    }else{
+      leaveCount++;
+      const raw=segmentLeaveRawMin(date,seg,wpId);
+      leaveRaw+=raw;
+      details[seg.id]={gross,breakMin:0,net:0,leaveMin:raw,leaveRaw:raw};
+    }
+  });
+  const target=targetFor(date,{...(entry||{}),type:workCount?"calisma":"saat_izni",workplaceId:wpId},wpId);
+  let remainingLeave=Math.max(0,target);
+  let leaveMin=0;
+  segments.filter(seg=>seg.kind==="saat_izni").forEach(seg=>{
+    const used=Math.min(details[seg.id].leaveRaw,remainingLeave);
+    details[seg.id].leaveMin=used;
+    leaveMin+=used; remainingLeave-=used;
+  });
+  const timed=segments.filter(seg=>seg.start||seg.end);
+  const workTimed=segments.filter(seg=>seg.kind==="calisma"&&(seg.start||seg.end));
+  return {
+    segments,details,error,valid:!error,target,
+    workNet:workCount?workNet:null,breakTotal,leaveRaw,leaveMin,workCount,leaveCount,crosses,
+    firstStart:(workTimed[0]||timed[0]||{}).start||"",
+    lastEnd:(workTimed[workTimed.length-1]||timed[timed.length-1]||{}).end||""
+  };
+}
+function entrySegmentsSummary(entry){
+  const segments=normalizedEntrySegments(entry);
+  if(!segments.length)return "";
+  return segments.map(seg=>{
+    const label=seg.kind==="saat_izni"?"Saatlik İzin":"Çalışma";
+    return label+" "+(seg.start||seg.end?(seg.start||"—")+"–"+(seg.end||"—"):fmtMin(seg.minutes||0));
+  }).join(" • ");
+}
 function intervalGrossMin(entry){
+  const segments=normalizedEntrySegments(entry);
+  if(segments.length){
+    const timed=segments.filter(seg=>seg.kind==="calisma"&&seg.start&&seg.end);
+    if(!timed.length)return null;
+    const s=hmToMin(timed[0].start); let e=hmToMin(timed[timed.length-1].end);
+    if(s===null||e===null)return null;
+    if(e<=s)e+=1440;
+    return e-s;
+  }
   if(!entry||!entry.start||!entry.end) return null;
   let s=hmToMin(entry.start), e=hmToMin(entry.end); if(e<=s)e+=1440; return e-s;
 }
 function crossesMidnight(entry){
+  const segments=normalizedEntrySegments(entry);
+  if(segments.length)return segments.some(seg=>seg.start&&seg.end&&hmToMin(seg.end)<=hmToMin(seg.start));
   if(!entry||!entry.start||!entry.end) return false;
   return hmToMin(entry.end)<=hmToMin(entry.start);
 }
 function isAllNighterEntry(entry){
   if(!entry||entry.type!=="calisma") return false;
   if(entry.allNighter) return true;
+  const segments=normalizedEntrySegments(entry).filter(seg=>seg.kind==="calisma"&&seg.start&&seg.end);
+  if(segments.length){
+    return segments.some(seg=>{
+      const interval=segmentInterval(seg);
+      return interval&&interval.e>1440&&(hmToMin(seg.end)>=120||interval.gross>=960);
+    })||((intervalGrossMin(entry)||0)>=960&&crossesMidnight(entry));
+  }
   if(!entry.end) return false;
   // 07:45 başlangıçtan ertesi 02:00 ve sonrasına sarkma ya da 16+ saat brüt sabahlama sayılır
   return crossesMidnight(entry)&&(hmToMin(entry.end)>=120||(intervalGrossMin(entry)||0)>=960);
 }
 function entryNetMin(entry){
-  if(!entry||entry.type!=="calisma"||!entry.start||!entry.end) return null;
+  if(!entry||entry.type!=="calisma")return null;
+  const totals=entrySegmentTotals(entry);
+  if(totals)return totals.valid?totals.workNet:null;
+  if(!entry.start||!entry.end) return null;
   let s=hmToMin(entry.start), e=hmToMin(entry.end); if(e<=s)e+=1440;
   const br=Number(entry.breakMin||0);
   return Math.max(0,(e-s)-br);
 }
-function isIncompleteEntry(entry){return !!(entry&&entry.type==="calisma"&&entry.start&&!entry.end);}
+function isIncompleteEntry(entry){
+  if(!entry||entry.type!=="calisma")return false;
+  const segments=normalizedEntrySegments(entry);
+  if(segments.length)return segments.some(seg=>seg.kind==="calisma"&&seg.start&&!seg.end);
+  return !!(entry.start&&!entry.end);
+}
 function isLiveEntry(entry){return false;} // v3: canlı kronometre kaldırıldı; eski uçlar zararsız kalsın
 function findLiveEntry(){return null;}
 function currentBreak(){return null;}
@@ -1161,7 +1322,8 @@ function getDayInfo(dateStr,workplaceId){
   const target=targetFor(dateStr,entry,wpId);
   const live=false;
   const incomplete=isIncompleteEntry(entry);
-  const bankUsed=entry?Math.max(0,Number(entry.bankUsedMin||0)):0;
+  const segmentTotals=entry?entrySegmentTotals(entry):null;
+  const bankUsed=entry?(segmentTotals?segmentTotals.leaveMin:Math.max(0,Number(entry.bankUsedMin||0))):0;
   let net=entryNetMin(entry);
   const isToday=dateStr===todayStr();
   const isPast=dateStr<todayStr();
@@ -1363,7 +1525,8 @@ function monthStats(ym,workplaceId){
 let viewMonth=monthOf(todayStr());
 let editorOriginalDate=null;
 let editorOriginalWorkplace=null;
-let editorBreakAuto=true;
+let editorSegments=[];
+let editorSegmentSeq=1;
 const $=id=>document.getElementById(id);
 function toast(msg){const t=$("toast");t.textContent=msg;t.classList.add("show");clearTimeout(t._tm);t._tm=setTimeout(()=>t.classList.remove("show"),2600);}
 function showView(name){
@@ -1435,7 +1598,7 @@ function renderHome(){
   $("todayProgress").style.width=pct+"%";
   $("progressText").textContent=target>0?("Günlük Hedef "+fmtMin(target)+" • %"+pct):(net>0?"Tatil günü çalışması: "+fmtMin(net):"Bugün hedef yok (tatil)");
   $("expectedText").textContent=(e&&e.attachments&&e.attachments.length)?("📎 "+e.attachments.length+" dosya"):"";
-  if(e&&e.type==="calisma"&&e.start&&e.end){$("liveTimer").textContent=fmtMin(info.net);$("liveSub").textContent=e.start+" – "+e.end+(crossesMidnight(e)?" (+1 gün)":"")+" • Mola "+Number(e.breakMin||0)+" dk"+(info.earned?" • Fazla mesai +"+fmtMin(info.earned):" • Fark: "+fmtMin(info.diff,true));}
+  if(e&&e.type==="calisma"&&e.start&&e.end){$("liveTimer").textContent=fmtMin(info.net);$("liveSub").textContent=(normalizedEntrySegments(e).length>1?entrySegmentsSummary(e):(e.start+" – "+e.end+(crossesMidnight(e)?" (+1 gün)":"")))+" • Mola "+Number(e.breakMin||0)+" dk"+(info.earned?" • Fazla mesai +"+fmtMin(info.earned):" • Fark: "+fmtMin(info.diff,true));}
   else if(info.incomplete){$("liveTimer").textContent="⚠️";$("liveSub").textContent="Çıkış saati eksik. Kaydı düzenleyip tamamlayın.";}
   else if(e&&e.type!=="calisma"){$("liveTimer").textContent=TYPES[e.type].icon;$("liveSub").textContent=TYPES[e.type].label+(e.note?" • "+e.note:"")+(e.attachments?.length?" • 📎 "+e.attachments.length+" dosya":"");}
   else if(info.holiday){$("liveTimer").textContent="🇹🇷";$("liveSub").textContent=info.holiday.name+(info.holiday.half?" (yarım gün)":"");}
@@ -1518,7 +1681,7 @@ function dayListItem(info){
   let mid="", right="";
   if(info.incomplete){mid='<b>Çıkış saati eksik</b><div class="small muted">Giriş '+e.start+'</div>';right='<span class="chip red">Çıkış eksik</span>';}
   else if(e&&e.type==="saat_izni"){mid='<b>⏳ Saatlik İzin</b><div class="small muted">Fazla mesaiden '+fmtMin(info.bankUsed)+' kullanıldı'+(info.uncovered>0?(" • Kalan eksik: -"+fmtMin(info.uncovered)):" • Gün tamamlandı")+(e.note?" • "+esc(e.note):"")+'</div>';right='<span class="chip violet">-'+fmtMin(info.bankUsed)+' saatlik izin</span>';}
-  else if(e&&e.type==="calisma"){mid='<b>'+(isAllNighterEntry(e)?"🌙 ":"")+e.start+" – "+(e.end||"—")+(crossesMidnight(e)?" (+1 gün)":"")+'</b><div class="small muted">'+fmtMin(info.net)+' • Mola '+Number(e.breakMin||0)+' dk'+(info.bankUsed?(" • Saatlik izin "+fmtMin(info.bankUsed)):"")+(e.note?"<br>📝 "+esc(e.note):"")+(e.attachments?.length?("<br>📎 "+e.attachments.length+" dosya"):"")+'</div>';right=info.bankUsed&&info.uncovered<=15?'<span class="chip violet">⏳ Fazla mesaiyle tamam</span>':(info.earned>0?('<span class="diff pos">+'+fmtMin(info.earned)+' fazla mesai</span>'):diffHtml(info.diff));}
+  else if(e&&e.type==="calisma"){mid='<b>'+(isAllNighterEntry(e)?"🌙 ":"")+(normalizedEntrySegments(e).length>1?esc(entrySegmentsSummary(e)):(e.start+" – "+(e.end||"—")+(crossesMidnight(e)?" (+1 gün)":"")))+'</b><div class="small muted">'+fmtMin(info.net)+' • Mola '+Number(e.breakMin||0)+' dk'+(info.bankUsed?(" • Saatlik izin "+fmtMin(info.bankUsed)):"")+(e.note?"<br>📝 "+esc(e.note):"")+(e.attachments?.length?("<br>📎 "+e.attachments.length+" dosya"):"")+'</div>';right=info.bankUsed&&info.uncovered<=15?'<span class="chip violet">⏳ Fazla mesaiyle tamam</span>':(info.earned>0?('<span class="diff pos">+'+fmtMin(info.earned)+' fazla mesai</span>'):diffHtml(info.diff));}
   else if(e){mid='<b>'+TYPES[e.type].icon+" "+TYPES[e.type].label+'</b><div class="small muted">'+(e.note?esc(e.note):"—")+(e.attachments?.length?("<br>📎 "+e.attachments.length+" dosya"):"")+'</div>';right='<span class="chip blue">'+TYPES[e.type].label+'</span>';}
   else if(info.holiday){mid='<b>🇹🇷 '+esc(info.holiday.name)+'</b><div class="small muted">Resmi Tatil</div>';right='<span class="diff zero">Resmi Tatil</span>';}
   else if(info.isWeekend){mid='<b>Hafta Tatili</b><div class="small muted">Kayıt yok</div>';right='<span class="diff zero">—</span>';}
@@ -1616,7 +1779,7 @@ function renderReport(){
   }).join("")+'</tbody></table></div>'):'<div class="empty">Bu ay fazla veya eksik mesai kaydı yok.</div>';
   let rows=st.days.map(info=>{
     const e=info.entry; let tur=e?TYPES[e.type].label:(info.holiday?"Resmi Tatil":info.isWeekend?"Hafta Tatili":info.isFuture?"—":"Kayıtsız");
-    return "<tr><td>"+fmtDateShort(info.date)+"<br><span class='muted'>"+DAYS_TR[parseDateStr(info.date).getDay()]+"</span></td><td>"+(e&&e.start?e.start:"—")+"<br>"+(e&&e.end?e.end:"")+"</td><td>"+(info.net!==null?fmtMin(info.net):"—")+(info.bankUsed?"<br><span class='tiny' style='color:var(--violet)'>⏳ +"+fmtMin(info.bankUsed)+" saatlik izin</span>":"")+"</td><td>"+fmtMin(info.target)+"</td><td>"+(info.diff===null?"—":fmtMin(info.diff,true))+(info.earned?"<br><span class='tiny' style='color:var(--green)'>fazla mesai +"+fmtMin(info.earned)+"</span>":"")+"</td><td>"+tur+(info.holiday?"<br><span class='muted tiny'>"+esc(info.holiday.name)+"</span>":"")+(e&&e.note?"<br><span class='muted tiny'>"+esc(e.note)+"</span>":"")+"</td></tr>";
+    return "<tr><td>"+fmtDateShort(info.date)+"<br><span class='muted'>"+DAYS_TR[parseDateStr(info.date).getDay()]+"</span></td><td>"+(e&&normalizedEntrySegments(e).length>1?esc(entrySegmentsSummary(e)):((e&&e.start?e.start:"—")+"<br>"+(e&&e.end?e.end:"")))+"</td><td>"+(info.net!==null?fmtMin(info.net):"—")+(info.bankUsed?"<br><span class='tiny' style='color:var(--violet)'>⏳ +"+fmtMin(info.bankUsed)+" saatlik izin</span>":"")+"</td><td>"+fmtMin(info.target)+"</td><td>"+(info.diff===null?"—":fmtMin(info.diff,true))+(info.earned?"<br><span class='tiny' style='color:var(--green)'>fazla mesai +"+fmtMin(info.earned)+"</span>":"")+"</td><td>"+tur+(info.holiday?"<br><span class='muted tiny'>"+esc(info.holiday.name)+"</span>":"")+(e&&e.note?"<br><span class='muted tiny'>"+esc(e.note)+"</span>":"")+"</td></tr>";
   }).join("");
   $("reportDetail").innerHTML='<div style="overflow:auto"><table class="table daily-detail-table"><thead><tr><th>Tarih</th><th>Giriş / Çıkış</th><th>Çalışma</th><th>Hedef</th><th>Fark</th><th>Kayıt Türü / Not</th></tr></thead><tbody>'+rows+'</tbody></table></div><p class="small muted">'+MONTHS_TR[m-1]+" "+y+" • Ay hedefi: <b>"+fmtMin(st.targetAll)+'</b></p>';
   renderStats(y);
@@ -2022,114 +2185,233 @@ async function discardStagedNewAttachments(){for(const id of stagedNewAttachment
 async function deleteAttachmentsByMeta(list){for(const a of (list||[])){try{await idbDeleteAttachment(a.id);}catch(e){}}}
 
 /* ========== EDİTÖR ========== */
+function makeEditorSegment(kind,start="",end="",extra={}){
+  return {id:"seg_"+(editorSegmentSeq++),kind:kind==="saat_izni"?"saat_izni":"calisma",start:start||"",end:end||"",...extra};
+}
+function editorSegmentsFromEntry(entry,presetType,dateStr,workplaceId){
+  const sched=scheduleForDate(dateStr,workplaceId);
+  const saved=normalizedEntrySegments(entry);
+  if(saved.length){
+    return saved.map(seg=>{
+      const extra={};
+      if(seg.minutes)extra.minutes=seg.minutes;
+      if(seg.breakMin!==undefined)extra.breakMin=seg.breakMin;
+      return makeEditorSegment(seg.kind,seg.start,seg.end,extra);
+    });
+  }
+  if(entry&&entry.type==="calisma"){
+    const out=[];
+    if(entry.start||entry.end){
+      const extra={};
+      if(entry.start&&entry.end&&entry.breakMin!==undefined){
+        const auto=autoBreakOverlap(dateStr,entry.start,entry.end,workplaceId);
+        if(Number(entry.breakMin||0)!==auto)extra.breakMin=Number(entry.breakMin||0);
+      }
+      out.push(makeEditorSegment("calisma",entry.start||sched.start,entry.end||"",extra));
+    }
+    if(Number(entry.bankUsedMin||0)>0)out.push(makeEditorSegment("saat_izni","","",{minutes:Number(entry.bankUsedMin||0),legacy:true}));
+    return out.length?out:[makeEditorSegment("calisma",sched.start,sched.end)];
+  }
+  if(entry&&entry.type==="saat_izni"){
+    return Number(entry.bankUsedMin||0)>0
+      ? [makeEditorSegment("saat_izni","","",{minutes:Number(entry.bankUsedMin||0),legacy:true})]
+      : [makeEditorSegment("saat_izni",sched.start,sched.end)];
+  }
+  if(presetType==="saat_izni")return [makeEditorSegment("saat_izni",sched.start,sched.end)];
+  return [makeEditorSegment("calisma",sched.start,sched.end)];
+}
+function renderEditorSegments(){
+  const box=$("segmentList"); if(!box)return;
+  if(!editorSegments.length){
+    box.innerHTML='<div class="segment-empty">Henüz işlem yok. Aşağıdan çalışma veya saatlik izin ekleyin.</div>';
+    return;
+  }
+  box.innerHTML=editorSegments.map(seg=>{
+    const isLeave=seg.kind==="saat_izni";
+    const timed=!!(seg.start||seg.end||!seg.minutes);
+    const body=timed
+      ? '<div class="form-grid time-pair segment-times"><div class="field"><label>Başlangıç</label><input type="time" data-seg-id="'+seg.id+'" data-seg-field="start" value="'+esc(seg.start||"")+'"></div><div class="field"><label>Bitiş</label><input type="time" data-seg-id="'+seg.id+'" data-seg-field="end" value="'+esc(seg.end||"")+'"></div></div>'
+      : '<div class="field"><label>Saatlik İzin (dakika)</label><input type="number" min="0" step="5" inputmode="numeric" data-seg-id="'+seg.id+'" data-seg-field="minutes" value="'+Number(seg.minutes||0)+'"></div><p class="tiny muted">Önceki kayıttan aktarıldı.</p>';
+    return '<div class="segment-item '+(isLeave?'leave':'work')+'"><div class="segment-head"><span class="segment-kind">'+(isLeave?'⏳ Saatlik İzin':'👨‍💻 Çalışma')+'</span><span class="segment-duration" id="segDuration-'+seg.id+'">—</span><button class="btn smallbtn soft segment-remove" type="button" data-seg-remove="'+seg.id+'" aria-label="İşlemi sil">✕</button></div>'+body+'</div>';
+  }).join("");
+  box.querySelectorAll("[data-seg-field]").forEach(inp=>{
+    const update=()=>{
+      const seg=editorSegments.find(x=>x.id===inp.dataset.segId); if(!seg)return;
+      const field=inp.dataset.segField;
+      seg[field]=field==="minutes"?Math.max(0,Number(inp.value||0)):inp.value;
+      if(field==="start"||field==="end")delete seg.breakMin;
+      editorPreviewUpdate();
+    };
+    inp.addEventListener("input",update);
+    inp.addEventListener("change",update);
+  });
+  box.querySelectorAll("[data-seg-remove]").forEach(btn=>btn.addEventListener("click",()=>{
+    editorSegments=editorSegments.filter(seg=>seg.id!==btn.dataset.segRemove);
+    renderEditorSegments(); editorPreviewUpdate();
+  }));
+}
+function addMinutesToHM(hm,mins){
+  const base=hmToMin(hm)||0; const total=((base+Number(mins||0))%1440+1440)%1440;
+  return pad(Math.floor(total/60))+":"+pad(total%60);
+}
+function addEditorSegment(kind){
+  kind=kind==="saat_izni"?"saat_izni":"calisma";
+  const date=$("fDate").value||todayStr(), wpId=$("fWorkplace").value||activeWorkplaceId();
+  const sched=scheduleForDate(date,wpId);
+  const last=[...editorSegments].reverse().find(seg=>seg.end);
+  const start=last?last.end:sched.start;
+  let end;
+  if(!editorSegments.length)end=sched.end;
+  else if(kind==="calisma"&&(hmToMin(start)??9999)<(hmToMin(sched.end)??0))end=sched.end;
+  else end=addMinutesToHM(start,60);
+  const seg=makeEditorSegment(kind,start,end);
+  editorSegments.push(seg);
+  if(kind==="calisma")$("fType").value="calisma";
+  else if(!editorSegments.some(x=>x.kind==="calisma"))$("fType").value="saat_izni";
+  renderEditorSegments(); editorPreviewUpdate();
+  const input=document.querySelector('[data-seg-id="'+seg.id+'"][data-seg-field="start"]');
+  if(input)setTimeout(()=>input.focus(),60);
+}
+function setFirstEditorWorkSegment(start,end){
+  let seg=editorSegments.find(x=>x.kind==="calisma");
+  if(!seg){seg=makeEditorSegment("calisma",start||"",end||"");editorSegments.unshift(seg);}
+  if(start)seg.start=start;
+  if(end)seg.end=end;
+  delete seg.breakMin;
+  $("fType").value="calisma";
+  renderEditorSegments(); editorPreviewUpdate();
+}
+function updateEditorSegmentDurations(totals){
+  editorSegments.forEach(seg=>{
+    const el=$("segDuration-"+seg.id); if(!el)return;
+    const detail=totals&&totals.details?totals.details[seg.id]:null;
+    if(!detail){el.textContent="—";return;}
+    if(seg.kind==="calisma")el.textContent=(seg.start&&seg.end)?("Net "+fmtMin(detail.net)):"Saatleri girin";
+    else el.textContent=(seg.start||seg.end||seg.minutes)?(fmtMin(detail.leaveMin)+" kullanılır"):"Süre girin";
+  });
+}
 function editorPreviewUpdate(){
-  const type=$("fType").value; $("workFields").style.display=type==="calisma"?"block":"none";
-  $("bankFields").style.display=type==="saat_izni"?"block":"none";
-  $("leaveFields").classList.toggle("hide",!["yillik_izin","sirket_izni"].includes(type));
+  const selectedType=$("fType").value;
+  const segmentMode=["calisma","saat_izni"].includes(selectedType);
+  $("workFields").style.display=segmentMode?"block":"none";
+  $("leaveFields").classList.toggle("hide",!["yillik_izin","sirket_izni"].includes(selectedType));
   $("fLeaveLabel").textContent="Yıllık İzinden Kaç Gün Düşsün?";
+  const hasWorkSegment=editorSegments.some(seg=>seg.kind==="calisma");
+  const effectiveType=segmentMode?(hasWorkSegment?"calisma":"saat_izni"):selectedType;
   const noteLabels={calisma:["Günlük Not","Bu gün yapılanları yazın..."],saat_izni:["Saatlik İzin Notu","Saatlik izin nedeninizi yazın..."],yillik_izin:["Yıllık İzin Notu","İzin gününüzü yazın..."],sirket_izni:["Şirket İzni Notu","İzin nedenini yazın..."],rapor:["Sağlık Raporu Notu","Sağlık raporu notunuzu yazın..."],sabahlama_izni:["Dinlenme Günü Notu","Dinlenme günü notunuzu yazın..."]};
-  const nl=noteLabels[type]||["Günlük Not","Bu günün notlarını yazın..."];
+  const nl=noteLabels[effectiveType]||["Günlük Not","Bu günün notlarını yazın..."];
   $("fNoteLabel").textContent=nl[0]; $("fNote").placeholder=nl[1];
   const editorWp=$("fWorkplace").value||activeWorkplaceId();
-  if(type==="calisma"&&editorBreakAuto&&$("fStart").value&&$("fEnd").value&&$("fDate").value){$("fBreak").value=autoBreakOverlap($("fDate").value,$("fStart").value,$("fEnd").value,editorWp);}
   const date=$("fDate").value; if(!date)return;
   const sched=scheduleForDate(date,editorWp);
   const hol=getHoliday(date); const d=parseDateStr(date);
   $("editorDayInfo").textContent=fmtDateTR(date)+" • "+workplaceName(editorWp)+" • Çalışma programı "+sched.start+"–"+sched.end+(sched.isWeekendSchedule?" • Hafta sonu programı (tamamı fazla mesai)":"")+(hol?" • 🇹🇷 "+hol.name+(hol.half?" (yarım gün — arife)":""):"");
-  const bankUsed=Math.max(0,Number($("fBankUsed")?$("fBankUsed").value||0:0));
-  const bankExcl=allTimeBank(date,date,editorWp);
-  if($("bankHelp")) $("bankHelp").innerHTML="Kullanılabilir fazla mesai: <b>"+fmtMin(bankExcl.balance,true)+"</b>"+(bankExcl.balance<bankUsed&&bankUsed>0?" <b style='color:var(--red)'>Girilen süre kullanılabilir fazla mesaiden fazla.</b>":"");
-  if(type==="saat_izni"){
-    const target=targetFor(date,{type:"saat_izni",workplaceId:editorWp},editorWp); const uncovered=Math.max(0,target-bankUsed);
-    $("editorPreview").innerHTML="<b>Saatlik İzin</b> • Kullanılacak süre: <b>"+fmtMin(bankUsed)+"</b> • Günlük Hedef: <b>"+fmtMin(target)+"</b>"+(uncovered>0?(" • <b style='color:var(--red)'>Kalan eksik: -"+fmtMin(uncovered)+"</b><br>Günün bir kısmı çalışıldıysa kayıt türünü Çalışma yapın."):"")+"<br>Kaydettikten sonra kullanılabilir fazla mesai: <b>"+fmtMin(bankExcl.balance-bankUsed,true)+"</b>";
+  if(segmentMode){
+    const tmp={date,workplaceId:editorWp,type:effectiveType,segments:editorSegments};
+    const totals=entrySegmentTotals(tmp)||{error:"En az bir çalışma veya saatlik izin aralığı ekleyin.",valid:false,target:targetFor(date,tmp,editorWp),workNet:0,breakTotal:0,leaveMin:0,details:{}};
+    updateEditorSegmentDurations(totals);
+    const bankExcl=allTimeBank(date,date,editorWp);
+    if(totals.error){
+      $("editorPreview").innerHTML="<b style='color:var(--red)'>"+esc(totals.error)+"</b>";
+      return;
+    }
+    const target=totals.target||0;
+    if(totals.workCount){
+      const net=totals.workNet||0, bankUsed=totals.leaveMin||0;
+      const earned=Math.max(0,net-target), uncovered=Math.max(0,target-net-bankUsed);
+      const after=bankExcl.balance+earned-bankUsed;
+      $("editorPreview").innerHTML="Çalışma: <b>"+fmtMin(net)+"</b> • Mola: <b>"+fmtMin(totals.breakTotal)+"</b>"+
+        (bankUsed?(" • Saatlik İzin: <b style='color:var(--violet)'>"+fmtMin(bankUsed)+"</b> • Toplam karşılanan: <b>"+fmtMin(net+bankUsed)+"</b>"):"")+
+        " • Günlük Hedef: <b>"+fmtMin(target)+"</b>"+
+        (earned>0?(" • <b style='color:var(--green)'>Fazla mesai +"+fmtMin(earned)+"</b> <span class='muted'>(son kullanma: "+fmtDateShort(earningExpiry(date,editorWp))+")</span>"):"")+
+        (uncovered>0?(" • <b style='color:var(--red)'>Eksik mesai: -"+fmtMin(uncovered)+"</b>"):(bankUsed&&earned===0?" • Gün tamamlandı":""))+
+        (target===0&&net>0?" <span class='muted'>(tatil günü çalışması; tamamı fazla mesaidir)</span>":"")+
+        "<br>Kaydettikten sonra kullanılabilir fazla mesai: <b>"+fmtMin(after,true)+"</b>";
+    }else{
+      const bankUsed=totals.leaveMin||0, uncovered=Math.max(0,target-bankUsed);
+      $("editorPreview").innerHTML="<b>Saatlik İzin</b> • Kullanılacak süre: <b>"+fmtMin(bankUsed)+"</b> • Günlük Hedef: <b>"+fmtMin(target)+"</b>"+
+        (uncovered>0?(" • <b style='color:var(--red)'>Kalan eksik: -"+fmtMin(uncovered)+"</b>"):"")+
+        "<br>Kaydettikten sonra kullanılabilir fazla mesai: <b>"+fmtMin(bankExcl.balance-bankUsed,true)+"</b>";
+    }
     return;
   }
-  if(["yillik_izin","sirket_izni"].includes(type)){
-    const sel=$("fLeaveDays").value; const tmpE={type,workplaceId:editorWp,leaveDays:sel==="auto"?"":Number(sel)};
+  if(["yillik_izin","sirket_izni"].includes(selectedType)){
+    const sel=$("fLeaveDays").value; const tmpE={type:selectedType,workplaceId:editorWp,leaveDays:sel==="auto"?"":Number(sel)};
     const amt=annualLeaveAmountFor(date,tmpE); const ys=leaveBalanceStats(editorWp,date,{includePlanned:true});
     const oldEntry=getEntry(date,editorWp); const oldAmt=oldEntry&&["yillik_izin","sirket_izni"].includes(oldEntry.type)?annualLeaveAmountFor(date,oldEntry):0;
-    const lbl="<b>"+TYPES[type].label+"</b>";
-    $("editorPreview").innerHTML=lbl+" — yıllık izinden <b>"+String(amt).replace(".",",")+" gün</b> düşecek. Kaydettikten sonra kalan yıllık izin: <b>"+String(ys.remaining+oldAmt-amt).replace(".",",")+" gün</b>.";
+    $("editorPreview").innerHTML="<b>"+TYPES[selectedType].label+"</b> — yıllık izinden <b>"+String(amt).replace(".",",")+" gün</b> düşecek. Kaydettikten sonra kalan yıllık izin: <b>"+String(ys.remaining+oldAmt-amt).replace(".",",")+" gün</b>.";
     return;
   }
-  if(type==="sabahlama_izni"){$("editorPreview").innerHTML="<b>Sabahlama Sonrası Dinlenme</b> — yıllık izinden ve fazla mesaiden düşmez.";return;}
-  if(type!=="calisma"){$("editorPreview").innerHTML=TYPES[type].icon+" <b>"+TYPES[type].label+"</b> — "+(NON_TARGET_TYPES.includes(type)?"Bu gün çalışma hedefine eklenmez.":"Bu gün eksik mesai sayılır.");return;}
-  const tmp={type:"calisma",start:$("fStart").value,end:$("fEnd").value,breakMin:Number($("fBreak").value||0)};
-  if(!tmp.start){$("editorPreview").textContent="Giriş saati seçin.";return;}
-  if(!tmp.end){$("editorPreview").innerHTML="<b>Çıkış saati girilmelidir.</b>";return;}
-  tmp.workplaceId=editorWp;
-  const net=entryNetMin(tmp); const target=targetFor(date,tmp,editorWp);
-  // Saatlik İzin alanını yalnızca eksik çalışma varsa (ya da önceden girilmişse) göster.
-  $("bankFields").style.display=(bankUsed>0||net<target)?"block":"none";
-  const earned=Math.max(0,net-target); const uncovered=Math.max(0,target-net-bankUsed);
-  const after=bankExcl.balance+earned-bankUsed;
-  const ovn=crossesMidnight(tmp); const eb=sched.eveningBreak; const eveningApplied=hmToMin(tmp.start)<=hmToMin(eb.s)&&(intervalGrossMin(tmp)||0)>(hmToMin(eb.s)-hmToMin(tmp.start));
-  $("editorPreview").innerHTML="Çalışma: <b>"+fmtMin(net)+"</b> (mola "+Number(tmp.breakMin)+"dk"+(eveningApplied?", akşam yemeği dahil":"")+(ovn?", ertesi gün bitiyor":"")+")"+(bankUsed?(" + Saatlik izin <b>"+fmtMin(bankUsed)+"</b> = Toplam <b>"+fmtMin(net+bankUsed)+"</b>"):"")+" • Hedef: <b>"+fmtMin(target)+"</b>"+
-    (earned>0?(" • <b style='color:var(--green)'>Fazla mesai +"+fmtMin(earned)+"</b> <span class='muted'>(son kullanma: "+fmtDateShort(earningExpiry(date,editorWp))+")</span>"):"")+
-    ((hmToMin(tmp.end)>hmToMin(sched.end)&&hmToMin(tmp.end)<=hmToMin(eb.e)&&!ovn)?" • <b>"+eb.e+" öncesi çıkışta fazla mesai sayılmaz</b>":"")+
-    (uncovered>0?(" • <b style='color:var(--red)'>Eksik mesai: -"+fmtMin(uncovered)+"</b>"):(bankUsed?" • Gün tamamlandı":""))+
-    (target===0&&net>0?" (tatil günü çalışması; tamamı fazla mesaidir)":"")+
-    "<br>Kaydettikten sonra kullanılabilir fazla mesai: <b>"+fmtMin(after,true)+"</b>";
+  if(selectedType==="sabahlama_izni"){$("editorPreview").innerHTML="<b>Sabahlama Sonrası Dinlenme</b> — yıllık izinden ve fazla mesaiden düşmez.";return;}
+  $("editorPreview").innerHTML=TYPES[selectedType].icon+" <b>"+TYPES[selectedType].label+"</b> — "+(NON_TARGET_TYPES.includes(selectedType)?"Bu gün çalışma hedefine eklenmez.":"Bu gün eksik mesai sayılır.");
 }
-["fDate","fType","fStart","fEnd","fBreak","fBankUsed","fLeaveDays","fAllNighter"].forEach(id=>$(id).addEventListener("change",editorPreviewUpdate));
-["fStart","fEnd","fBankUsed"].forEach(id=>$(id).addEventListener("input",editorPreviewUpdate));
-$("fBreak").addEventListener("input",()=>{editorBreakAuto=false;});
+["fDate","fType","fLeaveDays","fAllNighter"].forEach(id=>$(id).addEventListener("change",editorPreviewUpdate));
+$("fType").addEventListener("change",()=>{
+  if(["calisma","saat_izni"].includes($("fType").value)&&!editorSegments.length){
+    const sched=scheduleForDate($("fDate").value||todayStr(),$("fWorkplace").value||activeWorkplaceId());
+    editorSegments=[makeEditorSegment($("fType").value,sched.start,sched.end)];
+    renderEditorSegments();
+  }
+  editorPreviewUpdate();
+});
+$("addWorkSegmentBtn").onclick=()=>addEditorSegment("calisma");
+$("addLeaveSegmentBtn").onclick=()=>addEditorSegment("saat_izni");
 function openEditor(dateStr,presetType=null,workplaceId){
   const wpId=workplaceId||activeWorkplaceId();
   editorOriginalDate=dateStr; editorOriginalWorkplace=wpId;
   const e=getEntry(dateStr,wpId);
-  const sched=scheduleForDate(dateStr,wpId);
   $("fWorkplace").innerHTML=workplaceOptionsHtml(wpId); $("fWorkplace").value=wpId;
   $("fDate").value=dateStr;
   $("fType").value=presetType||(e?e.type:"calisma");
-  $("fStart").value=e&&e.start?e.start:sched.start;
-  $("fEnd").value=e&&e.end?e.end:sched.end;
-  $("fBreak").value=e&&e.breakMin!==undefined?Number(e.breakMin):autoBreakOverlap(dateStr,$("fStart").value,$("fEnd").value||sched.end,wpId);
-  editorBreakAuto=!e||Number(e.breakMin||0)===autoBreakOverlap(dateStr,$("fStart").value,$("fEnd").value||sched.end,wpId);
+  editorSegments=editorSegmentsFromEntry(e,presetType,dateStr,wpId);
   $("fAllNighter").checked=e?isAllNighterEntry(e):false;
   $("fLeaveDays").value=e&&e.leaveDays!==undefined&&e.leaveDays!==null&&e.leaveDays!==""?String(e.leaveDays):"auto";
-  if(e&&e.bankUsedMin!==undefined) $("fBankUsed").value=Number(e.bankUsedMin||0);
-  else if(presetType==="saat_izni") $("fBankUsed").value=targetFor(dateStr,{type:"saat_izni",workplaceId:wpId},wpId)||dailyTargetMin(dateStr,wpId);
-  else $("fBankUsed").value=0;
   $("fNote").value=e&&e.note?e.note:"";
   stagedAttachments=e&&e.attachments?JSON.parse(JSON.stringify(e.attachments)):[];
   stagedNewAttachmentIds=[];stagedDeletedAttachmentIds=[];
   $("fAttachments").value="";
   $("editorTitle").textContent=e?"Kaydı Düzenle":"Yeni Kayıt";
   $("deleteEntryBtn").classList.toggle("hide",!e);
-  editorPreviewUpdate(); renderStagedAttachments();
+  renderEditorSegments(); editorPreviewUpdate(); renderStagedAttachments();
   $("editorBackdrop").classList.add("open");
 }
 async function closeEditor(){await discardStagedNewAttachments();$("editorBackdrop").classList.remove("open");}
 $("closeEditorBtn").onclick=closeEditor; $("cancelEditorBtn").onclick=closeEditor;
 $("editorBackdrop").addEventListener("click",e=>{if(e.target.id==="editorBackdrop")closeEditor();});
-$("fWorkplace").addEventListener("change",()=>{
-  const date=$("fDate").value; const sched=scheduleForDate(date,$("fWorkplace").value);
-  if($("fType").value==="calisma"&&editorBreakAuto){/* saatleri kullanıcı girdiyse bozma; yalnızca molayı yeni iş yeri programıyla güncelle */}
-  editorPreviewUpdate();
-});
+$("fWorkplace").addEventListener("change",editorPreviewUpdate);
 $("fAttachments").addEventListener("change",async e=>{await addAttachmentFiles(e.target.files,$("fDate").value,$("fWorkplace").value);e.target.value="";});
 $("saveEntryBtn").onclick=async()=>{
   const date=$("fDate").value; if(!date){toast("Tarih seçin");return;}
   const wpId=$("fWorkplace").value||activeWorkplaceId();
-  const type=$("fType").value;
+  let type=$("fType").value;
   let entry={type,note:$("fNote").value.trim(),updatedAt:new Date().toISOString()};
   if(stagedAttachments.length) entry.attachments=JSON.parse(JSON.stringify(stagedAttachments));
   if(["yillik_izin","sirket_izni"].includes(type)){
     entry.leaveDays = $("fLeaveDays").value==="auto" ? annualLeaveAmountFor(date,{type,workplaceId:wpId}) : Number($("fLeaveDays").value);
   }
-  const bankUsedVal=Math.max(0,Number($("fBankUsed").value||0));
-  if(type==="saat_izni"){
-    if(bankUsedVal<=0){toast("Saatlik izin süresi girin");return;}
-    entry.bankUsedMin=bankUsedVal;
-  }
-  else if(type==="calisma"){
-    entry.start=$("fStart").value; entry.end=$("fEnd").value||"";
-    entry.breakMin=Number($("fBreak").value||0);
-    if($("fAllNighter").checked||crossesMidnight(entry)) entry.allNighter=true;
-    if(bankUsedVal>0) entry.bankUsedMin=bankUsedVal;
-    if(!entry.start){toast("Giriş saati girin");return;}
-    if(!entry.end){toast("Çıkış saati girin");$("fEnd").focus();return;}
+  if(["calisma","saat_izni"].includes(type)){
+    const segmentError=validateEntrySegments(editorSegments);
+    if(segmentError){editorPreviewUpdate();toast(segmentError);return;}
+    const cleanSegments=editorSegments.map(seg=>{
+      const clean={kind:seg.kind};
+      if(seg.start||seg.end){clean.start=seg.start||"";clean.end=seg.end||"";}
+      if(!clean.start&&Number(seg.minutes||0)>0)clean.minutes=Math.round(Number(seg.minutes||0));
+      if(seg.kind==="calisma"&&seg.breakMin!==undefined&&Number.isFinite(Number(seg.breakMin)))clean.breakMin=Math.round(Number(seg.breakMin));
+      return clean;
+    });
+    cleanSegments.sort((a,b)=>((segmentInterval(a)||{}).s??99999)-((segmentInterval(b)||{}).s??99999));
+    const hasWork=cleanSegments.some(seg=>seg.kind==="calisma");
+    type=hasWork?"calisma":"saat_izni";
+    entry.type=type;
+    entry.segments=cleanSegments;
+    const totals=entrySegmentTotals({date,workplaceId:wpId,type,segments:cleanSegments});
+    if(!totals||!totals.valid){editorPreviewUpdate();toast(totals&&totals.error?totals.error:"Gün içindeki işlemleri kontrol edin");return;}
+    if(!hasWork&&totals.leaveMin<=0){editorPreviewUpdate();toast("Program saatleri içinde geçerli bir saatlik izin aralığı girin");return;}
+    entry.start=totals.firstStart||"";
+    entry.end=totals.lastEnd||"";
+    entry.breakMin=totals.breakTotal||0;
+    if(totals.leaveMin>0)entry.bankUsedMin=totals.leaveMin;
+    if(hasWork&&($("fAllNighter").checked||totals.crosses))entry.allNighter=true;
   }
   const moved=editorOriginalDate&&(editorOriginalDate!==date||editorOriginalWorkplace!==wpId);
   const collision=getEntry(date,wpId);
@@ -2172,9 +2454,10 @@ $("editTodayBtn").onclick=()=>openEditor(todayStr());
 function writeNormalDay(date,workplaceId){
   const wpId=workplaceId||activeWorkplaceId(); const s=scheduleForDate(date,wpId);
   const existing=getEntry(date,wpId);
-  const entry={type:"calisma",start:s.start,end:s.end,breakMin:autoBreakOverlap(date,s.start,s.end,wpId),note:existing?.note||"",updatedAt:new Date().toISOString()};
+  const existingBank=existing?((entrySegmentTotals(existing)||{}).leaveMin||Number(existing.bankUsedMin||0)):0;
+  const entry={type:"calisma",start:s.start,end:s.end,breakMin:autoBreakOverlap(date,s.start,s.end,wpId),segments:[{kind:"calisma",start:s.start,end:s.end}],note:existing?.note||"",updatedAt:new Date().toISOString()};
   if(existing?.attachments?.length) entry.attachments=existing.attachments;
-  if(existing?.bankUsedMin) entry.bankUsedMin=existing.bankUsedMin;
+  if(existingBank>0){entry.bankUsedMin=existingBank;entry.segments.push({kind:"saat_izni",minutes:existingBank});}
   setEntry(date,entry,wpId); return entry;
 }
 $("fillNormalBtn").onclick=()=>{
@@ -2190,8 +2473,8 @@ $("overtimeTodayBtn").onclick=()=>{
   if(!getEntry(t)){writeNormalDay(t);saveState();}
   openEditor(t);
   const s=scheduleForDate(t);
-  $("fStart").value=s.start;
-  toast("Fazla mesai için çıkış saatini girin.");
+  setFirstEditorWorkSegment(s.start,"");
+  toast("Fazla mesai için çalışma aralığının bitiş saatini girin.");
 };
 $("quickBankBtn").onclick=()=>openEditor(todayStr(),"saat_izni");
 $("bankUseTodayBtn").onclick=()=>openEditor(todayStr(),"saat_izni");
@@ -2221,8 +2504,8 @@ function buildMonthlyCsv(ym,workplaceId){
   const st=monthStats(ym,wpId);
   const bankAll=allTimeBank(null,todayStr(),wpId);
   const head=["Tarih","Gün","İş Yeri","Giriş","Çıkış","Mola (dk)","Çalışma (dk)","Çalışma (saat)","Saatlik İzin (dk)","Toplam Çalışma (dk)","Hedef (dk)","Fark (dk)","Fazla Mesai (dk)","Son Kullanma Tarihi","Sabahlama","Yıllık İzinden Düşen (gün)","Kayıt Türü","Resmi Tatil","Dosya Sayısı","Not"];
-  const rows=st.days.map(info=>{const e=info.entry||{};const tur=e.type?TYPES[e.type].label:(info.holiday?"Resmi Tatil":info.isWeekend?"Hafta Tatili":info.isFuture?"":"Kayıtsız");
-    return [fmtDateShort(info.date),DAYS_TR[parseDateStr(info.date).getDay()],workplaceName(wpId),e.start||"",e.end||"",e.breakMin??"",info.net??"",info.net!==null?fmtHoursDecimal(info.net):"",info.bankUsed||0,(info.net||0)+(info.bankUsed||0),info.target,info.diff??"",info.earned||0,info.earned?fmtDateShort(earningExpiry(info.date,wpId)):"",isAllNighterEntry(e)?"Evet":"",annualLeaveAmountFor(info.date,e)||"",tur,info.holiday?info.holiday.name:"",(e.attachments?.length||0),(e.note||"").replace(/;/g,",").replace(/\r?\n/g," ")];});
+  const rows=st.days.map(info=>{const e=info.entry||{};const segText=normalizedEntrySegments(e).length>1?entrySegmentsSummary(e):"";const tur=e.type?TYPES[e.type].label:(info.holiday?"Resmi Tatil":info.isWeekend?"Hafta Tatili":info.isFuture?"":"Kayıtsız");
+    return [fmtDateShort(info.date),DAYS_TR[parseDateStr(info.date).getDay()],workplaceName(wpId),segText||e.start||"",segText?"":(e.end||""),e.breakMin??"",info.net??"",info.net!==null?fmtHoursDecimal(info.net):"",info.bankUsed||0,(info.net||0)+(info.bankUsed||0),info.target,info.diff??"",info.earned||0,info.earned?fmtDateShort(earningExpiry(info.date,wpId)):"",isAllNighterEntry(e)?"Evet":"",annualLeaveAmountFor(info.date,e)||"",tur,info.holiday?info.holiday.name:"",(e.attachments?.length||0),(e.note||"").replace(/;/g,",").replace(/\r?\n/g," ")];});
   rows.push([]); rows.push(["ÖZET","","","","","Toplam Çalışma (dk)",st.netAll,"Bu Ay Saatlik İzin",st.bankUsedMonth,"Hedef (dk)",st.targetAll,"Bu Ay Fazla Mesai",st.bankEarnedMonth,"Fazla/Eksik (dk)",st.balance]);
   rows.push(["FAZLA/EKSİK MESAİ","","","","","Önceden Biriken",bankAll.opening,"Toplam Saatlik İzin",bankAll.used,"Toplam Fazla Mesai",bankAll.earned,"TOPLAM",bankAll.balance]);
   return "\ufeff"+[head,...rows].map(r=>r.join(";")).join("\r\n");
@@ -2233,7 +2516,7 @@ function buildMonthlyMarkdown(ym,workplaceId){
   let md="# Mesai Raporu — "+MONTHS_TR[m-1]+" "+y+"\\n\\n";
   md+="- İş yeri: **"+workplaceName(wpId)+"**\n- Toplam çalışma: **"+fmtMin(st.netAll)+"** ("+st.workedDays+" gün)\n- Ay hedefi: **"+fmtMin(st.targetAll)+"**\n- Fazla mesai: **"+fmtMin(st.fazla,true)+"**\n- Eksik mesai: **"+fmtMin(-st.eksik,true)+"**\n- Ay farkı (bugüne kadar): **"+fmtMin(st.balance,true)+"**\n- Kullanılabilir fazla mesai: **"+fmtMin(bank.balance,true)+"**\n- Kalan yıllık izin ("+y+"): **"+al.remaining+" gün**\n\n";
   md+="| Tarih | Giriş | Çıkış | Çalışma | Hedef | Fark | Kayıt Türü | Dosya | Not |\\n|---|---|---|---:|---:|---:|---|---:|---|\\n";
-  st.days.forEach(info=>{const e=info.entry||{};md+="| "+fmtDateShort(info.date)+" | "+(e.start||"")+" | "+(e.end||"")+" | "+(info.net===null?"":fmtMin(info.net))+" | "+fmtMin(info.target)+" | "+(info.diff===null?"":fmtMin(info.diff,true))+" | "+(e.type?TYPES[e.type].label:"")+" | "+(e.attachments?.length||0)+" | "+String(e.note||"").replace(/\\|/g,"/").replace(/\\r?\\n/g," ")+" |\\n";});
+  st.days.forEach(info=>{const e=info.entry||{};const segText=normalizedEntrySegments(e).length>1?entrySegmentsSummary(e):"";md+="| "+fmtDateShort(info.date)+" | "+(segText||e.start||"")+" | "+(segText?"":(e.end||""))+" | "+(info.net===null?"":fmtMin(info.net))+" | "+fmtMin(info.target)+" | "+(info.diff===null?"":fmtMin(info.diff,true))+" | "+(e.type?TYPES[e.type].label:"")+" | "+(e.attachments?.length||0)+" | "+String(e.note||"").replace(/\\|/g,"/").replace(/\\r?\\n/g," ")+" |\\n";});
   return md;
 }
 $("exportCsvBtn").onclick=()=>{
@@ -2242,7 +2525,7 @@ $("exportCsvBtn").onclick=()=>{
 function buildPrint(){
   const st=monthStats(viewMonth); const[y,m]=viewMonth.split("-").map(Number);
   const bankAll=allTimeBank();
-  const rows=st.days.map(i=>{const e=i.entry||{};return "<tr><td>"+fmtDateShort(i.date)+" "+DAYS_TR[parseDateStr(i.date).getDay()]+"</td><td>"+(e.start||"—")+"</td><td>"+(e.end||"—")+"</td><td>"+(e.breakMin??"")+"</td><td>"+(i.net!==null?fmtMin(i.net):"—")+"</td><td>"+(i.bankUsed?fmtMin(i.bankUsed):"")+"</td><td>"+fmtMin(i.target)+"</td><td>"+(i.diff===null?"—":fmtMin(i.diff,true))+"</td><td>"+(e.type?TYPES[e.type].label:(i.holiday?"Resmi Tatil":i.isWeekend?"Hafta Tatili":"—"))+"</td><td>"+esc(e.note||"")+"</td></tr>";}).join("");
+  const rows=st.days.map(i=>{const e=i.entry||{};const segText=normalizedEntrySegments(e).length>1?entrySegmentsSummary(e):"";return "<tr><td>"+fmtDateShort(i.date)+" "+DAYS_TR[parseDateStr(i.date).getDay()]+"</td><td>"+(segText?esc(segText):(e.start||"—"))+"</td><td>"+(segText?"":(e.end||"—"))+"</td><td>"+(e.breakMin??"")+"</td><td>"+(i.net!==null?fmtMin(i.net):"—")+"</td><td>"+(i.bankUsed?fmtMin(i.bankUsed):"")+"</td><td>"+fmtMin(i.target)+"</td><td>"+(i.diff===null?"—":fmtMin(i.diff,true))+"</td><td>"+(e.type?TYPES[e.type].label:(i.holiday?"Resmi Tatil":i.isWeekend?"Hafta Tatili":"—"))+"</td><td>"+esc(e.note||"")+"</td></tr>";}).join("");
   $("printArea").innerHTML="<h1>Mesai Raporu — "+MONTHS_TR[m-1]+" "+y+"</h1><p>"+esc(workplaceName())+"<br>Toplam çalışma: <b>"+fmtMin(st.netAll)+"</b> • Ay hedefi: <b>"+fmtMin(st.targetAll)+"</b> • Ay farkı (bugüne kadar): <b>"+fmtMin(st.balance,true)+"</b> • Fazla mesai: <b>"+fmtMin(st.fazla,true)+"</b> • Eksik mesai: <b>"+fmtMin(-st.eksik,true)+"</b><br>Bu ay fazla mesai: <b>"+fmtMin(st.bankEarnedMonth,true)+"</b> • Bu ay saatlik izin: <b>"+fmtMin(-st.bankUsedMonth,true)+"</b> • <b>Kullanılabilir fazla mesai: "+fmtMin(bankAll.balance,true)+"</b> • Kalan yıllık izin: <b>"+leaveBalanceStats(activeWorkplaceId(),todayStr(),{includePlanned:true}).remaining+" gün</b></p><table><thead><tr><th>Tarih</th><th>Giriş</th><th>Çıkış</th><th>Mola (dk)</th><th>Çalışma</th><th>Saatlik İzin</th><th>Hedef</th><th>Fark</th><th>Kayıt Türü</th><th>Not</th></tr></thead><tbody>"+rows+"</tbody></table>";
 }
 $("printBtn").onclick=()=>{buildPrint();window.print();};
@@ -2619,8 +2902,8 @@ document.querySelectorAll("[data-arife]").forEach(btn=>btn.onclick=()=>{
   if(choice==="tamtatil"){setEntry(t,{type:"resmi_tatil",note:"Arife - tam gün Resmi Tatil"});saveState();toast("Resmi Tatil kaydedildi");}
   else if(choice==="yillik"){const e={type:"yillik_izin",note:"Arife"};e.leaveDays=annualLeaveAmountFor(t,{...e,workplaceId:activeWorkplaceId()});setEntry(t,e);saveState();toast("Yıllık İzin kaydedildi");}
   else if(choice==="saatizni"){saveState();openEditor(t,"saat_izni"); /* arife hedefi yarım gün (270 dk) otomatik gelir */ }
-  else if(choice==="tamcalisma"){saveState();openEditor(t);const s=scheduleForDate(t);$("fStart").value=s.start;$("fEnd").value=s.end;$("fBreak").value=autoBreakOverlap(t,$("fStart").value,$("fEnd").value);if(!$("fNote").value)$("fNote").value="Arife - tam gün çalışma";editorPreviewUpdate();}
-  else if(choice==="yarim"){saveState();openEditor(t);const s=scheduleForDate(t);$("fStart").value=s.start;$("fEnd").value="13:00";$("fBreak").value=autoBreakOverlap(t,$("fStart").value,$("fEnd").value);if(!$("fNote").value)$("fNote").value="Arife - yarım gün";editorPreviewUpdate();toast("Yarım gün çalışma hazır: çıkış saatini kontrol edip kaydedin");}
+  else if(choice==="tamcalisma"){saveState();openEditor(t);const s=scheduleForDate(t);setFirstEditorWorkSegment(s.start,s.end);if(!$("fNote").value)$("fNote").value="Arife - tam gün çalışma";editorPreviewUpdate();}
+  else if(choice==="yarim"){saveState();openEditor(t);const s=scheduleForDate(t);setFirstEditorWorkSegment(s.start,"13:00");if(!$("fNote").value)$("fNote").value="Arife - yarım gün";editorPreviewUpdate();toast("Yarım gün çalışma hazır: bitiş saatini kontrol edip kaydedin");}
 });
 
 /* ========== ŞİFRE / KİLİT ========== */

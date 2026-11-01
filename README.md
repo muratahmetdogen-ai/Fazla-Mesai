@@ -25,7 +25,19 @@ Hafta içi ve hafta sonu çalışma/mola saatleri Ayarlar bölümünde ayrı ayr
 - Takvimden eski bir güne dokunarak o günü düzenleyebilir veya yeni kayıt ekleyebilirsiniz.
 - Her güne not, fotoğraf veya belge eklenebilir.
 
-Uygulamada canlı kronometre yoktur. Çalışma kaydı için giriş ve çıkış saati yazılır.
+### Gün içinde birden fazla işlem
+
+Bir gün tek giriş/çıkıştan oluşmak zorunda değildir. Güne dokununca **Gün İçindeki İşlemler** altında o günkü aralıklar alt alta gösterilir. **+ Çalışma Ekle** ve **+ Saatlik İzin Ekle** düğmeleriyle yeni aralık eklenebilir.
+
+Örnek:
+
+- **07:45–11:15 Çalışma**
+- **11:15–15:00 Saatlik İzin**
+- **15:00–21:45 Çalışma**
+
+Sabit program molaları çalışma aralıklarından otomatik düşülür. Saatlik İzin aralığında da program içindeki mola süresi izin kullanımına sayılmaz. Yukarıdaki örnekte net çalışma **9 saat 25 dakika**, kullanılan saatlik izin **3 saat 5 dakika**, kazanılan fazla mesai **25 dakika** olur. Birbiriyle çakışan aralıklar kaydedilemez. Eski tek giriş/çıkış kayıtları açıldığında otomatik olarak tek Çalışma aralığına dönüştürülür.
+
+Uygulamada canlı kronometre yoktur. Her işlem için başlangıç ve bitiş saati yazılır.
 
 ## Fazla ve eksik mesai
 
@@ -50,7 +62,7 @@ Uygulama tek bir firmaya bağlı değildir. Birden çok iş yeri eklenebilir. He
 
 ## Mobil görünüm
 
-Hafta tatili ayarında gün adı ve seçim işareti aynı kutu içinde, aynı satırda gösterilir. Form alanları, takvim özeti ve rapor tabloları dar telefon ekranlarında taşmayacak şekilde hizalanır. Gün kaydı ekranı sade tutulmuştur: Tarih, kayıt türü ve giriş/çıkış saatleri girilir; mola ile fazla/eksik süre otomatik hesaplanır. Hazır saat ekleme düğmeleri kullanılmaz.
+Hafta tatili ayarında gün adı ve seçim işareti aynı kutu içinde, aynı satırda gösterilir. Form alanları, takvim özeti ve rapor tabloları dar telefon ekranlarında taşmayacak şekilde hizalanır. Gün kaydı ekranı sade tutulmuştur: Tarih, kayıt türü ve gün içindeki çalışma/izin aralıkları girilir; mola ile fazla/eksik süre otomatik hesaplanır. Hazır süre ekleme düğmeleri kullanılmaz; yalnızca **+ Çalışma Ekle** ve **+ Saatlik İzin Ekle** düğmeleri bulunur.
 
 ## Güvenlik ve Maaş
 
