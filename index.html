@@ -454,10 +454,9 @@ input[type="checkbox"]{width:20px;height:20px;flex:0 0 20px;margin:0;accent-colo
     <div class="card" id="salaryLockCard">
       <div class="salary-lock-icon">🔐</div>
       <h2 style="text-align:center">Maaş Bölümü Kilitli</h2>
-      <p class="small muted" style="text-align:center;line-height:1.6">Maaş bilgilerini görmek için PIN’inizi girin.</p>
+      <p class="small muted" style="text-align:center;line-height:1.6">Maaş bilgilerini görmek için Maaş PIN’inizi girin.</p>
       <form id="salaryUnlockForm" class="auth-form">
-        <div class="field"><label id="salaryUnlockLabel" for="salaryUnlockCode">PIN</label><input type="password" class="auth-code-input pin-mode" id="salaryUnlockCode" autocomplete="one-time-code" inputmode="numeric" pattern="[0-9]*" maxlength="6" enterkeyhint="done" placeholder="••••" aria-label="PIN"></div>
-        <p class="tiny muted" id="salaryModeHint" style="line-height:1.5;margin-top:8px">PIN alanına dokunduğunuzda sayı klavyesi açılır.</p>
+        <div class="field"><label id="salaryUnlockLabel" for="salaryUnlockCode">Maaş PIN’i</label><input type="password" class="auth-code-input pin-mode" id="salaryUnlockCode" autocomplete="one-time-code" inputmode="numeric" pattern="[0-9]*" maxlength="6" enterkeyhint="done" placeholder="••••" aria-label="Maaş PIN’i"></div>
         <div class="auth-lockout hide" id="salaryLockout" role="timer" aria-live="polite"><span>Çok fazla yanlış deneme yapıldı</span><strong id="salaryCountdown">60</strong><small id="salaryCountdownUnit">saniye sonra tekrar deneyebilirsiniz</small></div>
         <p class="small" id="salaryLockError" style="color:var(--red);min-height:20px"></p>
         <div class="auth-actions"><button class="btn primary" id="salaryUnlockSubmitBtn" type="submit">Maaşı Aç</button><button class="btn soft hide" id="salaryBiometricBtn" type="button">👆 Parmak İziyle Aç</button></div>
@@ -569,7 +568,8 @@ input[type="checkbox"]{width:20px;height:20px;flex:0 0 20px;margin:0;accent-colo
       <div class="security-methods" id="securityMethods"></div>
       <label class="check-row"><input type="checkbox" id="twoFactorToggle"><span>İki aşamalı doğrulama kullan<small>Önce PIN, sonra parmak izi</small></span></label>
       <div class="security-actions"><button class="btn primary" id="setPasswordBtn">🔑 Güvenlik bilgilerini belirle / değiştir</button><button class="btn soft" id="registerBiometricBtn">👆 Parmak izini kaydet</button><button class="btn soft hide" id="removeBiometricBtn">Parmak izini kaldır</button><button class="btn soft hide" id="removePasswordBtn">Kilidi kaldır</button><button class="btn soft hide" id="lockNowBtn">🔒 Şimdi kilitle</button></div>
-      <p class="tiny muted" style="line-height:1.6">Bu bilgiler uygulama girişinde ve Maaş menüsünde kullanılır. Kilit kayıtların görünmesini engeller; cihaz depolamasını teknik olarak şifrelemez. Kurtarma şifrenizi güvenli bir yerde saklayın.</p>
+      <p class="tiny muted" id="biometricStatus" style="line-height:1.6">Parmak izi durumu kontrol ediliyor…</p>
+      <p class="tiny muted" style="line-height:1.6">Uygulama ve Maaş için farklı PIN kullanılır. Güvenlik bilgilerini değiştirmeden önce Uygulama PIN’i sorulur. Kilit kayıtların görünmesini engeller; cihaz depolamasını teknik olarak şifrelemez. Kurtarma şifrenizi güvenli bir yerde saklayın.</p>
     </div>
 
     <div class="card">
@@ -696,9 +696,8 @@ input[type="checkbox"]{width:20px;height:20px;flex:0 0 20px;margin:0;accent-colo
   <form class="lockbox" id="lockForm">
     <div class="logo">⏱️</div>
     <h2 style="margin:0 0 6px">Uygulama Kilitli</h2>
-    <p class="muted small">PIN’inizi girin.</p>
-    <div class="field" style="text-align:left"><label id="lockUnlockLabel" for="lockPassword">PIN</label><input type="password" class="auth-code-input pin-mode" id="lockPassword" autocomplete="one-time-code" inputmode="numeric" pattern="[0-9]*" maxlength="6" enterkeyhint="done" placeholder="••••" aria-label="PIN"></div>
-    <p class="tiny muted" id="lockModeHint" style="line-height:1.5;margin-top:8px">PIN alanına dokunduğunuzda sayı klavyesi açılır.</p>
+    <p class="muted small">Uygulama PIN’inizi girin.</p>
+    <div class="field" style="text-align:left"><label id="lockUnlockLabel" for="lockPassword">Uygulama PIN’i</label><input type="password" class="auth-code-input pin-mode" id="lockPassword" autocomplete="one-time-code" inputmode="numeric" pattern="[0-9]*" maxlength="6" enterkeyhint="done" placeholder="••••" aria-label="Uygulama PIN’i"></div>
     <div class="auth-lockout hide" id="lockLockout" role="timer" aria-live="polite"><span>Çok fazla yanlış deneme yapıldı</span><strong id="lockCountdown">60</strong><small id="lockCountdownUnit">saniye sonra tekrar deneyebilirsiniz</small></div>
     <p class="small" id="lockError" style="color:var(--red);min-height:20px"></p>
     <button class="btn primary block" id="lockSubmitBtn" type="submit">Aç</button>
@@ -711,15 +710,17 @@ input[type="checkbox"]{width:20px;height:20px;flex:0 0 20px;margin:0;accent-colo
 <div class="modal-backdrop" id="passwordSetupBackdrop" style="z-index:210">
   <div class="modal">
     <div class="row"><h2 style="margin:0">🔐 Güvenlik bilgileri</h2><span class="spacer"></span><button class="icon-btn" id="closePasswordSetupBtn" type="button">✕</button></div>
-    <p class="small muted" style="line-height:1.6">Uygulama girişi ve Maaş bölümü için aynı PIN kullanılır. PIN’i unutursanız kurtarma şifresiyle yeni PIN belirleyebilirsiniz. Var olan güvenlikte yalnızca değiştirmek istediğiniz alanları doldurun.</p>
+    <p class="small muted" id="passwordSetupIntro" style="line-height:1.6">Uygulama girişi ve Maaş bölümü için birbirinden farklı PIN’ler belirleyin. PIN unutulursa kurtarma şifresiyle ilgili PIN yenilenebilir. Var olan güvenlikte yalnızca değiştirmek istediğiniz alanları doldurun.</p>
     <div class="form-grid">
-      <div class="field"><label>PIN (4–6 rakam)</label><input type="password" class="pin-native-input" id="newPin" autocomplete="off" inputmode="numeric" pattern="[0-9]*" maxlength="6" enterkeyhint="next" placeholder="••••"></div>
-      <div class="field"><label>PIN tekrar</label><input type="password" class="pin-native-input" id="newPin2" autocomplete="off" inputmode="numeric" pattern="[0-9]*" maxlength="6" enterkeyhint="next" placeholder="••••"></div>
+      <div class="field"><label>Uygulama PIN’i (4–6 rakam)</label><input type="password" class="pin-native-input" id="newPin" autocomplete="off" inputmode="numeric" pattern="[0-9]*" maxlength="6" enterkeyhint="next" placeholder="••••"></div>
+      <div class="field"><label>Uygulama PIN’i tekrar</label><input type="password" class="pin-native-input" id="newPin2" autocomplete="off" inputmode="numeric" pattern="[0-9]*" maxlength="6" enterkeyhint="next" placeholder="••••"></div>
+      <div class="field"><label>Maaş PIN’i (4–6 rakam)</label><input type="password" class="pin-native-input" id="newSalaryPin" autocomplete="off" inputmode="numeric" pattern="[0-9]*" maxlength="6" enterkeyhint="next" placeholder="••••"></div>
+      <div class="field"><label>Maaş PIN’i tekrar</label><input type="password" class="pin-native-input" id="newSalaryPin2" autocomplete="off" inputmode="numeric" pattern="[0-9]*" maxlength="6" enterkeyhint="next" placeholder="••••"></div>
       <div class="field"><label>Kurtarma şifresi (en az 8 karakter)</label><input type="password" id="newRecovery" autocomplete="new-password"></div>
       <div class="field"><label>Kurtarma şifresi tekrar</label><input type="password" id="newRecovery2" autocomplete="new-password"></div>
     </div>
     <label class="check-row"><input type="checkbox" id="newTwoFactor"><span>İki aşamalı doğrulama<small>PIN + parmak izi</small></span></label>
-    <p class="tiny muted" style="line-height:1.6">İlk kurulumda PIN ve kurtarma şifresi zorunludur. Parmak izini kaydettikten sonra iki aşamalı doğrulama kullanılabilir.</p>
+    <p class="tiny muted" style="line-height:1.6">İlk kurulumda Uygulama PIN’i, Maaş PIN’i ve kurtarma şifresi zorunludur; iki PIN aynı olamaz. İki aşamalı doğrulama yalnızca parmak izi kaydedildikten sonra açılır.</p>
     <p class="small" id="passwordSetupError" style="color:var(--red)"></p>
     <div class="action-grid"><button class="btn primary" id="savePasswordSetupBtn" type="button">Güvenliği Kaydet</button><button class="btn soft" id="skipPasswordSetupBtn" type="button">Şimdilik geç</button></div>
   </div>
@@ -730,20 +731,33 @@ input[type="checkbox"]{width:20px;height:20px;flex:0 0 20px;margin:0;accent-colo
   <div class="modal">
     <div class="row"><h2 style="margin:0">🔑 Şifreyi Unuttum</h2><span class="spacer"></span><button class="icon-btn" id="closeForgotPasswordBtn" type="button" aria-label="Kapat">✕</button></div>
     <form id="forgotRecoveryForm">
-      <p class="small muted" style="line-height:1.6">Yeni PIN belirlemek için daha önce tanımladığınız kurtarma şifresini girin.</p>
-      <div class="field"><label for="forgotRecoveryCode">Kurtarma şifresi</label><input type="password" id="forgotRecoveryCode" autocomplete="current-password" enterkeyhint="done"></div>
+      <p class="small muted" id="forgotRecoveryIntro" style="line-height:1.6">Yeni PIN belirlemek için daha önce tanımladığınız kurtarma şifresini girin.</p>
+      <div class="field"><label id="forgotRecoveryLabel" for="forgotRecoveryCode">Kurtarma şifresi</label><input type="password" id="forgotRecoveryCode" autocomplete="current-password" enterkeyhint="done"></div>
       <p class="small" id="forgotPasswordError" style="color:var(--red);min-height:20px"></p>
       <div class="action-grid"><button class="btn primary" id="verifyRecoveryBtn" type="submit">Doğrula</button><button class="btn soft" id="cancelForgotPasswordBtn" type="button">Vazgeç</button></div>
+      <button class="btn soft block hide" id="forgotBiometricBtn" type="button" style="margin-top:9px">👆 Parmak İziyle Doğrula</button>
     </form>
     <form id="forgotResetForm" class="hide">
-      <div class="previewbox" style="border-color:rgba(52,211,153,.45)">Kurtarma şifresi doğrulandı. Şimdi yeni PIN belirleyin.</div>
+      <div class="previewbox" id="forgotResetInfo" style="border-color:rgba(52,211,153,.45)">Doğrulama tamamlandı. Şimdi yeni PIN belirleyin.</div>
       <div class="form-grid" style="margin-top:12px">
-        <div class="field"><label for="resetPin">Yeni PIN (4–6 rakam)</label><input type="password" class="pin-native-input" id="resetPin" autocomplete="off" inputmode="numeric" pattern="[0-9]*" maxlength="6" enterkeyhint="next" placeholder="••••"></div>
-        <div class="field"><label for="resetPin2">Yeni PIN tekrar</label><input type="password" class="pin-native-input" id="resetPin2" autocomplete="off" inputmode="numeric" pattern="[0-9]*" maxlength="6" enterkeyhint="done" placeholder="••••"></div>
+        <div class="field"><label id="resetPinLabel" for="resetPin">Yeni PIN (4–6 rakam)</label><input type="password" class="pin-native-input" id="resetPin" autocomplete="off" inputmode="numeric" pattern="[0-9]*" maxlength="6" enterkeyhint="next" placeholder="••••"></div>
+        <div class="field"><label id="resetPin2Label" for="resetPin2">Yeni PIN tekrar</label><input type="password" class="pin-native-input" id="resetPin2" autocomplete="off" inputmode="numeric" pattern="[0-9]*" maxlength="6" enterkeyhint="done" placeholder="••••"></div>
       </div>
-      <p class="tiny muted" style="line-height:1.5">PIN alanına dokunduğunuzda sayı klavyesi açılır.</p>
       <p class="small" id="resetPinError" style="color:var(--red);min-height:20px"></p>
       <div class="action-grid"><button class="btn primary" id="saveResetPinBtn" type="submit">Yeni PIN’i Kaydet</button><button class="btn soft" id="cancelResetPinBtn" type="button">Vazgeç</button></div>
+    </form>
+  </div>
+</div>
+
+<!-- GÜVENLİK AYARLARI KAPISI -->
+<div class="modal-backdrop" id="securityGateBackdrop" style="z-index:245">
+  <div class="modal">
+    <div class="row"><h2 style="margin:0">🔐 Uygulama PIN’i Gerekli</h2><span class="spacer"></span><button class="icon-btn" id="closeSecurityGateBtn" type="button" aria-label="Kapat">✕</button></div>
+    <form id="securityGateForm">
+      <p class="small muted" style="line-height:1.6">Güvenlik bilgilerini belirlemek veya değiştirmek için önce Uygulama PIN’inizi girin.</p>
+      <div class="field"><label for="securityGatePin">Uygulama PIN’i</label><input type="password" class="auth-code-input pin-mode" id="securityGatePin" autocomplete="one-time-code" inputmode="numeric" pattern="[0-9]*" maxlength="6" enterkeyhint="done" placeholder="••••" aria-label="Uygulama PIN’i"></div>
+      <p class="small" id="securityGateError" style="color:var(--red);min-height:20px"></p>
+      <div class="action-grid"><button class="btn primary" id="securityGateSubmitBtn" type="submit">Doğrula</button><button class="btn soft" id="cancelSecurityGateBtn" type="button">Vazgeç</button></div>
     </form>
   </div>
 </div>
@@ -2557,35 +2571,84 @@ document.querySelectorAll("[data-arife]").forEach(btn=>btn.onclick=()=>{
 const AUTH_KEY="mesaiTakip_auth_v1";
 const PW_PROMPT_KEY="mesaiTakip_pw_prompt_dismissed";
 let appUnlocked=false; let hiddenAt=0; let postUnlockRan=false;
+function cleanAuthLockout(raw){
+  raw=raw&&typeof raw==="object"&&!Array.isArray(raw)?raw:{};
+  return {
+    failedAttempts:Math.max(0,Number(raw.failedAttempts||0)||0),
+    lockoutLevel:Math.max(0,Number(raw.lockoutLevel||0)||0),
+    lockedUntil:Math.max(0,Number(raw.lockedUntil||0)||0)
+  };
+}
 function normalizeAuthRecord(a,persist=false){
   if(!a||typeof a!=="object"||Array.isArray(a))return null;
   let changed=false;
-  if(a.authVersion!==2){a.authVersion=2;changed=true;}
-  if(a.pinHash){
-    if("salt" in a||"hash" in a){delete a.salt;delete a.hash;changed=true;}
+  if(a.authVersion!==4){a.authVersion=4;changed=true;}
+  // Eski harfli giriş şifresini hemen silme: Kullanıcı yeni Uygulama PIN'ine geçene kadar
+  // yalnızca "ŞİFREYİ unuttum" adımında doğrulama için sakla.
+  if(a.salt&&a.hash&&!a.legacyHash){a.legacySalt=a.salt;a.legacyHash=a.hash;changed=true;}
+  if("salt" in a||"hash" in a){delete a.salt;delete a.hash;changed=true;}
+  if(a.pinSalt&&a.pinHash){
     if(a.needsPinSetup){delete a.needsPinSetup;changed=true;}
-  }else if(a.hash){
-    delete a.salt;delete a.hash;a.needsPinSetup=true;changed=true;
+  }else if(!a.needsPinSetup){a.needsPinSetup=true;changed=true;}
+  if(a.salaryPinSalt&&a.salaryPinHash){
+    if(a.needsSalaryPinSetup){delete a.needsSalaryPinSetup;changed=true;}
+  }else if(!a.needsSalaryPinSetup){a.needsSalaryPinSetup=true;changed=true;}
+  const legacyLockout=cleanAuthLockout({failedAttempts:a.failedAttempts,lockoutLevel:a.lockoutLevel,lockedUntil:a.lockedUntil});
+  if(!a.lockouts||typeof a.lockouts!=="object"||Array.isArray(a.lockouts)){
+    a.lockouts={lock:{...legacyLockout},salary:{...legacyLockout}}; changed=true;
+  }else{
+    const cleanLock=cleanAuthLockout(a.lockouts.lock), cleanSalary=cleanAuthLockout(a.lockouts.salary);
+    if(JSON.stringify(a.lockouts.lock)!==JSON.stringify(cleanLock)||JSON.stringify(a.lockouts.salary)!==JSON.stringify(cleanSalary))changed=true;
+    a.lockouts.lock=cleanLock; a.lockouts.salary=cleanSalary;
   }
-  ["failedAttempts","lockoutLevel","lockedUntil"].forEach(key=>{const value=Math.max(0,Number(a[key]||0)||0);if(a[key]!==value){a[key]=value;changed=true;}});
+  ["failedAttempts","lockoutLevel","lockedUntil"].forEach(key=>{if(key in a){delete a[key];changed=true;}});
+  // Kayıtlı parmak izi olmadan iki aşamalı doğrulama açık görünemez.
+  if(a.twoFactor&&!(a.biometric&&a.biometric.credentialId)){a.twoFactor=false;changed=true;}
+  const hasCredential=!!((a.pinSalt&&a.pinHash)||(a.salaryPinSalt&&a.salaryPinHash)||(a.legacySalt&&a.legacyHash)||(a.recoverySalt&&a.recoveryHash)||(a.biometric&&a.biometric.credentialId));
+  if(!hasCredential){
+    // PIN/şifre tanımlanmadan oluşmuş eksik veya bozuk güvenlik kaydı uygulamayı kilitleyemez.
+    if(persist){try{localStorage.removeItem(AUTH_KEY);}catch(e){}}
+    return null;
+  }
   if(persist&&changed){try{localStorage.setItem(AUTH_KEY,JSON.stringify(a));}catch(e){}}
   return a;
 }
 function loadAuth(){try{return normalizeAuthRecord(JSON.parse(localStorage.getItem(AUTH_KEY)||"null"),true);}catch(e){return null;}}
 function saveAuth(a){const normalized=normalizeAuthRecord(a,false);try{localStorage.setItem(AUTH_KEY,JSON.stringify(normalized));}catch(e){}}
 function hasPinAuth(a){a=a||loadAuth();return !!(a&&a.pinSalt&&a.pinHash);}
+function hasSalaryPinAuth(a){a=a||loadAuth();return !!(a&&a.salaryPinSalt&&a.salaryPinHash);}
+function authScopeName(scope){return scope==="salary"?"salary":"lock";}
+function hasScopePin(a,scope){a=a||loadAuth();return authScopeName(scope)==="salary"?hasSalaryPinAuth(a):hasPinAuth(a);}
+function authLockoutRecord(a,scope){
+  scope=authScopeName(scope); a=a||loadAuth();
+  if(!a)return cleanAuthLockout(null);
+  if(!a.lockouts||typeof a.lockouts!=="object"||Array.isArray(a.lockouts)){
+    const legacy=cleanAuthLockout({failedAttempts:a.failedAttempts,lockoutLevel:a.lockoutLevel,lockedUntil:a.lockedUntil});
+    a.lockouts={lock:{...legacy},salary:{...legacy}};
+  }
+  a.lockouts[scope]=cleanAuthLockout(a.lockouts[scope]);
+  return a.lockouts[scope];
+}
+function hasLegacyPassword(a){a=a||loadAuth();return !!(a&&a.legacySalt&&a.legacyHash);}
+function hasRecoveryPassword(a){a=a||loadAuth();return !!(a&&a.recoverySalt&&a.recoveryHash);}
+function hasBiometricCredential(a){a=a||loadAuth();return !!(a&&a.biometric&&a.biometric.credentialId);}
+function hasResetCredential(a){a=a||loadAuth();return hasLegacyPassword(a)||hasRecoveryPassword(a)||hasBiometricCredential(a);}
 function clearAuth(){try{localStorage.removeItem(AUTH_KEY);}catch(e){}}
 function sessionUnlocked(){try{return sessionStorage.getItem("mesaiUnlocked")==="1";}catch(e){return appUnlocked;}}
 function setSessionUnlocked(v){appUnlocked=v;try{v?sessionStorage.setItem("mesaiUnlocked","1"):sessionStorage.removeItem("mesaiUnlocked");}catch(e){}}
+function fallbackHashPassword(password,salt){
+  const material=salt+"•"+password;
+  let h1=0xdeadbeef,h2=0x41c6ce57; // güvenli olmayan yedek (sadece crypto yoksa)
+  for(let round=0;round<800;round++){for(let i=0;i<material.length;i++){const ch=material.charCodeAt(i);h1=Math.imul(h1^ch,2654435761);h2=Math.imul(h2^ch,1597334677);}}
+  return "fallback-"+(h1>>>0).toString(16)+"-"+(h2>>>0).toString(16);
+}
 async function hashPassword(password,salt){
   const material=salt+"•"+password;
   if(window.crypto&&crypto.subtle){
     const buf=await crypto.subtle.digest("SHA-256",new TextEncoder().encode(material));
     return [...new Uint8Array(buf)].map(b=>b.toString(16).padStart(2,"0")).join("");
   }
-  let h1=0xdeadbeef,h2=0x41c6ce57; // güvenli olmayan yedek (sadece crypto yoksa)
-  for(let round=0;round<800;round++){for(let i=0;i<material.length;i++){const ch=material.charCodeAt(i);h1=Math.imul(h1^ch,2654435761);h2=Math.imul(h2^ch,1597334677);}}
-  return "fallback-"+(h1>>>0).toString(16)+"-"+(h2>>>0).toString(16);
+  return fallbackHashPassword(password,salt);
 }
 function makeSalt(){try{return [...crypto.getRandomValues(new Uint8Array(16))].map(b=>b.toString(16).padStart(2,"0")).join("");}catch(e){return Date.now()+"-"+Math.random();}}
 let pendingAppCodeMethod=null;
@@ -2607,17 +2670,19 @@ function formatAuthLockoutDuration(seconds){
   const minutes=Math.floor(seconds/60), rest=seconds%60;
   return minutes+" dakika"+(rest?" "+rest+" saniye":"");
 }
-function getAuthLockState(a){
-  a=a||loadAuth();
+function getAuthLockState(a,scope){
+  scope=authScopeName(scope); a=a||loadAuth();
   if(!a)return {locked:false,remainingSeconds:0,lockedUntil:0};
-  const until=Math.max(0,Number(a.lockedUntil||0)||0);
+  const record=authLockoutRecord(a,scope);
+  const until=Math.max(0,Number(record.lockedUntil||0)||0);
   const remainingMs=Math.max(0,until-Date.now());
-  if(until&&remainingMs<=0){a.lockedUntil=0;a.failedAttempts=0;saveAuth(a);return {locked:false,remainingSeconds:0,lockedUntil:0};}
+  if(until&&remainingMs<=0){record.lockedUntil=0;record.failedAttempts=0;saveAuth(a);return {locked:false,remainingSeconds:0,lockedUntil:0};}
   return {locked:remainingMs>0,remainingSeconds:Math.ceil(remainingMs/1000),lockedUntil:until};
 }
 function updateAuthLockoutUI(){
-  const a=loadAuth(); const state=getAuthLockState(a);
+  const a=loadAuth(); const states={};
   Object.entries(AUTH_LOCKOUT_UI).forEach(([scope,cfg])=>{
+    const state=getAuthLockState(a,scope); states[scope]=state;
     const input=$(cfg.input), submit=$(cfg.submit), biometric=$(cfg.biometric), error=$(cfg.error), box=$(cfg.box), countdown=$(cfg.countdown), unit=$(cfg.unit);
     if(!input)return;
     const wasLocked=input.dataset.lockout==="1";
@@ -2635,32 +2700,44 @@ function updateAuthLockoutUI(){
     if(biometric)biometric.disabled=state.locked||busy;
     input.dataset.lockout=state.locked?"1":"0";
   });
-  return state;
+  return states;
 }
 function startAuthLockoutTimer(){
   updateAuthLockoutUI();
   if(authLockoutTimer)return;
   authLockoutTimer=setInterval(updateAuthLockoutUI,250);
 }
-function recordAuthFailure(){
-  const a=loadAuth(); if(!hasPinAuth(a))return {locked:false,remainingAttempts:AUTH_MAX_ATTEMPTS,remainingSeconds:0,durationSeconds:0};
-  const current=getAuthLockState(a);
+function recordAuthFailure(scope){
+  scope=authScopeName(scope);
+  const a=loadAuth(); if(!a||(!hasScopePin(a,scope)&&!hasResetCredential(a)))return {locked:false,remainingAttempts:AUTH_MAX_ATTEMPTS,remainingSeconds:0,durationSeconds:0};
+  const current=getAuthLockState(a,scope);
   if(current.locked){updateAuthLockoutUI();return {locked:true,remainingAttempts:0,remainingSeconds:current.remainingSeconds,durationSeconds:current.remainingSeconds};}
-  a.failedAttempts=Math.max(0,Number(a.failedAttempts||0)||0)+1;
-  if(a.failedAttempts>=AUTH_MAX_ATTEMPTS){
-    const durationSeconds=nextAuthLockoutSeconds(a.lockoutLevel);
-    a.failedAttempts=0;
-    a.lockoutLevel=Math.max(0,Number(a.lockoutLevel||0)||0)+1;
-    a.lockedUntil=Date.now()+durationSeconds*1000;
+  const record=authLockoutRecord(a,scope);
+  record.failedAttempts=Math.max(0,Number(record.failedAttempts||0)||0)+1;
+  if(record.failedAttempts>=AUTH_MAX_ATTEMPTS){
+    const durationSeconds=nextAuthLockoutSeconds(record.lockoutLevel);
+    record.failedAttempts=0;
+    record.lockoutLevel=Math.max(0,Number(record.lockoutLevel||0)||0)+1;
+    record.lockedUntil=Date.now()+durationSeconds*1000;
     saveAuth(a);updateAuthLockoutUI();
     return {locked:true,remainingAttempts:0,remainingSeconds:durationSeconds,durationSeconds};
   }
   saveAuth(a);updateAuthLockoutUI();
-  return {locked:false,remainingAttempts:AUTH_MAX_ATTEMPTS-a.failedAttempts,remainingSeconds:0,durationSeconds:0};
+  return {locked:false,remainingAttempts:AUTH_MAX_ATTEMPTS-record.failedAttempts,remainingSeconds:0,durationSeconds:0};
 }
-function recordAuthSuccess(){
+function resetAuthLockoutRecord(a,scope){
+  if(!a)return;
+  const record=authLockoutRecord(a,scope);
+  record.failedAttempts=0;record.lockoutLevel=0;record.lockedUntil=0;
+}
+function recordAuthSuccess(scope){
+  scope=authScopeName(scope);
   const a=loadAuth(); if(!a)return;
-  if(a.failedAttempts||a.lockoutLevel||a.lockedUntil){a.failedAttempts=0;a.lockoutLevel=0;a.lockedUntil=0;saveAuth(a);}
+  const record=authLockoutRecord(a,scope);
+  let changed=false;
+  if(record.failedAttempts||record.lockoutLevel||record.lockedUntil){record.failedAttempts=0;record.lockoutLevel=0;record.lockedUntil=0;changed=true;}
+  if(scope==="lock"&&hasPinAuth(a)&&(a.legacySalt||a.legacyHash)){delete a.legacySalt;delete a.legacyHash;changed=true;}
+  if(changed)saveAuth(a);
   updateAuthLockoutUI();
 }
 function bytesToHex(bytes){return [...new Uint8Array(bytes)].map(b=>b.toString(16).padStart(2,"0")).join("");}
@@ -2676,35 +2753,114 @@ async function deriveSecretHash(secret,salt,iterations){
 async function verifyStoredSecret(secret,salt,stored){
   if(!stored||!salt)return false;
   if(String(stored).startsWith("pbkdf2-")){const iterations=Number(String(stored).split("-")[1]||210000);return await deriveSecretHash(secret,salt,iterations)===stored;}
+  if(String(stored).startsWith("fallback-"))return fallbackHashPassword(secret,salt)===stored;
   return await hashPassword(secret,salt)===stored;
 }
-async function verifyPinCode(code){
-  const a=loadAuth(); if(!hasPinAuth(a)||!/^\d{4,6}$/.test(String(code||"")))return false;
-  return verifyStoredSecret(String(code),a.pinSalt,a.pinHash);
+async function verifyPinCode(code,scope){
+  scope=authScopeName(scope);
+  const a=loadAuth(); if(!hasScopePin(a,scope)||!/^\d{4,6}$/.test(String(code||"")))return false;
+  return scope==="salary"
+    ? verifyStoredSecret(String(code),a.salaryPinSalt,a.salaryPinHash)
+    : verifyStoredSecret(String(code),a.pinSalt,a.pinHash);
 }
+async function verifySalaryPinCode(code){return verifyPinCode(code,"salary");}
 async function verifyRecoveryCode(code){
-  const a=loadAuth(); if(!a||!a.recoveryHash||!code)return false;
+  const a=loadAuth(); if(!hasRecoveryPassword(a)||!code)return false;
   return verifyStoredSecret(String(code),a.recoverySalt,a.recoveryHash);
 }
-function authMethods(a){if(!a)return [];const out=[];if(a.pinHash)out.push("PIN");if(a.recoveryHash)out.push("Kurtarma şifresi");if(a.biometric&&a.biometric.credentialId)out.push("Parmak izi");if(a.twoFactor&&a.biometric&&a.biometric.credentialId)out.push("İki aşamalı");return out;}
+async function verifyLegacyPassword(code){
+  const a=loadAuth(); if(!hasLegacyPassword(a)||!code)return false;
+  return verifyStoredSecret(String(code),a.legacySalt,a.legacyHash);
+}
+async function verifyForgotCode(code){
+  if(await verifyRecoveryCode(code))return "recovery";
+  if(await verifyLegacyPassword(code))return "legacy";
+  const a=loadAuth();
+  if(a&&a.pinHash&&!a.pinSalt&&a.legacySalt&&/^\d{4,6}$/.test(String(code||""))&&await verifyStoredSecret(String(code),a.legacySalt,a.pinHash))return "legacy";
+  return null;
+}
+function authMethods(a){if(!a)return [];const out=[];if(a.pinHash)out.push("Uygulama PIN’i");if(a.salaryPinHash)out.push("Maaş PIN’i");if(a.recoveryHash)out.push("Kurtarma şifresi");if(a.biometric&&a.biometric.credentialId)out.push("Parmak izi");if(a.twoFactor&&a.biometric&&a.biometric.credentialId)out.push("İki aşamalı");if(hasLegacyPassword(a))out.push("Önceki şifre (geçiş)");return out;}
 function biometricAvailable(){return !!(window.isSecureContext&&window.PublicKeyCredential&&navigator.credentials&&navigator.credentials.create&&navigator.credentials.get);}
-async function platformBiometricAvailable(){try{return biometricAvailable()&&await PublicKeyCredential.isUserVerifyingPlatformAuthenticatorAvailable();}catch(e){return false;}}
-async function registerBiometric(){
-  const a=loadAuth(); if(!hasPinAuth(a)){toast("Önce PIN belirleyin");openPasswordSetup();return;}
-  if(!biometricAvailable()){alert("Parmak izi bu tarayıcıda kullanılamıyor. Uygulamayı HTTPS adresinde/PWA olarak açıp tekrar deneyin.");return;}
-  if(!await platformBiometricAvailable()){alert("Bu cihazda parmak izi/cihaz kilidi bulunamadı veya tarayıcı desteklemiyor.");return;}
+let biometricPlatformPromise=null;
+let biometricPlatformCheckedAt=0;
+function platformBiometricAvailable(forceRefresh=false){
+  if(!biometricAvailable()||typeof PublicKeyCredential.isUserVerifyingPlatformAuthenticatorAvailable!=="function")return Promise.resolve(false);
+  if(forceRefresh||!biometricPlatformPromise||Date.now()-biometricPlatformCheckedAt>30000){
+    biometricPlatformCheckedAt=Date.now();
+    biometricPlatformPromise=PublicKeyCredential.isUserVerifyingPlatformAuthenticatorAvailable().then(v=>!!v).catch(()=>false);
+  }
+  return biometricPlatformPromise;
+}
+function friendlyBiometricError(error){
+  const name=error&&error.name?String(error.name):"";
+  const message=error&&error.message?String(error.message):"İşlem iptal edildi.";
+  if(name==="NotAllowedError")return "Parmak izi penceresi onaylanmadı, zaman aşımına uğradı veya iptal edildi. Telefonun ekran kilidi/parmak izi tanımlı olmalı; pencere gelince onaylayın.";
+  if(name==="SecurityError")return "Bu adres parmak izi için uygun değil. Uygulamayı HTTPS adresinden veya ana ekrana eklediğiniz PWA olarak açın; indirilen HTML dosyasında parmak izi çalışmayabilir.";
+  if(name==="NotSupportedError")return "Cihaz veya tarayıcı platform parmak izini desteklemiyor. Güncel Chrome ile deneyin.";
+  if(name==="InvalidStateError")return "Bu cihazda uygulama için zaten bir geçiş anahtarı olabilir. “Parmak izini kaldır” sonrası tekrar kaydetmeyi deneyin.";
+  if(name==="AbortError")return "Parmak izi işlemi iptal edildi.";
+  return message;
+}
+let biometricStatusRequest=0;
+async function refreshBiometricStatus(){
+  const el=$("biometricStatus"); if(!el)return;
+  const request=++biometricStatusRequest;
+  const a=loadAuth();
+  if(hasBiometricCredential(a)){
+    el.textContent="Parmak izi durumu: Kayıtlı. Uygulama ve Maaş kilit ekranında “Parmak İziyle Aç” düğmesini kullanabilirsiniz.";
+    return;
+  }
+  if(!biometricAvailable()){
+    el.textContent="Parmak izi durumu: Bu tarayıcı/bağlantıda kullanılamıyor. Parmak izi için güncel Chrome, HTTPS/PWA ve telefon ekran kilidi gerekir; indirilen HTML dosyasında çalışmayabilir.";
+    return;
+  }
+  el.textContent="Parmak izi durumu: Kontrol ediliyor…";
+  const platformReady=await platformBiometricAvailable();
+  if(request!==biometricStatusRequest)return;
+  el.textContent=platformReady
+    ? "Parmak izi durumu: Cihaz hazır ancak henüz kaydedilmedi. “Parmak izini kaydet” düğmesine basıp telefonun parmak izi penceresini onaylayın."
+    : "Parmak izi durumu: Tarayıcı cihazı hazır olarak bildirmiyor. Telefon Ayarları’nda ekran kilidi ve parmak izi tanımlı olmalı. Yine de “Parmak izini kaydet” düğmesini deneyebilirsiniz.";
+}
+async function registerBiometric(options={}){
+  const a=loadAuth();
+  if(!hasPinAuth(a)&&!hasSalaryPinAuth(a)){toast("Önce PIN belirleyin");openPasswordSetup();return false;}
+  if(!biometricAvailable()){
+    alert("Parmak izi bu tarayıcıda kullanılamıyor. Uygulamayı güncel Chrome ile HTTPS adresinden/PWA olarak açıp, telefonunuzda ekran kilidi ve parmak izi tanımladıktan sonra tekrar deneyin.");
+    refreshBiometricStatus(); return false;
+  }
+  const button=$("registerBiometricBtn"); if(button)button.disabled=true;
   try{
-    const userId=a.biometricUserId?b64UrlToBytes(a.biometricUserId):crypto.getRandomValues(new Uint8Array(16));
+    // Bu ön kontrol bazı Android tarayıcılarında yanlış "yok" sonucu verebildiği için
+    // kaydı engellemez; platform doğrulayıcısını yine de doğrudan çağırmayı deneriz.
+    await platformBiometricAvailable(true);
+    let userId;
+    try{userId=a.biometricUserId?b64UrlToBytes(a.biometricUserId):crypto.getRandomValues(new Uint8Array(16));}
+    catch(e){userId=crypto.getRandomValues(new Uint8Array(16));}
     const challenge=crypto.getRandomValues(new Uint8Array(32));
     const credential=await navigator.credentials.create({publicKey:{challenge,rp:{name:"Mesai Takip",id:location.hostname},user:{id:userId,name:"mesai-kullanici",displayName:"Mesai Takip"},pubKeyCredParams:[{type:"public-key",alg:-7},{type:"public-key",alg:-257}],authenticatorSelection:{authenticatorAttachment:"platform",residentKey:"preferred",userVerification:"required"},timeout:60000,attestation:"none"}});
-    if(!credential)throw new Error("Kimlik oluşturulamadı");
-    const publicKey=credential.response.getPublicKey?credential.response.getPublicKey():null;
-    const alg=credential.response.getPublicKeyAlgorithm?credential.response.getPublicKeyAlgorithm():-7;
-    if(!publicKey)throw new Error("Tarayıcı açık anahtarı vermedi");
+    if(!credential||!credential.rawId)throw new Error("Kimlik oluşturulamadı");
+    let publicKey=null, alg=-7;
+    try{if(credential.response&&typeof credential.response.getPublicKey==="function")publicKey=credential.response.getPublicKey();}catch(e){publicKey=null;}
+    try{if(credential.response&&typeof credential.response.getPublicKeyAlgorithm==="function")alg=credential.response.getPublicKeyAlgorithm();}catch(e){}
     a.biometricUserId=bytesToB64Url(userId);
-    a.biometric={credentialId:bytesToB64Url(credential.rawId),publicKey:bytesToB64Url(publicKey),alg,createdAt:new Date().toISOString()};
-    saveAuth(a);updatePasswordUI();toast("Parmak izi kaydedildi");
-  }catch(e){console.warn(e);alert("Parmak izi kaydedilemedi: "+(e&&e.message?e.message:"İşlem iptal edildi"));}
+    a.biometric={
+      credentialId:bytesToB64Url(credential.rawId),
+      publicKey:publicKey?bytesToB64Url(publicKey):"",
+      alg,
+      localOnly:!publicKey,
+      createdAt:new Date().toISOString()
+    };
+    if(options&&options.enableTwoFactor)a.twoFactor=true;
+    saveAuth(a); updatePasswordUI();
+    if($("view-salary")&&$("view-salary").classList.contains("active")&&typeof renderSalaryLockState==="function")renderSalaryLockState();
+    toast("Parmak izi kaydedildi");
+    return true;
+  }catch(e){
+    console.warn(e);
+    alert("Parmak izi kaydedilemedi: "+friendlyBiometricError(e));
+    refreshBiometricStatus();
+    return false;
+  }finally{if(button)button.disabled=false;}
 }
 function es256SignatureToRaw(signature){
   const der=new Uint8Array(signature); if(der[0]!==0x30)return signature;
@@ -2715,19 +2871,28 @@ function es256SignatureToRaw(signature){
 async function verifyBiometric(){
   const a=loadAuth(); if(!a||!a.biometric||!a.biometric.credentialId)throw new Error("Kayıtlı parmak izi yok");
   if(!biometricAvailable())throw new Error("Parmak izi bu tarayıcıda kullanılamıyor");
+  if(!(window.crypto&&crypto.subtle&&crypto.subtle.digest))throw new Error("Güvenli doğrulama bu tarayıcıda kullanılamıyor");
   const challenge=crypto.getRandomValues(new Uint8Array(32));
-  const assertion=await navigator.credentials.get({publicKey:{challenge,rpId:location.hostname,allowCredentials:[{type:"public-key",id:b64UrlToBytes(a.biometric.credentialId)}],userVerification:"required",timeout:60000}});
+  let assertion;
+  try{
+    assertion=await navigator.credentials.get({publicKey:{challenge,rpId:location.hostname,allowCredentials:[{type:"public-key",id:b64UrlToBytes(a.biometric.credentialId),transports:["internal"]}],userVerification:"required",timeout:60000}});
+  }catch(e){throw new Error(friendlyBiometricError(e));}
   if(!assertion)throw new Error("Parmak izi doğrulanamadı");
   const clientData=JSON.parse(new TextDecoder().decode(assertion.response.clientDataJSON));
   if(clientData.type!=="webauthn.get"||clientData.challenge!==bytesToB64Url(challenge)||clientData.origin!==location.origin)throw new Error("Güvenlik yanıtı doğrulanamadı");
   const authData=new Uint8Array(assertion.response.authenticatorData);
   const expectedRpHash=new Uint8Array(await crypto.subtle.digest("SHA-256",new TextEncoder().encode(location.hostname)));
   if(!expectedRpHash.every((v,i)=>authData[i]===v)||!(authData[32]&1)||!(authData[32]&4))throw new Error("Cihaz doğrulaması tamamlanamadı");
+  // Bazı tarayıcılar kayıt sırasında açık anahtarı vermez. Bu durumda kimlik bilgisi
+  // yalnızca bu cihazın platform doğrulayıcısına özeldir; yukarıdaki challenge + UV
+  // kontrolleriyle başarılı platform onayı yeterli kabul edilir.
+  if(!a.biometric.publicKey)return true;
   const clientHash=await crypto.subtle.digest("SHA-256",assertion.response.clientDataJSON);
   const signed=new Uint8Array(authData.length+32);signed.set(authData,0);signed.set(new Uint8Array(clientHash),authData.length);
   const alg=Number(a.biometric.alg||-7); const keyData=b64UrlToBytes(a.biometric.publicKey); let ok=false;
   if(alg===-7){const key=await crypto.subtle.importKey("spki",keyData,{name:"ECDSA",namedCurve:"P-256"},false,["verify"]);ok=await crypto.subtle.verify({name:"ECDSA",hash:"SHA-256"},key,es256SignatureToRaw(assertion.response.signature),signed);}
   else if(alg===-257){const key=await crypto.subtle.importKey("spki",keyData,{name:"RSASSA-PKCS1-v1_5",hash:"SHA-256"},false,["verify"]);ok=await crypto.subtle.verify({name:"RSASSA-PKCS1-v1_5"},key,assertion.response.signature,signed);}
+  else if(a.biometric.localOnly){return true;}
   else throw new Error("Desteklenmeyen parmak izi anahtarı");
   if(!ok)throw new Error("Parmak izi imzası doğrulanamadı");
   return true;
@@ -2746,7 +2911,7 @@ function configurePinInput(input){
 }
 function setupAuthCodeInputs(){
   Object.values(AUTH_INPUTS).forEach(cfg=>configurePinInput($(cfg.input)));
-  ["lockPassword","salaryUnlockCode","newPin","newPin2","resetPin","resetPin2"].forEach(id=>{
+  ["lockPassword","salaryUnlockCode","newPin","newPin2","newSalaryPin","newSalaryPin2","resetPin","resetPin2","securityGatePin"].forEach(id=>{
     const input=$(id); if(!input)return;
     configurePinInput(input);
     input.addEventListener("input",()=>{input.value=sanitizePinValue(input.value);});
@@ -2758,31 +2923,42 @@ function resetAuthCode(scope){
 }
 setupAuthCodeInputs();
 function updatePasswordUI(){
-  const a=loadAuth(); const configured=hasPinAuth(a);
-  if($("lockBtn"))$("lockBtn").classList.toggle("hide",!configured);
+  const a=loadAuth(); const configuredApp=hasPinAuth(a); const configuredSalary=hasSalaryPinAuth(a); const hasBiometric=hasBiometricCredential(a);
+  if($("lockBtn"))$("lockBtn").classList.toggle("hide",!configuredApp);
   if($("removePasswordBtn"))$("removePasswordBtn").classList.toggle("hide",!a);
-  if($("lockNowBtn"))$("lockNowBtn").classList.toggle("hide",!configured);
-  if($("removeBiometricBtn"))$("removeBiometricBtn").classList.toggle("hide",!(a&&a.biometric&&a.biometric.credentialId));
-  if($("registerBiometricBtn"))$("registerBiometricBtn").textContent=a&&a.biometric&&a.biometric.credentialId?"👆 Parmak izini yenile":"👆 Parmak izini kaydet";
-  if($("twoFactorToggle")){$("twoFactorToggle").checked=!!(a&&a.twoFactor);$("twoFactorToggle").disabled=!configured;}
+  if($("lockNowBtn"))$("lockNowBtn").classList.toggle("hide",!configuredApp);
+  if($("removeBiometricBtn"))$("removeBiometricBtn").classList.toggle("hide",!hasBiometric);
+  if($("registerBiometricBtn"))$("registerBiometricBtn").textContent=hasBiometric?"👆 Parmak izini yenile":"👆 Parmak izini kaydet";
+  if($("twoFactorToggle")){$("twoFactorToggle").checked=!!(a&&a.twoFactor&&hasBiometric);$("twoFactorToggle").disabled=!configuredApp&&!configuredSalary;}
   if($("securityMethods"))$("securityMethods").innerHTML=authMethods(a).map(x=>"<span>"+esc(x)+"</span>").join("");
-  if($("lockBiometricBtn"))$("lockBiometricBtn").classList.toggle("hide",!(configured&&a.biometric&&a.biometric.credentialId));
-  Object.values(AUTH_INPUTS).forEach(cfg=>configurePinInput($(cfg.input)));
-  if($("passwordStatus"))$("passwordStatus").textContent=configured?"Güvenlik kullanılıyor. Uygulama açılışında ve Maaş menüsünde aynı PIN istenir.":(a?"Güvenlik eksik. Uygulama ve Maaş için PIN belirleyin.":"Güvenlik kullanılmıyor. Maaş bölümünü açmak için PIN ve kurtarma şifresi belirleyin.");
+  if($("lockBiometricBtn"))$("lockBiometricBtn").classList.toggle("hide",!(configuredApp&&hasBiometric));
+  if($("passwordStatus")){
+    let status;
+    if(configuredApp&&configuredSalary)status="Güvenlik kullanılıyor. Uygulama açılışında Uygulama PIN’i, Maaş menüsünde farklı Maaş PIN’i istenir.";
+    else if(configuredApp)status="Uygulama PIN’i hazır. Maaş bölümünü açmak için Uygulama PIN’inden farklı bir Maaş PIN’i belirleyin.";
+    else if(configuredSalary)status="Maaş PIN’i hazır. Uygulamanın girişinden de kilitlenebilmesi için Uygulama PIN’i belirleyin.";
+    else if(hasLegacyPassword(a))status="Önceki harfli şifreniz bulundu ancak tanımlı PIN yok. Uygulama kilitlenmeden açılır; Uygulama ve Maaş için farklı PIN’ler belirleyin.";
+    else if(a)status="Güvenlik eksik. Uygulama ve Maaş için birbirinden farklı PIN’ler belirleyin.";
+    else status="Güvenlik kullanılmıyor. Uygulama PIN’i, Maaş PIN’i ve kurtarma şifresi belirleyin.";
+    if(hasLegacyPassword(a)&&(configuredApp||configuredSalary))status+=" Önceki harfli şifreniz yalnızca PIN yenilemede geçici olarak tutulur.";
+    $("passwordStatus").textContent=status;
+  }
+  refreshBiometricStatus();
   updateAuthLockoutUI();
 }
 function lockApp(){
   if(!hasPinAuth())return;
   setSessionUnlocked(false); pendingAppCodeMethod=null; lockSalary();
+  if(typeof closeSecurityGate==="function")closeSecurityGate(false);
   if(typeof closeForgotPassword==="function")closeForgotPassword();
   updatePasswordUI();
   document.body.classList.add("locked"); $("lockScreen").classList.remove("hide");
-  $("lockPassword").value=""; if(!getAuthLockState().locked)$("lockError").textContent="";
+  $("lockPassword").value=""; if(!getAuthLockState(null,"lock").locked)$("lockError").textContent="";
   configurePinInput($("lockPassword")); updateAuthLockoutUI();
   closeArifePrompt();
 }
 function completeUnlock(method){
-  if(method&&method!=="none")recordAuthSuccess();
+  if(method&&method!=="none")recordAuthSuccess("lock");
   pendingAppCodeMethod=null; if($("lockPassword"))$("lockPassword").value=""; setSessionUnlocked(true);
   document.body.classList.remove("locked"); $("lockScreen").classList.add("hide");
   if(!postUnlockRan){postUnlockRan=true; setTimeout(()=>{checkArifePrompt(); maybeAutoPull();},350);}
@@ -2791,16 +2967,16 @@ function unlockApp(){completeUnlock("pin");}
 $("lockForm").addEventListener("submit",async e=>{
   e.preventDefault(); if(authVerifyBusy.lock)return;
   const a=loadAuth(); if(!hasPinAuth(a)){completeUnlock("none");return;}
-  const lockState=getAuthLockState(a); updateAuthLockoutUI();
+  const lockState=getAuthLockState(a,"lock"); updateAuthLockoutUI();
   if(lockState.locked){$("lockError").style.color="var(--red)";$("lockError").textContent="Giriş geçici olarak kilitli. Sürenin dolmasını bekleyin.";return;}
   if(!/^\d{4,6}$/.test($("lockPassword").value)){$("lockError").style.color="var(--red)";$("lockError").textContent="4–6 haneli PIN girin.";return;}
   authVerifyBusy.lock=true; updateAuthLockoutUI();
   try{
-    const ok=await verifyPinCode($("lockPassword").value);
+    const ok=await verifyPinCode($("lockPassword").value,"lock");
     if(!ok){
-      const fail=recordAuthFailure(); resetAuthCode("lock");
+      const fail=recordAuthFailure("lock"); resetAuthCode("lock");
       $("lockError").style.color="var(--red)";
-      $("lockError").textContent=fail.locked?("3 yanlış PIN nedeniyle giriş "+formatAuthLockoutDuration(fail.durationSeconds)+" kilitlendi."):("PIN yanlış. Kalan deneme: "+fail.remainingAttempts+".");
+      $("lockError").textContent=fail.locked?("3 yanlış Uygulama PIN’i nedeniyle giriş "+formatAuthLockoutDuration(fail.durationSeconds)+" kilitlendi."):("Uygulama PIN’i yanlış. Kalan deneme: "+fail.remainingAttempts+".");
       return;
     }
     if(a.twoFactor&&a.biometric&&a.biometric.credentialId){
@@ -2813,7 +2989,7 @@ $("lockForm").addEventListener("submit",async e=>{
 });
 $("lockBiometricBtn").onclick=async()=>{
   const a=loadAuth(); if(!hasPinAuth(a)||authVerifyBusy.lock)return;
-  const lockState=getAuthLockState(a); updateAuthLockoutUI();
+  const lockState=getAuthLockState(a,"lock"); updateAuthLockoutUI();
   if(lockState.locked){$("lockError").style.color="var(--red)";$("lockError").textContent="Giriş geçici olarak kilitli. Sürenin dolmasını bekleyin.";return;}
   if(a.twoFactor&&a.biometric&&a.biometric.credentialId&&!pendingAppCodeMethod){$("lockError").style.color="var(--red)";$("lockError").textContent="İki aşamalı doğrulama açık: önce PIN’inizi girin.";return;}
   authVerifyBusy.lock=true; updateAuthLockoutUI();
@@ -2824,6 +3000,13 @@ function setAuthScopeError(scope,text,color="var(--red)"){
   const el=$(scope==="salary"?"salaryLockError":"lockError"); if(!el)return;
   el.style.color=color; el.textContent=text;
 }
+function syncForgotResetLabels(verifiedText){
+  const pinName=forgotPasswordScope==="salary"?"Maaş PIN’i":"Uygulama PIN’i";
+  if(verifiedText)$("forgotResetInfo").textContent=verifiedText+" Şimdi yeni "+pinName+" belirleyin. Diğer PIN ile aynı olamaz.";
+  if($("resetPinLabel"))$("resetPinLabel").textContent="Yeni "+pinName+" (4–6 rakam)";
+  if($("resetPin2Label"))$("resetPin2Label").textContent="Yeni "+pinName+" tekrar";
+  if($("saveResetPinBtn"))$("saveResetPinBtn").textContent="Yeni "+pinName+"ni Kaydet";
+}
 function openForgotPassword(scope){
   forgotPasswordScope=scope==="salary"?"salary":"lock";
   forgotRecoveryVerified=false;
@@ -2831,11 +3014,34 @@ function openForgotPassword(scope){
   $("forgotResetForm").classList.add("hide");
   $("forgotRecoveryCode").value=""; $("resetPin").value=""; $("resetPin2").value="";
   $("forgotPasswordError").textContent=""; $("resetPinError").textContent="";
-  const a=loadAuth(); const hasRecovery=!!(a&&a.recoveryHash);
-  $("verifyRecoveryBtn").disabled=!hasRecovery;
-  if(!hasRecovery)$("forgotPasswordError").textContent="Kurtarma şifresi tanımlı değil. PIN ile giriş yaptıktan sonra Ayarlar bölümünden kurtarma şifresi belirleyin.";
+  const a=loadAuth();
+  const hasRecovery=hasRecoveryPassword(a), hasLegacy=hasLegacyPassword(a), hasBiometric=hasBiometricCredential(a);
+  const canUseCode=hasRecovery||hasLegacy;
+  $("verifyRecoveryBtn").disabled=!canUseCode;
+  $("forgotBiometricBtn").classList.toggle("hide",!hasBiometric);
+  if(hasRecovery&&hasLegacy){
+    $("forgotRecoveryIntro").textContent="Yeni PIN belirlemek için kurtarma şifrenizi veya önceki harfli giriş şifrenizi girin.";
+    $("forgotRecoveryLabel").textContent="Kurtarma / önceki giriş şifresi";
+  }else if(hasLegacy){
+    $("forgotRecoveryIntro").textContent="Yeni PIN belirlemek için önceki harfli giriş şifrenizi girin.";
+    $("forgotRecoveryLabel").textContent="Önceki giriş şifresi";
+  }else if(hasRecovery){
+    $("forgotRecoveryIntro").textContent="Yeni PIN belirlemek için daha önce tanımladığınız kurtarma şifresini girin.";
+    $("forgotRecoveryLabel").textContent="Kurtarma şifresi";
+  }else if(hasBiometric){
+    $("forgotRecoveryIntro").textContent="Kurtarma şifresi tanımlı değil. Parmak izinizle doğrulayıp yeni PIN belirleyebilirsiniz.";
+    $("forgotRecoveryLabel").textContent="Kurtarma şifresi";
+    $("forgotPasswordError").textContent="Kurtarma şifresi yok; aşağıdaki parmak izi düğmesini kullanın.";
+  }else{
+    $("forgotRecoveryIntro").textContent="Yeni PIN belirlemek için tanımlı bir kurtarma yolu bulunamadı.";
+    $("forgotRecoveryLabel").textContent="Kurtarma şifresi";
+    $("forgotPasswordError").textContent="Kurtarma şifresi veya önceki giriş şifresi tanımlı değil.";
+  }
+  const forgotPinName=forgotPasswordScope==="salary"?"Maaş PIN’i":"Uygulama PIN’i";
+  $("forgotRecoveryIntro").textContent=$("forgotRecoveryIntro").textContent.replace("Yeni PIN","Yeni "+forgotPinName).replace("yeni PIN","yeni "+forgotPinName);
+  syncForgotResetLabels("");
   $("forgotPasswordBackdrop").classList.add("open");
-  if(hasRecovery)setTimeout(()=>$("forgotRecoveryCode").focus(),80);
+  if(canUseCode)setTimeout(()=>$("forgotRecoveryCode").focus(),80);
 }
 function closeForgotPassword(){
   const backdrop=$("forgotPasswordBackdrop"); if(backdrop)backdrop.classList.remove("open");
@@ -2855,81 +3061,249 @@ $("forgotRecoveryForm").addEventListener("submit",async e=>{
   e.preventDefault();
   const code=$("forgotRecoveryCode").value;
   const error=$("forgotPasswordError");
-  if(!code){error.textContent="Kurtarma şifresini girin.";return;}
-  const wasLocked=getAuthLockState().locked;
+  if(!code){error.textContent="Şifreyi girin.";return;}
+  const wasLocked=getAuthLockState(null,forgotPasswordScope).locked;
   $("verifyRecoveryBtn").disabled=true;
   try{
-    const ok=await verifyRecoveryCode(code);
-    if(!ok){
-      if(wasLocked){error.textContent="Kurtarma şifresi yanlış.";return;}
-      const fail=recordAuthFailure();
+    const method=await verifyForgotCode(code);
+    if(!method){
+      if(wasLocked){error.textContent="Girdiğiniz şifre yanlış.";return;}
+      const fail=recordAuthFailure(forgotPasswordScope);
       if(fail.locked){
         closeForgotPassword();
         setAuthScopeError(forgotPasswordScope,"3 yanlış deneme nedeniyle giriş "+formatAuthLockoutDuration(fail.durationSeconds)+" kilitlendi.");
       }else{
-        error.textContent="Kurtarma şifresi yanlış. Kalan deneme: "+fail.remainingAttempts+".";
+        error.textContent="Girdiğiniz şifre yanlış. Kalan deneme: "+fail.remainingAttempts+".";
       }
       return;
     }
     forgotRecoveryVerified=true;
+    syncForgotResetLabels(method==="legacy"?"Önceki giriş şifresi doğrulandı.":"Kurtarma şifresi doğrulandı.");
     $("forgotRecoveryCode").value="";
     $("forgotRecoveryForm").classList.add("hide");
     $("forgotResetForm").classList.remove("hide");
     $("resetPinError").textContent="";
     setTimeout(()=>$("resetPin").focus(),80);
-  }finally{$("verifyRecoveryBtn").disabled=false;updateAuthLockoutUI();}
+  }finally{$("verifyRecoveryBtn").disabled=!(hasRecoveryPassword()||hasLegacyPassword());updateAuthLockoutUI();}
 });
+$("forgotBiometricBtn").onclick=async()=>{
+  const error=$("forgotPasswordError");
+  $("forgotBiometricBtn").disabled=true;
+  try{
+    await verifyBiometric();
+    forgotRecoveryVerified=true;
+    $("forgotRecoveryCode").value="";
+    $("forgotRecoveryForm").classList.add("hide");
+    $("forgotResetForm").classList.remove("hide");
+    syncForgotResetLabels("Parmak izi doğrulandı.");
+    $("resetPinError").textContent="";
+    setTimeout(()=>$("resetPin").focus(),80);
+  }catch(err){
+    error.textContent=err.message||"Parmak izi doğrulanamadı.";
+  }finally{$("forgotBiometricBtn").disabled=false;updateAuthLockoutUI();}
+};
 $("forgotResetForm").addEventListener("submit",async e=>{
   e.preventDefault();
   const error=$("resetPinError");
+  const scope=forgotPasswordScope;
+  const pinName=scope==="salary"?"Maaş PIN’i":"Uygulama PIN’i";
+  const otherPinName=scope==="salary"?"Uygulama PIN’i":"Maaş PIN’i";
   if(!forgotRecoveryVerified){error.textContent="Önce kurtarma şifresini doğrulayın.";return;}
   const pin1=sanitizePinValue($("resetPin").value), pin2=sanitizePinValue($("resetPin2").value);
   $("resetPin").value=pin1; $("resetPin2").value=pin2;
-  if(!/^\d{4,6}$/.test(pin1)){error.textContent="Yeni PIN 4–6 rakam olmalı.";return;}
-  if(pin1!==pin2){error.textContent="Yeni PIN'ler eşleşmiyor.";return;}
+  if(!/^\d{4,6}$/.test(pin1)){error.textContent="Yeni "+pinName+" 4–6 rakam olmalı.";return;}
+  if(pin1!==pin2){error.textContent="Yeni "+pinName+" alanları eşleşmiyor.";return;}
   const a=loadAuth(); if(!a){error.textContent="Güvenlik bilgisi bulunamadı.";return;}
   $("saveResetPinBtn").disabled=true;
   try{
-    a.pinSalt=makeSalt(); a.pinHash=await deriveSecretHash(pin1,a.pinSalt,210000);
-    delete a.salt; delete a.hash; delete a.needsPinSetup;
-    a.authVersion=2; a.failedAttempts=0; a.lockoutLevel=0; a.lockedUntil=0; a.updatedAt=new Date().toISOString();
+    const otherSalt=scope==="salary"?a.pinSalt:a.salaryPinSalt;
+    const otherHash=scope==="salary"?a.pinHash:a.salaryPinHash;
+    if(otherSalt&&otherHash&&await verifyStoredSecret(pin1,otherSalt,otherHash)){
+      error.textContent=pinName+", "+otherPinName+" ile aynı olamaz. Farklı bir PIN belirleyin.";
+      return;
+    }
+    if(scope==="salary"){
+      a.salaryPinSalt=makeSalt(); a.salaryPinHash=await deriveSecretHash(pin1,a.salaryPinSalt,210000); delete a.needsSalaryPinSetup;
+    }else{
+      a.pinSalt=makeSalt(); a.pinHash=await deriveSecretHash(pin1,a.pinSalt,210000); delete a.needsPinSetup;
+    }
+    delete a.salt; delete a.hash; delete a.legacySalt; delete a.legacyHash;
+    a.authVersion=4; resetAuthLockoutRecord(a,scope); a.updatedAt=new Date().toISOString();
     saveAuth(a); closeForgotPassword(); updatePasswordUI();
-    if(forgotPasswordScope==="salary"){unlockSalary("pin-reset");toast("Yeni PIN kaydedildi. Maaş bölümü açıldı.");}
-    else{completeUnlock("pin-reset");toast("Yeni PIN kaydedildi.");}
+    if(scope==="salary"){unlockSalary("pin-reset");toast("Yeni Maaş PIN’i kaydedildi. Maaş bölümü açıldı.");}
+    else{completeUnlock("pin-reset");toast("Yeni Uygulama PIN’i kaydedildi.");}
   }finally{$("saveResetPinBtn").disabled=false;updateAuthLockoutUI();}
 });
-function openPasswordSetup(){ ["newPin","newPin2","newRecovery","newRecovery2"].forEach(id=>$(id).value="");const a=loadAuth();$("newTwoFactor").checked=!!(a&&a.twoFactor);$("passwordSetupError").textContent="";$("passwordSetupBackdrop").classList.add("open"); }
+let securityGateResolve=null;
+let securityGateBusy=false;
+function closeSecurityGate(result){
+  const resolve=securityGateResolve; securityGateResolve=null; securityGateBusy=false;
+  if($("securityGateBackdrop"))$("securityGateBackdrop").classList.remove("open");
+  if($("securityGatePin")){$("securityGatePin").value="";$("securityGatePin").disabled=false;}
+  if($("securityGateSubmitBtn"))$("securityGateSubmitBtn").disabled=false;
+  if($("securityGateError"))$("securityGateError").textContent="";
+  if(resolve)resolve(!!result);
+}
+function requireSecurityAccess(){
+  const a=loadAuth();
+  if(!hasPinAuth(a))return Promise.resolve(true);
+  if(securityGateResolve)return Promise.resolve(false);
+  if(getAuthLockState(a,"lock").locked){lockApp();return Promise.resolve(false);}
+  return new Promise(resolve=>{
+    securityGateResolve=resolve;
+    if($("securityGatePin")){$("securityGatePin").value="";configurePinInput($("securityGatePin"));}
+    if($("securityGateError"))$("securityGateError").textContent="";
+    $("securityGateBackdrop").classList.add("open");
+    setTimeout(()=>{if($("securityGatePin"))$("securityGatePin").focus();},80);
+  });
+}
+async function openPasswordSetup(){
+  if(await requireSecurityAccess())showPasswordSetup();
+}
+function showPasswordSetup(){
+  ["newPin","newPin2","newSalaryPin","newSalaryPin2","newRecovery","newRecovery2"].forEach(id=>{if($(id))$(id).value="";});
+  const a=loadAuth(); const configuredApp=hasPinAuth(a); const configuredSalary=hasSalaryPinAuth(a);
+  $("newTwoFactor").checked=!!(a&&a.twoFactor&&hasBiometricCredential(a)); $("passwordSetupError").textContent="";
+  if(hasLegacyPassword(a)&&!configuredApp&&!configuredSalary)$("passwordSetupIntro").textContent="Önceki harfli şifreniz bulundu. Yeni sistemde uygulama girişi ve Maaş için birbirinden farklı 4–6 haneli PIN’ler oluşturun. İsterseniz Şimdilik geç ile uygulamaya devam edebilirsiniz.";
+  else if(!configuredApp&&!configuredSalary)$("passwordSetupIntro").textContent="Tanımlı PIN yok. Uygulama kilitlenmeden açılır; güvenlik için birbirinden farklı Uygulama PIN’i, Maaş PIN’i ve kurtarma şifresi belirleyin. İsterseniz Şimdilik geç ile devam edebilirsiniz.";
+  else if(configuredApp&&!configuredSalary)$("passwordSetupIntro").textContent="Uygulama PIN’i hazır. Maaş bölümü için Uygulama PIN’inden farklı bir Maaş PIN’i belirleyin. Uygulama PIN’ini değiştirmek istemiyorsanız o alanları boş bırakabilirsiniz.";
+  else if(!configuredApp&&configuredSalary)$("passwordSetupIntro").textContent="Maaş PIN’i hazır. Uygulamanın girişten de kilitlenmesi için Maaş PIN’inden farklı bir Uygulama PIN’i belirleyin.";
+  else $("passwordSetupIntro").textContent="Uygulama girişi ve Maaş bölümü için birbirinden farklı PIN’ler kullanılır. Yalnızca değiştirmek istediğiniz PIN alanlarını doldurun; iki PIN aynı olamaz.";
+  $("passwordSetupBackdrop").classList.add("open");
+  const firstMissing=!configuredApp?$("newPin"):(!configuredSalary?$("newSalaryPin"):null);
+  if(firstMissing)setTimeout(()=>firstMissing.focus(),80);
+}
 function closePasswordSetup(){ $("passwordSetupBackdrop").classList.remove("open"); }
+$("securityGateForm").addEventListener("submit",async e=>{
+  e.preventDefault(); if(securityGateBusy)return;
+  const error=$("securityGateError");
+  const a=loadAuth();
+  if(!hasPinAuth(a)){closeSecurityGate(true);return;}
+  if(getAuthLockState(a,"lock").locked){closeSecurityGate(false);lockApp();return;}
+  const pin=sanitizePinValue($("securityGatePin").value); $("securityGatePin").value=pin;
+  if(!/^\d{4,6}$/.test(pin)){error.textContent="4–6 haneli Uygulama PIN’i girin.";return;}
+  securityGateBusy=true; $("securityGatePin").disabled=true; $("securityGateSubmitBtn").disabled=true;
+  try{
+    const ok=await verifyPinCode(pin,"lock");
+    if(!ok){
+      const fail=recordAuthFailure("lock");
+      if(fail.locked){
+        closeSecurityGate(false); lockApp();
+        setAuthScopeError("lock","3 yanlış Uygulama PIN’i nedeniyle giriş "+formatAuthLockoutDuration(fail.durationSeconds)+" kilitlendi.");
+      }else{
+        error.textContent="Uygulama PIN’i yanlış. Kalan deneme: "+fail.remainingAttempts+".";
+        $("securityGatePin").value="";
+      }
+      return;
+    }
+    recordAuthSuccess("lock");
+    closeSecurityGate(true);
+  }finally{
+    securityGateBusy=false;
+    if($("securityGateBackdrop")&&$("securityGateBackdrop").classList.contains("open")){
+      $("securityGatePin").disabled=false; $("securityGateSubmitBtn").disabled=false;
+      setTimeout(()=>$("securityGatePin").focus(),50);
+    }
+  }
+});
+$("closeSecurityGateBtn").onclick=()=>closeSecurityGate(false);
+$("cancelSecurityGateBtn").onclick=()=>closeSecurityGate(false);
+$("securityGateBackdrop").addEventListener("click",e=>{if(e.target.id==="securityGateBackdrop")closeSecurityGate(false);});
 $("setPasswordBtn").onclick=openPasswordSetup;
 $("closePasswordSetupBtn").onclick=()=>{try{localStorage.setItem(PW_PROMPT_KEY,"1");}catch(e){}closePasswordSetup();};
-$("skipPasswordSetupBtn").onclick=()=>{try{localStorage.setItem(PW_PROMPT_KEY,"1");}catch(e){}closePasswordSetup();toast("PIN’i Ayarlar bölümünden oluşturabilirsiniz");};
+$("skipPasswordSetupBtn").onclick=()=>{try{localStorage.setItem(PW_PROMPT_KEY,"1");}catch(e){}closePasswordSetup();toast("PIN’leri Ayarlar bölümünden oluşturabilirsiniz");};
 $("savePasswordSetupBtn").onclick=async()=>{
   const existing=loadAuth()||{};
-  const pin1=sanitizePinValue($("newPin").value), pin2=sanitizePinValue($("newPin2").value), r1=$("newRecovery").value, r2=$("newRecovery2").value;
-  $("newPin").value=pin1; $("newPin2").value=pin2;
+  const appPin1=sanitizePinValue($("newPin").value), appPin2=sanitizePinValue($("newPin2").value);
+  const salaryPin1=sanitizePinValue($("newSalaryPin").value), salaryPin2=sanitizePinValue($("newSalaryPin2").value);
+  const r1=$("newRecovery").value, r2=$("newRecovery2").value;
+  $("newPin").value=appPin1; $("newPin2").value=appPin2; $("newSalaryPin").value=salaryPin1; $("newSalaryPin2").value=salaryPin2;
   const err=t=>{$("passwordSetupError").textContent=t;};
-  if(!existing.pinHash&&!pin1)return err("İlk kurulumda PIN zorunludur.");
-  if(pin1||pin2){if(!/^\d{4,6}$/.test(pin1))return err("PIN 4–6 rakam olmalı.");if(pin1!==pin2)return err("PIN'ler eşleşmiyor.");}
+  const hasExistingApp=hasPinAuth(existing), hasExistingSalary=hasSalaryPinAuth(existing);
+  if(!hasExistingApp&&!appPin1)return err("İlk kurulumda Uygulama PIN’i zorunludur.");
+  if(appPin1||appPin2){if(!/^\d{4,6}$/.test(appPin1))return err("Uygulama PIN’i 4–6 rakam olmalı.");if(appPin1!==appPin2)return err("Uygulama PIN’leri eşleşmiyor.");}
+  if(!hasExistingSalary&&!salaryPin1)return err("Maaş PIN’i zorunludur. Uygulama PIN’inden farklı bir PIN belirleyin.");
+  if(salaryPin1||salaryPin2){if(!/^\d{4,6}$/.test(salaryPin1))return err("Maaş PIN’i 4–6 rakam olmalı.");if(salaryPin1!==salaryPin2)return err("Maaş PIN’leri eşleşmiyor.");}
+  if(appPin1&&salaryPin1&&appPin1===salaryPin1)return err("Maaş PIN’i, Uygulama PIN’i ile aynı olamaz. Farklı bir Maaş PIN’i belirleyin.");
   if(!existing.recoveryHash&&!r1)return err("İlk kurulumda kurtarma şifresi zorunludur.");
   if(r1||r2){if(r1.length<8)return err("Kurtarma şifresi en az 8 karakter olmalı.");if(r1!==r2)return err("Kurtarma şifreleri eşleşmiyor.");}
-  const next={...existing,authVersion:2,createdAt:existing.createdAt||new Date().toISOString(),updatedAt:new Date().toISOString(),twoFactor:$("newTwoFactor").checked};
-  delete next.salt; delete next.hash; delete next.needsPinSetup;
-  if(next.twoFactor&&!(next.biometric&&next.biometric.credentialId)){toast("İki aşamalı doğrulama parmak izi kaydedilince etkin olur");}
-  if(pin1){next.pinSalt=makeSalt();next.pinHash=await deriveSecretHash(pin1,next.pinSalt,210000);next.failedAttempts=0;next.lockoutLevel=0;next.lockedUntil=0;}
-  if(r1){next.recoverySalt=makeSalt();next.recoveryHash=await deriveSecretHash(r1,next.recoverySalt,210000);}
-  saveAuth(next);
-  closePasswordSetup(); updatePasswordUI(); completeUnlock("setup"); toast("Güvenlik bilgileri kaydedildi");
+  const saveButton=$("savePasswordSetupBtn"); saveButton.disabled=true;
+  try{
+    if(appPin1&&!salaryPin1&&hasExistingSalary&&await verifyStoredSecret(appPin1,existing.salaryPinSalt,existing.salaryPinHash)){
+      err("Uygulama PIN’i, kayıtlı Maaş PIN’i ile aynı olamaz. Farklı bir Uygulama PIN’i belirleyin."); return;
+    }
+    if(salaryPin1&&!appPin1&&hasExistingApp&&await verifyStoredSecret(salaryPin1,existing.pinSalt,existing.pinHash)){
+      err("Maaş PIN’i, kayıtlı Uygulama PIN’i ile aynı olamaz. Farklı bir Maaş PIN’i belirleyin."); return;
+    }
+    const wantsTwoFactor=$("newTwoFactor").checked;
+    const biometricReady=hasBiometricCredential(existing);
+    const next={...existing,authVersion:4,createdAt:existing.createdAt||new Date().toISOString(),updatedAt:new Date().toISOString(),twoFactor:wantsTwoFactor&&biometricReady};
+    delete next.salt; delete next.hash;
+    if(appPin1){next.pinSalt=makeSalt();next.pinHash=await deriveSecretHash(appPin1,next.pinSalt,210000);resetAuthLockoutRecord(next,"lock");}
+    if(salaryPin1){next.salaryPinSalt=makeSalt();next.salaryPinHash=await deriveSecretHash(salaryPin1,next.salaryPinSalt,210000);resetAuthLockoutRecord(next,"salary");}
+    if(r1){next.recoverySalt=makeSalt();next.recoveryHash=await deriveSecretHash(r1,next.recoverySalt,210000);}
+    if(next.pinSalt&&next.pinHash){delete next.legacySalt;delete next.legacyHash;delete next.needsPinSetup;}
+    if(next.salaryPinSalt&&next.salaryPinHash)delete next.needsSalaryPinSetup;
+    saveAuth(next);
+    closePasswordSetup(); updatePasswordUI(); completeUnlock("setup");
+    toast(wantsTwoFactor&&!biometricReady?"Güvenlik kaydedildi. İki aşamalı doğrulama için parmak izinizi de kaydedin.":"Güvenlik bilgileri kaydedildi");
+  }finally{saveButton.disabled=false;}
 };
-$("removePasswordBtn").onclick=()=>{if(!confirm("PIN, kurtarma şifresi ve parmak izi kaldırılsın mı? Maaş bölümü de kilitlenemeden kullanılamaz."))return;clearAuth();lockSalary();setSessionUnlocked(true);updatePasswordUI();toast("Güvenlik kaldırıldı");};
-$("registerBiometricBtn").onclick=registerBiometric;
-$("removeBiometricBtn").onclick=()=>{const a=loadAuth();if(!a)return;if(!confirm("Kayıtlı parmak izi kaldırılsın mı?"))return;delete a.biometric;a.twoFactor=false;saveAuth(a);updatePasswordUI();toast("Parmak izi kaldırıldı");};
-$("twoFactorToggle").addEventListener("change",e=>{const a=loadAuth();if(!hasPinAuth(a)){e.target.checked=false;toast("Önce PIN belirleyin");return;}if(e.target.checked&&!(a.biometric&&a.biometric.credentialId)){toast("Önce parmak izinizi kaydedin");}a.twoFactor=e.target.checked;saveAuth(a);updatePasswordUI();});
+$("removePasswordBtn").onclick=async()=>{
+  if(!(await requireSecurityAccess()))return;
+  if(!confirm("Uygulama PIN’i, Maaş PIN’i, kurtarma şifresi ve parmak izi kaldırılsın mı? Maaş bölümü, yeni güvenlik belirlenene kadar kullanılamaz."))return;
+  clearAuth(); lockSalary(); setSessionUnlocked(true); updatePasswordUI(); toast("Güvenlik kaldırıldı");
+};
+$("registerBiometricBtn").onclick=async()=>{if(await requireSecurityAccess())registerBiometric();};
+$("removeBiometricBtn").onclick=async()=>{
+  if(!(await requireSecurityAccess()))return;
+  const a=loadAuth(); if(!a)return;
+  if(!confirm("Kayıtlı parmak izi kaldırılsın mı?"))return;
+  delete a.biometric; a.twoFactor=false; saveAuth(a); updatePasswordUI();
+  if($("view-salary")&&$("view-salary").classList.contains("active")&&typeof renderSalaryLockState==="function")renderSalaryLockState();
+  toast("Parmak izi kaldırıldı");
+};
+$("twoFactorToggle").addEventListener("change",async e=>{
+  const desired=e.target.checked;
+  const before=loadAuth();
+  e.target.checked=!!(before&&before.twoFactor&&hasBiometricCredential(before));
+  if(!hasPinAuth(before)&&!hasSalaryPinAuth(before)){toast("Önce PIN belirleyin");openPasswordSetup();return;}
+  if(!(await requireSecurityAccess())){updatePasswordUI();return;}
+  let a=loadAuth(); if(!a){updatePasswordUI();return;}
+  if(desired&&!hasBiometricCredential(a)){
+    toast("İki aşamalı doğrulama için parmak izinizi kaydedin");
+    const registered=await registerBiometric({enableTwoFactor:true});
+    updatePasswordUI();
+    if(registered)toast("İki aşamalı doğrulama açıldı");
+    return;
+  }
+  a.twoFactor=desired; saveAuth(a); updatePasswordUI();
+  toast(desired?"İki aşamalı doğrulama açıldı":"İki aşamalı doğrulama kapatıldı");
+});
 $("lockBtn").onclick=lockApp; $("lockNowBtn").onclick=lockApp;
 document.addEventListener("visibilitychange",()=>{
   if(document.hidden){hiddenAt=Date.now();}
   else if(hasPinAuth()&&hiddenAt&&Date.now()-hiddenAt>120000){lockApp();}
 });
+function handleAuthRepairLink(){
+  let requested=false;
+  try{requested=new URLSearchParams(location.search).get("guvenlik-onar")==="1"||location.hash==="#guvenlik-onar";}catch(e){}
+  if(!requested)return false;
+  const cleanLink=()=>{try{const url=new URL(location.href);url.searchParams.delete("guvenlik-onar");if(url.hash==="#guvenlik-onar")url.hash="";history.replaceState(null,"",url.toString());}catch(e){}};
+  const a=loadAuth();
+  if((hasPinAuth(a)||hasSalaryPinAuth(a))&&hasResetCredential(a)){
+    alert("Kurtarma yolu bulunduğu için onarım bağlantısı kilidi sıfırlamaz. ŞİFREYİ unuttum bölümünü kullanın.");
+    cleanLink(); return false;
+  }
+  if(confirm("Yalnızca kilit/PIN bilgisi sıfırlansın mı?\n\nMesai ve maaş kayıtlarınız silinmez. Sonrasında yeni PIN oluşturmanız gerekir.")){
+    clearAuth(); setSessionUnlocked(true); lockSalary(false); cleanLink();
+    setTimeout(()=>{openPasswordSetup();toast("Kilit bilgisi sıfırlandı. Yeni PIN oluşturun.");},400);
+    return true;
+  }
+  cleanLink(); return false;
+}
 function initLock(){
+  handleAuthRepairLink();
   updatePasswordUI();
   const a=loadAuth(); const configured=hasPinAuth(a);
   if(configured&&!sessionUnlocked()){lockApp();}
@@ -2937,7 +3311,8 @@ function initLock(){
     appUnlocked=true;
     if(!postUnlockRan){postUnlockRan=true; setTimeout(()=>{checkArifePrompt(); maybeAutoPull();},500);}
     let dismissed=false; try{dismissed=localStorage.getItem(PW_PROMPT_KEY)==="1";}catch(e){}
-    if(!configured&&!dismissed) setTimeout(openPasswordSetup,700);
+    // Hiç güvenlik kaydı yoksa uygulama doğrudan açılsın; kurulum Maaş/Ayarlar üzerinden yapılır.
+    if(!configured&&a&&!dismissed) setTimeout(openPasswordSetup,700);
   }
 }
 
@@ -2957,37 +3332,44 @@ function deleteSalaryWorkplaceData(workplaceId){if(!workplaceId)return;salaryDat
 function salaryIsUnlocked(){return Date.now()<salaryUnlockedUntil;}
 function lockSalary(updateView=true){salaryUnlockedUntil=0;pendingSalaryCodeMethod=null;if(salaryLockTimer){clearTimeout(salaryLockTimer);salaryLockTimer=null;}if($("salaryUnlockCode"))$("salaryUnlockCode").value="";if(typeof configurePinInput==="function")configurePinInput($("salaryUnlockCode"));if(typeof closeForgotPassword==="function"&&forgotPasswordScope==="salary")closeForgotPassword();if(typeof updateAuthLockoutUI==="function")updateAuthLockoutUI();if($("salaryRecordBackdrop"))$("salaryRecordBackdrop").classList.remove("open");if($("futureRightBackdrop"))$("futureRightBackdrop").classList.remove("open");if($("salaryContent"))$("salaryContent").classList.add("hide");if($("salaryLockCard"))$("salaryLockCard").classList.remove("hide");if($("salaryRecordsList"))$("salaryRecordsList").innerHTML="";if($("futureRightsList"))$("futureRightsList").innerHTML="";if($("salaryTotals"))$("salaryTotals").innerHTML="";if($("compensationResults"))$("compensationResults").innerHTML="";if(updateView&&$("view-salary")&&$("view-salary").classList.contains("active"))renderSalaryLockState();}
 function renderSalaryLockState(){
-  const a=loadAuth(); const configured=hasPinAuth(a); updatePasswordUI();
+  const a=loadAuth(); const configuredApp=hasPinAuth(a); const configuredSalary=hasSalaryPinAuth(a); updatePasswordUI();
   $("salaryContent").classList.toggle("hide",!salaryIsUnlocked()); $("salaryLockCard").classList.toggle("hide",salaryIsUnlocked());
-  $("salaryBiometricBtn").classList.toggle("hide",!(configured&&a.biometric&&a.biometric.credentialId));
-  $("salaryForgotBtn").classList.toggle("hide",!a);
-  $("salarySecuritySetupBtn").classList.toggle("hide",!!a);
-  $("salarySecuritySetupBtn").textContent="Güvenlik Bilgilerini Belirle";
-  if(!a){$("salaryLockError").style.color="var(--red)";$("salaryLockError").textContent="Maaş bölümünü kullanmak için önce PIN ve kurtarma şifresi belirleyin.";}
-  else if(!configured){$("salaryLockError").style.color="#f59e0b";$("salaryLockError").textContent="Güvenliğiniz eksik: PIN belirleyin.";}
-  else if(!a.recoveryHash){$("salaryLockError").style.color="#f59e0b";$("salaryLockError").textContent="Kurtarma şifresi tanımlı değil. PIN ile açtıktan sonra Ayarlar bölümünden belirleyin.";}
+  $("salaryBiometricBtn").classList.toggle("hide",!(configuredSalary&&hasBiometricCredential(a)));
+  $("salaryForgotBtn").classList.toggle("hide",!configuredSalary);
+  $("salarySecuritySetupBtn").classList.toggle("hide",configuredSalary);
+  $("salarySecuritySetupBtn").textContent=!a?"Güvenlik Bilgilerini Belirle":(configuredApp?"Maaş PIN’i Belirle":"PIN’leri Belirle");
+  if(!a){$("salaryLockError").style.color="var(--red)";$("salaryLockError").textContent="Maaş bölümünü kullanmak için önce Uygulama PIN’i, Maaş PIN’i ve kurtarma şifresi belirleyin.";}
+  else if(!configuredSalary&&configuredApp){$("salaryLockError").style.color="#f59e0b";$("salaryLockError").textContent="Maaş PIN’i tanımlı değil. Uygulama PIN’i Maaş bölümünü açmaz; farklı bir Maaş PIN’i belirleyin.";}
+  else if(!configuredSalary&&hasLegacyPassword(a)){$("salaryLockError").style.color="#f59e0b";$("salaryLockError").textContent="PIN tanımlı değil. Güvenlik bilgilerini belirleyip uygulama ve Maaş için farklı PIN’ler oluşturun.";}
+  else if(!configuredSalary){$("salaryLockError").style.color="#f59e0b";$("salaryLockError").textContent="Maaş PIN’i tanımlı değil. Maaş PIN’i Belirle düğmesini kullanın.";}
+  else if(!configuredApp){$("salaryLockError").style.color="#f59e0b";$("salaryLockError").textContent="Maaş PIN’i hazır. Uygulama girişi için ayrıca Uygulama PIN’i belirleyin.";}
+  else if(!a.recoveryHash&&!hasLegacyPassword(a)){$("salaryLockError").style.color="#f59e0b";$("salaryLockError").textContent="Kurtarma şifresi tanımlı değil. Maaş’ı açtıktan sonra Ayarlar bölümünden belirleyin.";}
   updateAuthLockoutUI();
 }
 function handleSalaryView(){renderSalaryLockState();if(salaryIsUnlocked())renderSalary();}
-function unlockSalary(method){recordAuthSuccess();salaryUnlockedUntil=Date.now()+5*60*1000;pendingSalaryCodeMethod=null;$("salaryUnlockCode").value="";$("salaryLockError").textContent="";if(salaryLockTimer)clearTimeout(salaryLockTimer);salaryLockTimer=setTimeout(()=>{lockSalary();if($("view-salary").classList.contains("active"))toast("Maaş bölümü güvenlik için kilitlendi");},5*60*1000);renderSalaryLockState();renderSalary();}
+function unlockSalary(method){recordAuthSuccess("salary");salaryUnlockedUntil=Date.now()+5*60*1000;pendingSalaryCodeMethod=null;$("salaryUnlockCode").value="";$("salaryLockError").textContent="";if(salaryLockTimer)clearTimeout(salaryLockTimer);salaryLockTimer=setTimeout(()=>{lockSalary();if($("view-salary").classList.contains("active"))toast("Maaş bölümü güvenlik için kilitlendi");},5*60*1000);renderSalaryLockState();renderSalary();}
 $("salaryUnlockForm").addEventListener("submit",async e=>{
   e.preventDefault(); if(authVerifyBusy.salary)return;
   const a=loadAuth();
-  if(!hasPinAuth(a)){$("salaryLockError").style.color="var(--red)";$("salaryLockError").textContent="Önce PIN belirleyin.";if(!a)openPasswordSetup();return;}
-  const lockState=getAuthLockState(a); updateAuthLockoutUI();
+  if(!hasSalaryPinAuth(a)){
+    $("salaryLockError").style.color="var(--red)";$("salaryLockError").textContent="Önce Maaş PIN’i belirleyin.";
+    openPasswordSetup();
+    return;
+  }
+  const lockState=getAuthLockState(a,"salary"); updateAuthLockoutUI();
   if(lockState.locked){$("salaryLockError").style.color="var(--red)";$("salaryLockError").textContent="Giriş geçici olarak kilitli. Sürenin dolmasını bekleyin.";return;}
-  if(!/^\d{4,6}$/.test($("salaryUnlockCode").value)){$("salaryLockError").style.color="var(--red)";$("salaryLockError").textContent="4–6 haneli PIN girin.";return;}
+  if(!/^\d{4,6}$/.test($("salaryUnlockCode").value)){$("salaryLockError").style.color="var(--red)";$("salaryLockError").textContent="4–6 haneli Maaş PIN’i girin.";return;}
   authVerifyBusy.salary=true; updateAuthLockoutUI();
   try{
-    const ok=await verifyPinCode($("salaryUnlockCode").value);
+    const ok=await verifyPinCode($("salaryUnlockCode").value,"salary");
     if(!ok){
-      const fail=recordAuthFailure(); resetAuthCode("salary");
+      const fail=recordAuthFailure("salary"); resetAuthCode("salary");
       $("salaryLockError").style.color="var(--red)";
-      $("salaryLockError").textContent=fail.locked?("3 yanlış PIN nedeniyle giriş "+formatAuthLockoutDuration(fail.durationSeconds)+" kilitlendi."):("PIN yanlış. Kalan deneme: "+fail.remainingAttempts+".");
+      $("salaryLockError").textContent=fail.locked?("3 yanlış Maaş PIN’i nedeniyle giriş "+formatAuthLockoutDuration(fail.durationSeconds)+" kilitlendi."):("Maaş PIN’i yanlış. Kalan deneme: "+fail.remainingAttempts+".");
       return;
     }
     if(a.twoFactor&&a.biometric&&a.biometric.credentialId){
-      pendingSalaryCodeMethod="pin"; $("salaryLockError").style.color="var(--green)"; $("salaryLockError").textContent="PIN doğru. Şimdi parmak izinizi doğrulayın.";
+      pendingSalaryCodeMethod="pin"; $("salaryLockError").style.color="var(--green)"; $("salaryLockError").textContent="Maaş PIN’i doğru. Şimdi parmak izinizi doğrulayın.";
       try{await verifyBiometric();unlockSalary("pin");}catch(err){$("salaryLockError").style.color="var(--red)";$("salaryLockError").textContent=err.message||"Parmak izi doğrulanamadı.";}
       return;
     }
@@ -2995,16 +3377,16 @@ $("salaryUnlockForm").addEventListener("submit",async e=>{
   }finally{authVerifyBusy.salary=false;updateAuthLockoutUI();}
 });
 $("salaryBiometricBtn").onclick=async()=>{
-  const a=loadAuth(); if(!hasPinAuth(a)||authVerifyBusy.salary)return;
-  const lockState=getAuthLockState(a); updateAuthLockoutUI();
+  const a=loadAuth(); if(!hasSalaryPinAuth(a)||authVerifyBusy.salary)return;
+  const lockState=getAuthLockState(a,"salary"); updateAuthLockoutUI();
   if(lockState.locked){$("salaryLockError").style.color="var(--red)";$("salaryLockError").textContent="Giriş geçici olarak kilitli. Sürenin dolmasını bekleyin.";return;}
-  if(a.twoFactor&&a.biometric&&a.biometric.credentialId&&!pendingSalaryCodeMethod){$("salaryLockError").style.color="var(--red)";$("salaryLockError").textContent="İki aşamalı doğrulama açık: önce PIN’inizi girin.";return;}
+  if(a.twoFactor&&a.biometric&&a.biometric.credentialId&&!pendingSalaryCodeMethod){$("salaryLockError").style.color="var(--red)";$("salaryLockError").textContent="İki aşamalı doğrulama açık: önce Maaş PIN’inizi girin.";return;}
   authVerifyBusy.salary=true; updateAuthLockoutUI();
   try{await verifyBiometric();unlockSalary(pendingSalaryCodeMethod||"biometric");}catch(err){$("salaryLockError").style.color="var(--red)";$("salaryLockError").textContent=err.message||"Parmak izi doğrulanamadı.";}
   finally{authVerifyBusy.salary=false;updateAuthLockoutUI();}
 };
 $("salaryForgotBtn").onclick=()=>openForgotPassword("salary");
-$("salarySecuritySetupBtn").onclick=()=>{showView("settings");setTimeout(openPasswordSetup,90);};
+$("salarySecuritySetupBtn").onclick=()=>openPasswordSetup();
 $("lockSalaryBtn").onclick=()=>{lockSalary();toast("Maaş bölümü kilitlendi");};
 const moneyFormatter=new Intl.NumberFormat("tr-TR",{style:"currency",currency:"TRY",minimumFractionDigits:2,maximumFractionDigits:2});
 function fmtMoney(value){return moneyFormatter.format(Number(value||0));}
