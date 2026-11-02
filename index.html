@@ -193,6 +193,8 @@ input[type="checkbox"]{width:20px;height:20px;flex:0 0 20px;margin:0;accent-colo
 .item>div:last-child{margin-left:auto;text-align:right;flex:0 1 auto}.item .datebox{align-self:center}
 .statline{align-items:center}.statline>span{min-width:0}.statline>b{text-align:right}
 .salary-breakdown>span{display:flex;justify-content:space-between;gap:8px;min-width:0}.salary-breakdown b{text-align:right;white-space:nowrap}
+/* Maaş yan hakları: isim + tutar satırları */
+.salary-benefits-editor{margin-top:14px}.salary-benefits-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:8px}.salary-benefits-head label{font-size:13px;font-weight:850}.salary-benefits-head span{font-weight:900;color:var(--green);white-space:nowrap}.salary-benefit-list{display:grid;gap:8px;margin-bottom:10px}.salary-benefit-item,.salary-benefit-add{display:grid;grid-template-columns:minmax(0,1fr) minmax(104px,.62fr) 46px;gap:8px;align-items:end}.salary-benefit-item input,.salary-benefit-add input{width:100%;min-width:0;min-height:46px;background:var(--input);border:1px solid var(--line);border-radius:12px;padding:10px 11px;outline:none}.salary-benefit-item input:focus,.salary-benefit-add input:focus{border-color:rgba(6,182,212,.72);box-shadow:0 0 0 3px rgba(6,182,212,.16)}.salary-benefit-add .field{margin:0}.salary-benefit-add-btn,.salary-benefit-remove{width:46px;height:46px;min-height:46px;padding:0;border-radius:13px;font-size:22px;line-height:1}.salary-benefit-empty{border:1px dashed var(--line);border-radius:13px;padding:11px;color:var(--muted);font-size:12.5px;text-align:center}
 .wpbar{min-height:58px}.wpbar select,.wpbar .btn{height:42px}.wpbar>span{display:grid;place-items:center;width:30px;height:42px;flex:0 0 30px}
 .calendar-head .btn,.calendar-head input{height:var(--control-h)}.calendar-head .btn{display:grid;place-items:center;padding:0;font-size:22px}
 #monthPickerRep{width:174px;max-width:48vw;height:var(--control-h);background:var(--input);border:1px solid var(--line);border-radius:12px;padding:9px 11px}
@@ -689,9 +691,17 @@ input[type="checkbox"]{width:20px;height:20px;flex:0 0 20px;margin:0;accent-colo
       <div class="field"><label>Net Maaş (₺)</label><input type="number" id="salaryNet" min="0" step="0.01" inputmode="decimal"></div>
       <div class="field"><label>Brüt Maaş (₺)</label><input type="number" id="salaryGross" min="0" step="0.01" inputmode="decimal"></div>
       <div class="field"><label>Vergi İadesi (₺)</label><input type="number" id="salaryTaxRefund" min="0" step="0.01" inputmode="decimal"></div>
-      <div class="field"><label>Yan Haklar (₺)</label><input type="number" id="salaryBenefits" min="0" step="0.01" inputmode="decimal"></div>
-      <div class="field"><label>Diğer Ödeme (₺)</label><input type="number" id="salaryOther" min="0" step="0.01" inputmode="decimal"></div>
       <div class="field"><label>Bu Ay Elinize Geçen Toplam</label><div class="previewbox money" id="salaryRecordTotalPreview">₺0</div></div>
+    </div>
+    <div class="salary-benefits-editor">
+      <div class="salary-benefits-head"><label>Yan Haklar</label><span class="money" id="salaryBenefitsTotal">₺0</span></div>
+      <div class="salary-benefit-list" id="salaryBenefitList"></div>
+      <div class="salary-benefit-add">
+        <div class="field"><label>Yan Hak Adı</label><input id="salaryBenefitName" placeholder="Devamsızlık Primi"></div>
+        <div class="field"><label>Tutar (₺)</label><input type="number" id="salaryBenefitAmount" min="0" step="0.01" inputmode="decimal" placeholder="1000"></div>
+        <button class="btn primary salary-benefit-add-btn" id="addSalaryBenefitBtn" type="button" aria-label="Yan hak ekle">+</button>
+      </div>
+      <p class="tiny muted" style="line-height:1.5">Yan hak adını ve tutarını yazıp <b>+</b> düğmesine basın. Örn. Yakıt Yardımı — 2000 TL.</p>
     </div>
     <div class="field"><label>Not</label><textarea id="salaryNote" rows="2" placeholder="İkramiye, zam, yan hak açıklaması vb."></textarea></div>
     <p class="small" id="salaryRecordError" style="color:var(--red)"></p>
@@ -707,7 +717,7 @@ input[type="checkbox"]{width:20px;height:20px;flex:0 0 20px;margin:0;accent-colo
     <div class="field"><label>Hak Adı</label><input id="futureRightName" placeholder="örn. 0,5 Maaş İkramiyesi"></div>
     <div class="form-grid">
       <div class="field"><label>Hak Tarihi</label><input type="date" id="futureRightDate"></div>
-      <div class="field"><label>Tahmini Tutar (₺, isteğe bağlı)</label><input type="number" id="futureRightAmount" min="0" step="0.01" inputmode="decimal"></div>
+      <div class="field"><label>Hak Tutarı (₺)</label><input type="number" id="futureRightAmount" min="0" step="0.01" inputmode="decimal"></div>
     </div>
     <div class="field"><label>Not</label><textarea id="futureRightNote" rows="2"></textarea></div>
     <p class="small" id="futureRightError" style="color:var(--red)"></p>
@@ -3485,7 +3495,63 @@ $("lockSalaryBtn").onclick=()=>{lockSalary();toast("Maaş bölümü kilitlendi")
 const moneyFormatter=new Intl.NumberFormat("tr-TR",{style:"currency",currency:"TRY",minimumFractionDigits:2,maximumFractionDigits:2});
 function fmtMoney(value){return moneyFormatter.format(Number(value||0));}
 function moneyInputValue(id){const el=$(id);if(!el)return 0;return Math.max(0,Number(String(el.value||"").replace(/\s/g,"").replace(",","."))||0);}
-function salaryRecordTotal(r){return Number(r.netSalary||0)+Number(r.taxRefund||0)+Number(r.benefits||0)+Number(r.other||0);}
+let salaryBenefitItems=[];
+let salaryBenefitSeq=1;
+function normalizedSalaryBenefitItems(record){
+  if(!record)return [];
+  if(Array.isArray(record.benefitItems)){
+    const parsed=record.benefitItems.map((raw,i)=>({
+      id:raw&&raw.id?raw.id:("benefit_"+i),
+      name:String((raw&&(raw.name||raw.title))||"").trim(),
+      amount:Math.max(0,Number(raw&&raw.amount||0)||0)
+    })).filter(item=>item.name&&item.amount>0);
+    if(parsed.length)return parsed;
+  }
+  const items=[];
+  if(Number(record.benefits||0)>0)items.push({id:"benefit_legacy",name:"Yan Hak",amount:Number(record.benefits||0)});
+  if(Number(record.other||0)>0)items.push({id:"benefit_legacy_other",name:"Diğer Ödeme",amount:Number(record.other||0)});
+  return items;
+}
+function salaryBenefitsTotal(record){return normalizedSalaryBenefitItems(record).reduce((s,item)=>s+Number(item.amount||0),0);}
+function salaryRecordTotal(r){return Number(r.netSalary||0)+Number(r.taxRefund||0)+salaryBenefitsTotal(r);}
+function makeSalaryBenefitItem(name,amount){return {id:"benefit_"+(salaryBenefitSeq++),name:String(name||"").trim(),amount:Math.max(0,Number(amount||0)||0)};}
+function renderSalaryBenefitItems(){
+  const box=$("salaryBenefitList"); if(!box)return;
+  if(!salaryBenefitItems.length){box.innerHTML='<div class="salary-benefit-empty">Henüz yan hak eklenmedi.</div>';}
+  else{
+    box.innerHTML=salaryBenefitItems.map(item=>'<div class="salary-benefit-item"><input data-benefit-name="'+item.id+'" value="'+esc(item.name)+'" placeholder="Yan hak adı" aria-label="Yan hak adı"><input type="number" min="0" step="0.01" inputmode="decimal" data-benefit-amount="'+item.id+'" value="'+item.amount+'" placeholder="Tutar" aria-label="Yan hak tutarı"><button class="btn soft salary-benefit-remove" type="button" data-benefit-remove="'+item.id+'" aria-label="Yan hakkı sil">×</button></div>').join("");
+    box.querySelectorAll("[data-benefit-name]").forEach(inp=>inp.addEventListener("input",()=>{const item=salaryBenefitItems.find(x=>x.id===inp.dataset.benefitName);if(item){item.name=inp.value;updateSalaryRecordPreview();}}));
+    box.querySelectorAll("[data-benefit-amount]").forEach(inp=>inp.addEventListener("input",()=>{const item=salaryBenefitItems.find(x=>x.id===inp.dataset.benefitAmount);if(item){item.amount=Math.max(0,Number(String(inp.value||"").replace(",","."))||0);updateSalaryRecordPreview();}}));
+    box.querySelectorAll("[data-benefit-remove]").forEach(btn=>btn.addEventListener("click",()=>{salaryBenefitItems=salaryBenefitItems.filter(x=>x.id!==btn.dataset.benefitRemove);renderSalaryBenefitItems();updateSalaryRecordPreview();}));
+  }
+  updateSalaryRecordPreview();
+}
+function collectSalaryBenefitItems(includePending=false){
+  const items=[];
+  for(const raw of salaryBenefitItems){
+    const name=String(raw.name||"").trim(), amount=Math.max(0,Number(raw.amount||0)||0);
+    if(!name&&amount<=0)continue;
+    if(!name||amount<=0)return {items:[],total:0,error:"Eklenen her yan hak için ad ve tutar girin."};
+    items.push({name,amount});
+  }
+  if(includePending&&$("salaryBenefitName")&&$("salaryBenefitAmount")){
+    const name=$("salaryBenefitName").value.trim(), amount=moneyInputValue("salaryBenefitAmount");
+    if(name||amount>0){
+      if(!name||amount<=0)return {items:[],total:0,error:"Yan hak adı ve tutarını birlikte girin."};
+      items.push({name,amount});
+    }
+  }
+  return {items,total:items.reduce((s,item)=>s+item.amount,0),error:""};
+}
+function addSalaryBenefitFromInputs(){
+  const name=$("salaryBenefitName").value.trim(), amount=moneyInputValue("salaryBenefitAmount");
+  if(!name){$("salaryRecordError").textContent="Yan hak adını yazın.";$("salaryBenefitName").focus();return;}
+  if(amount<=0){$("salaryRecordError").textContent="Yan hak tutarını girin.";$("salaryBenefitAmount").focus();return;}
+  salaryBenefitItems.push(makeSalaryBenefitItem(name,amount));
+  $("salaryBenefitName").value=""; $("salaryBenefitAmount").value=""; $("salaryRecordError").textContent="";
+  renderSalaryBenefitItems();
+  setTimeout(()=>$("salaryBenefitName").focus(),40);
+}
 function salaryRecordsFor(workplaceId){return salaryData.records.filter(r=>r.workplaceId===workplaceId).sort((a,b)=>b.month.localeCompare(a.month));}
 function futureRightsFor(workplaceId){return salaryData.futureRights.filter(r=>r.workplaceId===workplaceId).sort((a,b)=>a.date.localeCompare(b.date));}
 function compensationSettings(workplaceId){if(!salaryData.compensation[workplaceId])salaryData.compensation[workplaceId]={grossOverride:"",regularGrossBenefits:0,ceilingOverride:""};return salaryData.compensation[workplaceId];}
@@ -3509,7 +3575,14 @@ function renderSalaryRecords(){
   select.value=previous==="all"||years.includes(previous)?previous:"all";
   const rows=select.value==="all"?all:all.filter(r=>r.month.startsWith(select.value+"-"));
   $("salaryRecordCount").textContent=rows.length+" kayıt";
-  $("salaryRecordsList").innerHTML=rows.length?rows.map(r=>{const [y,m]=r.month.split("-").map(Number);return '<div class="salary-record"><div class="salary-record-head"><div><b>'+MONTHS_TR[m-1]+' '+y+'</b><div class="tiny muted">Elinize geçen toplam</div></div><div class="salary-total money">'+fmtMoney(salaryRecordTotal(r))+'</div></div><div class="salary-breakdown"><span>Net maaş: <b>'+fmtMoney(r.netSalary)+'</b></span><span>Brüt maaş: <b>'+fmtMoney(r.grossSalary)+'</b></span><span>Vergi iadesi: <b>'+fmtMoney(r.taxRefund)+'</b></span><span>Yan hak: <b>'+fmtMoney(r.benefits)+'</b></span><span>Diğer: <b>'+fmtMoney(r.other)+'</b></span></div>'+(r.note?'<div class="small" style="margin-top:7px">'+esc(r.note)+'</div>':'')+'<div class="row wrap" style="margin-top:8px"><button class="btn smallbtn soft" type="button" onclick="openSalaryRecordEditor(\''+esc(r.id)+'\')">Düzenle</button><button class="btn smallbtn danger" type="button" onclick="deleteSalaryRecord(\''+esc(r.id)+'\')">Sil</button></div></div>';}).join(""):'<div class="notice">Henüz maaş kaydı yok.</div>';
+  $("salaryRecordsList").innerHTML=rows.length?rows.map(r=>{
+    const [y,m]=r.month.split("-").map(Number);
+    const items=normalizedSalaryBenefitItems(r);
+    const benefitLines=items.length
+      ? items.map(item=>'<span>'+esc(item.name)+': <b>'+fmtMoney(item.amount)+'</b></span>').join("")+(items.length>1?'<span>Yan hak toplamı: <b>'+fmtMoney(salaryBenefitsTotal(r))+'</b></span>':"")
+      : '<span>Yan hak: <b>'+fmtMoney(0)+'</b></span>';
+    return '<div class="salary-record"><div class="salary-record-head"><div><b>'+MONTHS_TR[m-1]+' '+y+'</b><div class="tiny muted">Elinize geçen toplam</div></div><div class="salary-total money">'+fmtMoney(salaryRecordTotal(r))+'</div></div><div class="salary-breakdown"><span>Net maaş: <b>'+fmtMoney(r.netSalary)+'</b></span><span>Brüt maaş: <b>'+fmtMoney(r.grossSalary)+'</b></span><span>Vergi iadesi: <b>'+fmtMoney(r.taxRefund)+'</b></span>'+benefitLines+'</div>'+(r.note?'<div class="small" style="margin-top:7px">'+esc(r.note)+'</div>':'')+'<div class="row wrap" style="margin-top:8px"><button class="btn smallbtn soft" type="button" onclick="openSalaryRecordEditor(\''+esc(r.id)+'\')">Düzenle</button><button class="btn smallbtn danger" type="button" onclick="deleteSalaryRecord(\''+esc(r.id)+'\')">Sil</button></div></div>';
+  }).join(""):'<div class="notice">Henüz maaş kaydı yok.</div>';
 }
 function renderSalaryTotals(){
   const wpId=activeWorkplaceId(); const rows=salaryRecordsFor(wpId); const currentYear=String(new Date().getFullYear()); const thisYear=rows.filter(r=>r.month.startsWith(currentYear+"-"));
@@ -3517,20 +3590,29 @@ function renderSalaryTotals(){
   const highest=rows.length?[...rows].sort((a,b)=>salaryRecordTotal(b)-salaryRecordTotal(a))[0]:null;
   const kpis=[["TOPLAM KAZANÇ",fmtMoney(allReceived),rows.length+" aylık kayıt"],[currentYear+" TOPLAM",fmtMoney(yearReceived),thisYear.length+" kayıt"],["AYLIK ORTALAMA",fmtMoney(rows.length?allReceived/rows.length:0),"Kayıtlı aylar üzerinden"],["EN YÜKSEK AY",highest?fmtMoney(salaryRecordTotal(highest)):"—",highest?MONTHS_TR[Number(highest.month.slice(5,7))-1]+" "+highest.month.slice(0,4):"Kayıt yok"]];
   $("salaryKpis").innerHTML=kpis.map(k=>'<div class="kpi"><div class="label">'+k[0]+'</div><div class="value money" style="font-size:20px">'+k[1]+'</div><div class="hint">'+k[2]+'</div></div>').join("");
-  $("salaryTotals").innerHTML='<div class="statline"><span>Toplam net maaş</span><b class="money">'+fmtMoney(sum(rows,r=>r.netSalary))+'</b></div><div class="statline"><span>Toplam vergi iadesi</span><b class="money">'+fmtMoney(sum(rows,r=>r.taxRefund))+'</b></div><div class="statline"><span>Toplam yan hak</span><b class="money">'+fmtMoney(sum(rows,r=>r.benefits))+'</b></div><div class="statline"><span>Toplam diğer ödeme</span><b class="money">'+fmtMoney(sum(rows,r=>r.other))+'</b></div><div class="statline"><span>Kayıtlı toplam brüt maaş</span><b class="money">'+fmtMoney(sum(rows,r=>r.grossSalary))+'</b></div>';
+  $("salaryTotals").innerHTML='<div class="statline"><span>Toplam net maaş</span><b class="money">'+fmtMoney(sum(rows,r=>r.netSalary))+'</b></div><div class="statline"><span>Toplam vergi iadesi</span><b class="money">'+fmtMoney(sum(rows,r=>r.taxRefund))+'</b></div><div class="statline"><span>Toplam yan hak</span><b class="money">'+fmtMoney(sum(rows,r=>salaryBenefitsTotal(r)))+'</b></div><div class="statline"><span>Kayıtlı toplam brüt maaş</span><b class="money">'+fmtMoney(sum(rows,r=>r.grossSalary))+'</b></div>';
 }
 function openSalaryRecordEditor(id){
   const wpId=activeWorkplaceId(); const r=id?salaryData.records.find(x=>x.id===id&&x.workplaceId===wpId):null;
   $("salaryRecordTitle").textContent=r?"💰 Maaş Kaydını Düzenle":"💰 Maaş Kaydı Ekle"; $("salaryRecordId").value=r?r.id:"";
-  $("salaryMonth").value=r?r.month:todayStr().slice(0,7); $("salaryNet").value=r?r.netSalary:""; $("salaryGross").value=r?r.grossSalary:""; $("salaryTaxRefund").value=r?r.taxRefund:""; $("salaryBenefits").value=r?r.benefits:""; $("salaryOther").value=r?r.other:""; $("salaryNote").value=r?(r.note||""):""; $("salaryRecordError").textContent=""; updateSalaryRecordPreview();
+  $("salaryMonth").value=r?r.month:todayStr().slice(0,7); $("salaryNet").value=r?r.netSalary:""; $("salaryGross").value=r?r.grossSalary:""; $("salaryTaxRefund").value=r?r.taxRefund:""; $("salaryNote").value=r?(r.note||""):""; $("salaryRecordError").textContent="";
+  salaryBenefitItems=normalizedSalaryBenefitItems(r).map(item=>makeSalaryBenefitItem(item.name,item.amount));
+  $("salaryBenefitName").value=""; $("salaryBenefitAmount").value="";
+  renderSalaryBenefitItems();
   $("salaryRecordBackdrop").classList.add("open"); setTimeout(()=>$("salaryNet").focus(),80);
 }
 function closeSalaryRecordEditor(){$("salaryRecordBackdrop").classList.remove("open");}
-function updateSalaryRecordPreview(){$("salaryRecordTotalPreview").textContent=fmtMoney(moneyInputValue("salaryNet")+moneyInputValue("salaryTaxRefund")+moneyInputValue("salaryBenefits")+moneyInputValue("salaryOther"));}
+function updateSalaryRecordPreview(){
+  const benefitTotal=salaryBenefitItems.reduce((s,item)=>s+Math.max(0,Number(item.amount||0)||0),0);
+  if($("salaryBenefitsTotal"))$("salaryBenefitsTotal").textContent=fmtMoney(benefitTotal);
+  $("salaryRecordTotalPreview").textContent=fmtMoney(moneyInputValue("salaryNet")+moneyInputValue("salaryTaxRefund")+benefitTotal);
+}
 function saveSalaryRecord(){
   const wpId=activeWorkplaceId(); const id=$("salaryRecordId").value; const month=$("salaryMonth").value;
   if(!month){$("salaryRecordError").textContent="Yıl/ay seçin.";return;}
-  const record={id:id||("sal_"+Date.now().toString(36)+Math.random().toString(36).slice(2,6)),workplaceId:wpId,month,netSalary:moneyInputValue("salaryNet"),grossSalary:moneyInputValue("salaryGross"),taxRefund:moneyInputValue("salaryTaxRefund"),benefits:moneyInputValue("salaryBenefits"),other:moneyInputValue("salaryOther"),note:$("salaryNote").value.trim(),updatedAt:new Date().toISOString()};
+  const benefitData=collectSalaryBenefitItems(true);
+  if(benefitData.error){$("salaryRecordError").textContent=benefitData.error;return;}
+  const record={id:id||("sal_"+Date.now().toString(36)+Math.random().toString(36).slice(2,6)),workplaceId:wpId,month,netSalary:moneyInputValue("salaryNet"),grossSalary:moneyInputValue("salaryGross"),taxRefund:moneyInputValue("salaryTaxRefund"),benefitItems:benefitData.items,benefits:benefitData.total,other:0,note:$("salaryNote").value.trim(),updatedAt:new Date().toISOString()};
   if(salaryRecordTotal(record)<=0&&record.grossSalary<=0){$("salaryRecordError").textContent="En az bir tutar girin.";return;}
   const clash=salaryData.records.find(r=>r.workplaceId===wpId&&r.month===month&&r.id!==record.id);
   if(clash){if(!confirm("Bu ay için zaten maaş kaydı var. Üzerine yazılsın mı?"))return;salaryData.records=salaryData.records.filter(r=>r.id!==clash.id);}
@@ -3628,7 +3710,9 @@ $("addSalaryRecordBtn").onclick=()=>openSalaryRecordEditor("");
 $("addFutureRightBtn").onclick=()=>openFutureRightEditor("");
 $("closeSalaryRecordBtn").onclick=closeSalaryRecordEditor; $("cancelSalaryRecordBtn").onclick=closeSalaryRecordEditor; $("saveSalaryRecordBtn").onclick=saveSalaryRecord;
 $("salaryRecordBackdrop").addEventListener("click",e=>{if(e.target.id==="salaryRecordBackdrop")closeSalaryRecordEditor();});
-["salaryNet","salaryTaxRefund","salaryBenefits","salaryOther"].forEach(id=>$(id).addEventListener("input",updateSalaryRecordPreview));
+["salaryNet","salaryTaxRefund"].forEach(id=>$(id).addEventListener("input",updateSalaryRecordPreview));
+$("addSalaryBenefitBtn").onclick=addSalaryBenefitFromInputs;
+["salaryBenefitName","salaryBenefitAmount"].forEach(id=>$(id).addEventListener("keydown",e=>{if(e.key==="Enter"){e.preventDefault();addSalaryBenefitFromInputs();}}));
 $("closeFutureRightBtn").onclick=closeFutureRightEditor; $("cancelFutureRightBtn").onclick=closeFutureRightEditor; $("saveFutureRightBtn").onclick=saveFutureRight;
 $("futureRightBackdrop").addEventListener("click",e=>{if(e.target.id==="futureRightBackdrop")closeFutureRightEditor();});
 $("salaryYearFilter").addEventListener("change",renderSalaryRecords);
